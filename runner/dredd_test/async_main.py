@@ -94,7 +94,7 @@ async def worker(queue, killed_set, killedfile, outputfile, mutation_binary, sta
 
             outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
-        print(f"Killed: {stat.killCount}, Survived: {stat.surviveCount}, Skipped: {stat.skipCount}", end='\r' if mutants_len != stat.totalCount else '\n')
+        # print(f"Killed: {stat.killCount}, Survived: {stat.surviveCount}, Skipped: {stat.skipCount}", end='\r' if mutants_len != stat.totalCount else '\n')
 
         # Notify the queue that the "work item" has been processed.
         queue.task_done()
@@ -106,18 +106,18 @@ async def async_slice_runner(coverage_binary: str, mutation_binary: str, testset
     killed = set()
 
     for index, test in enumerate(testset):
-        print("Running:", test, f"{index + 1}/{len(testset)}")
+        # print("Running:", test, f"{index + 1}/{len(testset)}")
 
         start = time.time()
         mutants = await get_mutations_in_coverage_by_test(coverage_binary, test)
         end = time.time()
         base_time = end - start
-        print(f"Time: {base_time}s")
+        # print(f"Time: {base_time}s")
 
-        print("Number of mutants in coverage", len(mutants))
+        # print("Number of mutants in coverage", len(mutants))
 
         if len(mutants) == 0:
-            print()
+            # print()
             continue        
 
         queue = asyncio.Queue()
@@ -127,7 +127,7 @@ async def async_slice_runner(coverage_binary: str, mutation_binary: str, testset
             queue.put_nowait(mutant)
 
         tasks = []
-        for i in range(min(16, len(mutants))):
+        for i in range(min(4, len(mutants))):
             task = asyncio.create_task(worker(queue, killed, killedfile, outputfile, mutation_binary, stats, test, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST, mutants_len=len(mutants)))
             tasks.append(task)
 
@@ -137,16 +137,16 @@ async def async_slice_runner(coverage_binary: str, mutation_binary: str, testset
             task.cancel()
 
         await asyncio.gather(*tasks, return_exceptions=True)
-        print()
+        # print()
 
 
-with open('/home/ubuntu/dredd-sqlite3/sample_binary/ss_tests.txt') as test_files:
-    tests = ['/home/ubuntu/sqlite-src/' + line.rstrip('\n') for line in test_files]
-    # tests = ['/home/ubuntu/sqlite-src/test/tkt3630.test']
+# with open('/home/ubuntu/dredd-sqlite3/sample_binary/ss_tests.txt') as test_files:
+#     tests = ['/home/ubuntu/sqlite-src/' + line.rstrip('\n') for line in test_files]
+#     # tests = ['/home/ubuntu/sqlite-src/test/tkt3630.test']
 
-    coverage_bin = '/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_alter_tracking'
-    mutation_bin = '/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_alter_mutations'
+#     coverage_bin = '/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_alter_tracking'
+#     mutation_bin = '/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_alter_mutations'
 
-    with open('/home/ubuntu/dredd-sqlite3/sample_output2/sample_output.csv', 'w') as output_file:
-        with open('/home/ubuntu/dredd-sqlite3/sample_output2/sample_killed.txt', 'w') as killed_file:
-            asyncio.run(async_slice_runner(coverage_bin, mutation_bin, tests, output_file, killed_file))
+#     with open('/home/ubuntu/dredd-sqlite3/sample_output2/sample_output.csv', 'w') as output_file:
+#         with open('/home/ubuntu/dredd-sqlite3/sample_output2/sample_killed.txt', 'w') as killed_file:
+#             asyncio.run(async_slice_runner(coverage_bin, mutation_bin, tests, output_file, killed_file))

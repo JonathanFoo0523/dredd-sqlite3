@@ -31,10 +31,10 @@ Export the path to dredd:
 ```shell
 export DREDD_CHECKOUT=/path/to/dredd
 ```
-### Install SQLite
+### Install SQLite3
 Install the complete(raw) source tree instead of amalgation source code:
 ```shell
-sudo apt install unzip # (Optional) Required Package
+sudo apt install unzip tcl8.6-dev # Required Package
 
 curl -Lo sqlite-src-3450100.zip https://www.sqlite.org/2024/sqlite-src-3450100.zip
 unzip sqlite-src-3450100.zip
@@ -44,6 +44,12 @@ rm sqlite-src-3450100.zip
 Export the path to sqlite source:
 ```shell
 export SQLITE_SRC_CHECKOUT=/path/to/sqlite-src
+```
+Configure and Make
+```shell
+cd sqlite-src
+CC=${DREDD_CHECKOUT}/third_party/clang+llvm/bin/clang CFLAGS='-MJ cd.json -Wno-everything' ./configure
+make .target_source # This create directory containing all source files for sqlite3.c
 ```
 
 ### Install SQLancer
