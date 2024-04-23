@@ -2,7 +2,7 @@ from enum import Enum
 
 MutantID = int
 
-TestStatus = Enum('TestStatus', ['SURVIVED', 'KILLED_TIMEOUT', 'KILLED_FAIL'])
+TestStatus = Enum('TestStatus', ['SURVIVED', 'KILLED_TIMEOUT', 'KILLED_FAILED', 'KILLED_CRASHED'])
 
 # class TestStatus(Enum):
 #     SURVIVED = 1

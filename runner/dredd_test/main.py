@@ -3,6 +3,8 @@ from runner.common.types import TestStatus
 from runner.dredd_source.main import sqlite_c_src_c_files
 from runner.dredd_test.async_main import async_slice_runner
 
+from runner.dredd_test.async_worker import MutationTestingWorker
+
 from multiprocessing import Pool
 from tqdm.auto import tqdm
 import asyncio
@@ -29,15 +31,23 @@ def worker(file: str):
 
         coverage_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary2/testfixture_{file}_coverage'
         mutation_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary2/testfixture_{file}_mutation'
+        mutation_info = f'/home/ubuntu/dredd-sqlite3/sample_binary2/{file}_mutation_info.json'
 
-        with open(f'/home/ubuntu/dredd-sqlite3/sample_output2/{file}_output.csv', 'w+') as output_file:
-            with open(f'/home/ubuntu/dredd-sqlite3/sample_output2/{file}_killed.txt', 'w+') as killed_file:
-                asyncio.run(async_slice_runner(coverage_bin, mutation_bin, tests, output_file, killed_file))
+        output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
+        asyncio.run(MutationTestingWorker(file, coverage_bin, mutation_bin, mutation_info, output_dir).async_slice_runner(tests))
+        # with open(f'/home/ubuntu/dredd-sqlite3/sample_output4/{file}_output.csv', 'w+') as output_file:
+        #     with open(f'/home/ubuntu/dredd-sqlite3/sample_output4/{file}_killed.txt', 'w+') as killed_file:
+                
+
+
+
 
 if __name__ == '__main__':
     # print(f"Starting multiproceses with {cpu_count()} worker")
     pool = Pool(processes=4)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
-    for i in tqdm(pool.imap(worker, sqlite_c_src_c_files), total=len(sqlite_c_src_c_files), position=0, leave=False):
-        pass
+    for file in sqlite_c_src_c_files:
+        worker(file)
+    # for i in tqdm(pool.imap(worker, sqlite_c_src_c_files), total=len(sqlite_c_src_c_files), position=0, leave=False):
+    #     pass
