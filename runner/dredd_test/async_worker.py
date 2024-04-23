@@ -25,7 +25,7 @@ class Stats:
         self.survived_mutants.add(mutant)
 
     def add_skipper(self, mutant):
-        self.killed_mutants.add(mutant)
+        self.skipped_mutants.add(mutant)
 
     def get_killed_count(self):
         return len(self.killed_mutants)
@@ -54,7 +54,7 @@ class MutationTestingWorker:
 
         assert os.path.isdir(output_dir)
         self.output_dir = output_dir
-        if not os.path.isdir(output_dir):
+        if not os.path.isdir(os.path.join(output_dir, source_name)):
             os.mkdir(os.path.join(output_dir, source_name))
 
 
@@ -126,19 +126,48 @@ class MutationTestingWorker:
                         killedfile.write(f"{mutant}\n")
                     killed_set.add(mutant)
 
-                with open(f'{self.output_dir}/output.csv', 'a+') as outputfile:
+                with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
                     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
             print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
             queue.task_done()
 
 
-    async def async_slice_runner(self, testset: list[str]):
-        with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
-            outputfile.write(f"status, test_name, mutant_id, description\n")
-
+    def load_pickle(self) -> (set[MutantID], set[MutantID], set[str]):
+        # return killed, in_coverage, tests
         killed = set()
         in_coverage = set()
+        covered_tests = set()
+        with open(f'{self.output_dir}/{self.source_name}/picklefile', 'rb') as f:
+            try:
+                while True:
+                    obj = pickle.load(f)
+                    killed.update(obj['killed'])
+                    in_coverage.update(obj['in_coverage'])
+                    covered_tests.add(obj['test_file'])
+            except Exception as err:
+                pass
+
+        return killed, in_coverage, covered_tests
+
+
+
+    async def async_slice_runner(self, testset: list[str]):
+        
+        if os.path.isfile(f'{self.output_dir}/{self.source_name}/picklefile'):
+            print("Continuing progress: ")
+            killed, in_coverage, covered_tests = self.load_pickle()
+            print("Covered Mutants so far:", len(in_coverage))
+            print("Killed so far:", len(killed))
+            print("Covered Tests:", len(covered_tests))
+            print()
+            testset = list(set(testset) - covered_tests)
+        else:
+            killed = set()
+            in_coverage = set()
+            with open(f'{self.output_dir}/{self.source_name}/output.csv', 'w+') as outputfile:
+                outputfile.write(f"status, test_name, mutant_id, description\n")
+        
         largest_mutants = await self.get_largest_mutant_id()
 
         for index, test in enumerate(testset):
@@ -154,6 +183,8 @@ class MutationTestingWorker:
             print("Number of mutants in coverage", len(mutants))
 
             if len(mutants) == 0:
+                with open(f'{self.output_dir}/{self.source_name}/picklefile', 'ab+') as f:
+                    pickle.dump({'test_file':test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
                 print()
                 continue        
 
@@ -175,11 +206,10 @@ class MutationTestingWorker:
 
             await asyncio.gather(*tasks, return_exceptions=True)
             with open(f'{self.output_dir}/{self.source_name}/picklefile', 'ab+') as f:
-                # print({'test_dir':test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants})
                 pickle.dump({'test_file':test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
             print()
-            # print(dict(killed=killed, last_test=test))
-        with open(f'{self.output_dir}/picklefile', 'ab+') as f:
-            pickle.dumps({file: {'total': largest_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': largest_mutants - in_coverage}})
+
+        with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
+            pickle.dump({'source': self.source_name, 'total': largest_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(largest_mutants)) - in_coverage}, f)
 
     

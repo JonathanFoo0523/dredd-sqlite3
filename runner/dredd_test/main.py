@@ -8,6 +8,8 @@ from runner.dredd_test.async_worker import MutationTestingWorker
 from multiprocessing import Pool
 from tqdm.auto import tqdm
 import asyncio
+import os
+import pickle
 
 
 # print(TestStatus.KILLED_FAIL.name)
@@ -22,7 +24,7 @@ import asyncio
 #     with open('/home/ubuntu/dredd-sqlite3/sample_output/sample_killed.txt', 'w') as killed_file:
 #         basic_slice_runner(coverage_bin, mutation_bin, tests, output_file, killed_file)
 
-def worker(file: str):
+def worker(file: str, output_dir: str):
     file = file.split('.')[0]
 
     with open('/home/ubuntu/dredd-sqlite3/sample_binary/ss_tests.txt') as test_files:
@@ -33,13 +35,8 @@ def worker(file: str):
         mutation_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary2/testfixture_{file}_mutation'
         mutation_info = f'/home/ubuntu/dredd-sqlite3/sample_binary2/{file}_mutation_info.json'
 
-        output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
+        # output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
         asyncio.run(MutationTestingWorker(file, coverage_bin, mutation_bin, mutation_info, output_dir).async_slice_runner(tests))
-        # with open(f'/home/ubuntu/dredd-sqlite3/sample_output4/{file}_output.csv', 'w+') as output_file:
-        #     with open(f'/home/ubuntu/dredd-sqlite3/sample_output4/{file}_killed.txt', 'w+') as killed_file:
-                
-
-
 
 
 if __name__ == '__main__':
@@ -47,7 +44,19 @@ if __name__ == '__main__':
     pool = Pool(processes=4)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
+    output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
+    source_file_covered = []
+    try:
+        with open(os.path.join(output_dir, 'picklefile'), 'rb') as f:
+            while True:
+                source_file_covered.append(pickle.load(f)['source'])
+    except Exception as err:
+        pass
+
+    sqlite_c_src_c_files = list(set(sqlite_c_src_c_files) - set(source_file_covered))
+    print(sqlite_c_src_c_files)
+    exit(0)
     for file in sqlite_c_src_c_files:
-        worker(file)
+        worker(file, output_dir)
     # for i in tqdm(pool.imap(worker, sqlite_c_src_c_files), total=len(sqlite_c_src_c_files), position=0, leave=False):
     #     pass
