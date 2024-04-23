@@ -138,7 +138,7 @@ class MutationTestingWorker:
         killed = set()
         in_coverage = set()
         covered_tests = set()
-        with open(f'{self.output_dir}/{self.source_name}/picklefile', 'rb') as f:
+        with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'rb') as f:
             try:
                 while True:
                     obj = pickle.load(f)
@@ -151,10 +151,9 @@ class MutationTestingWorker:
         return killed, in_coverage, covered_tests
 
 
-
     async def async_slice_runner(self, testset: list[str]):
         
-        if os.path.isfile(f'{self.output_dir}/{self.source_name}/picklefile'):
+        if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
             print("Continuing progress: ")
             killed, in_coverage, covered_tests = self.load_pickle()
             print("Covered Mutants so far:", len(in_coverage))
@@ -183,8 +182,8 @@ class MutationTestingWorker:
             print("Number of mutants in coverage", len(mutants))
 
             if len(mutants) == 0:
-                with open(f'{self.output_dir}/{self.source_name}/picklefile', 'ab+') as f:
-                    pickle.dump({'test_file':test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
+                with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
+                    pickle.dump({'test_file': test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
                 print()
                 continue        
 
@@ -205,8 +204,8 @@ class MutationTestingWorker:
                 task.cancel()
 
             await asyncio.gather(*tasks, return_exceptions=True)
-            with open(f'{self.output_dir}/{self.source_name}/picklefile', 'ab+') as f:
-                pickle.dump({'test_file':test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
+            with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
+                pickle.dump({'test_file': test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
             print()
 
         with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:

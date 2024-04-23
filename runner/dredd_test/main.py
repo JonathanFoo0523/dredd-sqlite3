@@ -47,15 +47,14 @@ if __name__ == '__main__':
     output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
     source_file_covered = []
     try:
-        with open(os.path.join(output_dir, 'picklefile'), 'rb') as f:
+        with open(os.path.join(output_dir, 'regression_test.pkl'), 'rb') as f:
             while True:
                 source_file_covered.append(pickle.load(f)['source'])
     except Exception as err:
         pass
 
     sqlite_c_src_c_files = list(set(sqlite_c_src_c_files) - set(source_file_covered))
-    print(sqlite_c_src_c_files)
-    exit(0)
+
     for file in sqlite_c_src_c_files:
         worker(file, output_dir)
     # for i in tqdm(pool.imap(worker, sqlite_c_src_c_files), total=len(sqlite_c_src_c_files), position=0, leave=False):
