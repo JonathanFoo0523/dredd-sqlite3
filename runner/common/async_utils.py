@@ -6,11 +6,11 @@ TIMEOUT_RETCODE = 124   # Same as UNIX tiemout return code
 
 
 # Extend asyncio.create_subprocess_exec with timeout, so it function similarly as subprocess.run()
-async def subprocess_run(args, timeout=None, stdin=None, stdout=None, stderr=None, **kwargs):
+async def subprocess_run(args, timeout=None, stdin=None, input=None, stdout=None, stderr=None, **kwargs):
     proc = await asyncio.create_subprocess_exec(*args, stdin=stdin, stdout=stdout, stderr=stderr, **kwargs)
 
     try:
-        stdout, stderr =  await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        stdout, stderr =  await asyncio.wait_for(proc.communicate(input), timeout=timeout)
     except asyncio.TimeoutError:
         # if proc.returncode is None:
         #     try:
