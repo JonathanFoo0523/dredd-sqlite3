@@ -77,13 +77,23 @@ class TestGenerationWorker:
 
         return self._process_result_is_difference(proc_ref, proc_mut)
 
+
     def _process_result_is_difference(self, process1: subprocess.CompletedProcess, process2: subprocess.CompletedProcess) -> bool:
         return process1.returncode != process2.returncode or process1.stdout != process2.stdout or process1.stderr != process2.stderr
 
 
+    # A simple testing condition to ensure a source is run on exactly 100 logs
+    def still_testing(self):
+        try:
+            return self.continue_testing
+        except:
+            self.continue_testing = False
+            return True
+
+
     def slice_runner(self, prev_killed: set[MutantID]):
         newly_killed = set()
-        while still_testing:
+        while self.still_testing():
             sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100
             with tempfile.TemporaryDirectory as sqlancer_temp_dir:
                 self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
@@ -121,6 +131,9 @@ class TestGenerationWorker:
 #     worker.generate_random_testcases(1, temp_dir)
 #     print(sorted(os.listdir(f'{temp_dir}/logs/sqlite3')))
 
+a = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
+print(a.still_testing())
+print(a.still_testing())
 
 # killed = set([from previous])
 # for log in logs:
