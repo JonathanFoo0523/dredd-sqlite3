@@ -49,11 +49,16 @@ if __name__ == '__main__':
     try:
         with open(os.path.join(output_dir, 'regression_test.pkl'), 'rb') as f:
             while True:
-                source_file_covered.append(pickle.load(f)['source'])
+                obj = pickle.load(f)
+                covered = obj['in_coverage_survived'].union(obj['killed'])
+                print(f"Source: {obj['source']}; Total: {obj['total']}; Covered: {len(covered)}; Killed: {len(obj['killed'])};")
+                source_file_covered.append(obj['source'] + '.c')
     except Exception as err:
         pass
+    finally:
+        print("Continuing:")
 
-    sqlite_c_src_c_files = list(set(sqlite_c_src_c_files) - set(source_file_covered))
+    sqlite_c_src_c_files = sorted(list(set(sqlite_c_src_c_files) - set(source_file_covered)))
 
     for file in sqlite_c_src_c_files:
         worker(file, output_dir)

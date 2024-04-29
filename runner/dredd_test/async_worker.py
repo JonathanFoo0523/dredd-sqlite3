@@ -1,6 +1,6 @@
 from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
 from runner.common.types import MutantID, TestStatus
-from runner.common.async_utils import subprocess_run
+from runner.common.async_utils import subprocess_run, TIMEOUT_RETCODE
 
 import time
 import tempfile
@@ -60,8 +60,8 @@ class MutationTestingWorker:
 
     async def get_largest_mutant_id(self) -> set[MutantID]:
         stdout, _, _ = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE)
-
-        return int(stdout)
+        # Added one since dredd mutants start counting from zero
+        return int(stdout) + 1
 
 
     async def get_mutations_in_coverage_by_test(self, test_path: str) -> set[MutantID]:
@@ -91,8 +91,8 @@ class MutationTestingWorker:
         with tempfile.TemporaryDirectory() as temp_test_dir:
             stdout, stderr, returncode = await subprocess_run([self.mutation_binary, test_path], timeout=timeout, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, env=env_copy, cwd=temp_test_dir)
 
-        if returncode == -1:
-            # Timeout (finger cross)
+        if returncode == TIMEOUT_RETCODE:
+            # Timeout (Might be a problem when child process could have the same return code)
             return (TestStatus.KILLED_TIMEOUT, stderr.decode().rstrip('/n'))
         elif returncode == 1:
             # Fail a test
@@ -152,6 +152,7 @@ class MutationTestingWorker:
 
 
     async def async_slice_runner(self, testset: list[str]):
+        print(f"Regression testing on source file: {self.source_name}")
         
         if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
             print("Continuing progress: ")
