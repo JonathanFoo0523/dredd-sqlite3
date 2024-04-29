@@ -1,6 +1,7 @@
 from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
 from runner.common.types import MutantID, TestStatus
 from runner.common.async_utils import subprocess_run, TIMEOUT_RETCODE
+from runner.common.counter import Stats
 
 import time
 import tempfile
@@ -10,38 +11,6 @@ import re
 import pickle
 
 DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
-
-class Stats:
-    def __init__(self, total_mutants):
-        self.total_mutants = total_mutants
-        self.killed_mutants = set()
-        self.skipped_mutants = set()
-        self.survived_mutants = set()
-
-    def add_killed(self, mutant):
-        self.killed_mutants.add(mutant)
-    
-    def add_survived(self, mutant):
-        self.survived_mutants.add(mutant)
-
-    def add_skipper(self, mutant):
-        self.skipped_mutants.add(mutant)
-
-    def get_killed_count(self):
-        return len(self.killed_mutants)
-
-    def get_skipped_count(self):
-        return len(self.skipped_mutants)
-
-    def get_survived_count(self):
-        return len(self.survived_mutants)
-
-    def get_total_count(self):
-        return len(self.killed_mutants) + len(self.skipped_mutants) + len(self.survived_mutants)
-
-    def checked_all_mutants(self) -> bool:
-        # print(self.get_total_count(), self.total_mutants)
-        return self.get_total_count() == self.total_mutants
 
 # Performing Mutation Testing on One source file
 class MutationTestingWorker:

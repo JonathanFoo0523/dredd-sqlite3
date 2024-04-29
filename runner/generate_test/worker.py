@@ -1,10 +1,13 @@
 from runner.common.types import MutantID
 from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST
-# from runner.common.async_utils import subprocess_run
+from runner.common.counter import Stats
+
 import os
 import subprocess
 import tempfile
 import time
+import random
+import asyncio
 
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
@@ -55,7 +58,7 @@ class TestGenerationWorker:
             print(err)
 
     # return True if results is probably deterministics and mutated sqlite give different result compared to unmutated
-    # Consider timeout on mutated version  as different
+    # Consider timeout on mutated version as different
     def differential_oracle(self, mutation_id: int, statements_path: str, expected_result=None) -> bool:
         with open(statements_path, 'rb') as f:
             statements = f.read()
@@ -67,13 +70,16 @@ class TestGenerationWorker:
             end_time = time.time()
             base_time = end_time - start_time
 
-        if expected_result is not None and proc_ref != expected_result:
+        if expected_result is not None and self._process_result_is_difference(proc_ref, expected_result):
             print("Indeterministic test result")
             return False
 
         env_copy["DREDD_ENABLED_MUTATION"] = str(mutation_id)
         with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
-            proc_mut = subprocess.run([self.mutation_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST)
+            try:
+                proc_mut = subprocess.run([self.mutation_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST)
+            except subprocess.TimeoutExpired:
+                return True
 
         return self._process_result_is_difference(proc_ref, proc_mut)
 
@@ -90,29 +96,65 @@ class TestGenerationWorker:
             self.continue_testing = False
             return True
 
+    async def differential_test_task(self, queue, stat, killed_set, log_path, cov_result):
+        while True:
+            mutant = await queue.get()
 
-    def slice_runner(self, prev_killed: set[MutantID]):
-        newly_killed = set()
+            if mutant in killed_set:
+                stat.add_skipper(mutant)
+            else:
+                if self.differential_oracle(mutant, log_path, cov_result):
+                    killed_set.add(mutant)
+                    stat.add_killed(mutant)
+                else:
+                    stat.add_survived(mutant)
+
+            print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+            queue.task_done()
+
+
+    async def slice_runner(self, killed: set[MutantID]):
         while self.still_testing():
-            sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100
-            with tempfile.TemporaryDirectory as sqlancer_temp_dir:
+            sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100 * 100 
+            with tempfile.TemporaryDirectory() as sqlancer_temp_dir:
+                print(f"Generating test case with seed {sqlancer_seed}")
                 self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
 
-                for log in sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3'))):
+                logs = sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3')))
+                newly_killed = set()
+                for i, log in enumerate(logs):
+                    print(f"Running random db with seed: {sqlancer_seed + i}")
+
                     log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
-                    mutants_in_coverage, cov_result = self.get_mutations_in_coverage_by_log(log_path)
+                    try:
+                        mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
+                    except subprocess.TimeoutExpired:
+                        print(f"Skipped due to Timeout after {0}s")
+                        continue
+                    else:
+                        print("Number of mutants in coverage", len(mutants))
 
-                    for mutant in mutants_in_coverage:
-                        if mutant in killed:
-                            continue
+                    if len(mutants) == 0:
+                        print()
+                        continue  
+                    
+                    queue = asyncio.Queue()
+                    stats = Stats(len(mutants))
 
-                        if self.differential_oracle(mutant, log_path, cov_result):
-                            print(f"Kill! Mutants killed so far: {len(newly_killed)}")
-                            newly_killed.add(mutant)
-                            prev_killed.add(mutant)
-                            # Possibly copy file
+                    for mutant in mutants:
+                        queue.put_nowait(mutant)
 
-                    print(f"Killed/Remain: {len(sqlancer_killed)}/{len(survivors[file])}, Testing: {m}/{len(mutants_in_coverage)}", end="\r")
+                    tasks = []
+                    for i in range(len(mutants)):
+                        task = asyncio.create_task(self.differential_test_task(queue, stats, killed, log_path, cov_result))
+                        tasks.append(task)
+
+                    await queue.join()
+
+                    for task in tasks:
+                        task.cancel()
+
+                    print()
 
     
 
@@ -132,8 +174,7 @@ class TestGenerationWorker:
 #     print(sorted(os.listdir(f'{temp_dir}/logs/sqlite3')))
 
 a = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
-print(a.still_testing())
-print(a.still_testing())
+asyncio.run(a.slice_runner(set()))
 
 # killed = set([from previous])
 # for log in logs:
