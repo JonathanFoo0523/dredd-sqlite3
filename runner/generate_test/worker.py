@@ -75,11 +75,34 @@ class TestGenerationWorker:
         with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
             proc_mut = subprocess.run([self.mutation_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST)
 
-        return proc_ref.returncode != proc_mut.returncode or proc_ref.stdout != proc_mut.stdout or proc_ref.stderr != proc_mut.stderr
+        return self._process_result_is_difference(proc_ref, proc_mut)
 
-    
-    def slice_runner(self):
-        pass
+    def _process_result_is_difference(self, process1: subprocess.CompletedProcess, process2: subprocess.CompletedProcess) -> bool:
+        return process1.returncode != process2.returncode or process1.stdout != process2.stdout or process1.stderr != process2.stderr
+
+
+    def slice_runner(self, prev_killed: set[MutantID]):
+        newly_killed = set()
+        while still_testing:
+            sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100
+            with tempfile.TemporaryDirectory as sqlancer_temp_dir:
+                self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
+
+                for log in sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3'))):
+                    log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
+                    mutants_in_coverage, cov_result = self.get_mutations_in_coverage_by_log(log_path)
+
+                    for mutant in mutants_in_coverage:
+                        if mutant in killed:
+                            continue
+
+                        if self.differential_oracle(mutant, log_path, cov_result):
+                            print(f"Kill! Mutants killed so far: {len(newly_killed)}")
+                            newly_killed.add(mutant)
+                            prev_killed.add(mutant)
+                            # Possibly copy file
+
+                    print(f"Killed/Remain: {len(sqlancer_killed)}/{len(survivors[file])}, Testing: {m}/{len(mutants_in_coverage)}", end="\r")
 
     
 
@@ -90,13 +113,13 @@ class TestGenerationWorker:
 
 #     logfile.seek(0)
 
-#     res = TestGenerationWorker('/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations').differential_oracle(69, logfile.name)
+#     res = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations').differential_oracle(70, logfile.name)
 #     print(res)
 
-with tempfile.TemporaryDirectory() as temp_dir:
-    worker = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
-    worker.generate_random_testcases(1, temp_dir)
-    print(sorted(os.listdir(f'{temp_dir}/logs/sqlite3')))
+# with tempfile.TemporaryDirectory() as temp_dir:
+#     worker = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
+#     worker.generate_random_testcases(1, temp_dir)
+#     print(sorted(os.listdir(f'{temp_dir}/logs/sqlite3')))
 
 
 # killed = set([from previous])
