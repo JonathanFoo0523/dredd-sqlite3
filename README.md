@@ -6,7 +6,7 @@ Using Dredd mutation testing framework to generate test cases that improve mutat
 At suitable directory, run the following command. Change `clang+llvm-*-*` as required. Refer to installation instruction [here](https://github.com/mc-imperial/dredd).
 ```shell
 # (Optional) Required Package
-sudo apt install build-essential libghc-terminfo-dev libzstd-dev zlib1g-dev 
+sudo apt install build-essential libghc-terminfo-dev libzstd-dev zlib1g-dev cmake ninja-build
 
 # Clone dredd
 git clone --recursive https://github.com/mc-imperial/dredd.git
