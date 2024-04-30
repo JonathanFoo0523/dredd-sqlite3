@@ -9,6 +9,7 @@ import os
 import asyncio
 import re
 import pickle
+from tqdm.asyncio import tqdm_asyncio
 
 DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
 
@@ -119,6 +120,43 @@ class MutationTestingWorker:
 
         return killed, in_coverage, covered_tests
 
+    async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], tests: list[str]):
+        for test in tests:
+            start = time.time()
+            mutants = await self.get_mutations_in_coverage_by_test(test)
+            end = time.time()
+            base_time = end - start
+            for mutant in mutants:
+                if mutant in killed:
+                    continue
+                queue.put_nowait((test, base_time, mutant))
+        
+    async def mutant_queue_consumer(self, queue: asyncio.Queue, killed: set[MutantID]):
+        while True:
+            test, base_time, mutant = await queue.get()
+
+            if mutant in killed:
+                # skip
+                pass
+            else:
+                timeout = base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
+                status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
+                if status == TestStatus.SURVIVED:
+                    # stat.add_survived(mutant)
+                    pass
+                else:
+                    # stat.add_killed(mutant)
+                    # with open(f'{self.output_dir}/{self.source_name}/killed.txt', 'a+') as killedfile:
+                    #     killedfile.write(f"{mutant}\n")
+                    killed.add(mutant)
+
+                # with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
+                #     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
+
+            # print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+            queue.task_done()
+
+
 
     async def async_slice_runner(self, testset: list[str]):
         print(f"Regression testing on source file: {self.source_name}")
@@ -139,46 +177,63 @@ class MutationTestingWorker:
         
         largest_mutants = await self.get_largest_mutant_id()
 
-        for index, test in enumerate(testset):
-            print("Running:", test, f"{index + 1}/{len(testset)}")
+        queue = asyncio.Queue()
 
-            start = time.time()
-            mutants = await self.get_mutations_in_coverage_by_test(test)
-            end = time.time()
-            base_time = end - start
-            print(f"Time: {base_time}s")
-            in_coverage.update(mutants)
+        testset_partition_size = len(testset) // self.max_parallel_tasks
+        producers = [asyncio.create_task(self.mutant_queue_producer(queue, killed, testset[i :: testset_partition_size])) for i in range(testset_partition_size)]
+        consumers = [asyncio.create_task(self.mutant_queue_consumer(queue, killed)) for _ in range(self.max_parallel_tasks)]
 
-            print("Number of mutants in coverage", len(mutants))
+        await tqdm_asyncio.gather(*producers)
+        await queue.join()
 
-            if len(mutants) == 0:
-                with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
-                    pickle.dump({'test_file': test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
-                print()
-                continue        
+        for task in consumers:
+            task.cancel()
 
-            queue = asyncio.Queue()
-            stats = Stats(len(mutants))
+        await tqdm_asyncio.gather(*consumers, return_exceptions=True)
 
-            for mutant in mutants:
-                queue.put_nowait(mutant)
 
-            tasks = []
-            for i in range(min(self.max_parallel_tasks, len(mutants))):
-                task = asyncio.create_task(self.mutation_test_task(queue, killed, stats, test, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST))
-                tasks.append(task)
 
-            await queue.join()
 
-            for task in tasks:
-                task.cancel()
+        # for index, test in enumerate(testset):
+        #     print("Running:", test, f"{index + 1}/{len(testset)}")
 
-            await asyncio.gather(*tasks, return_exceptions=True)
-            with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
-                pickle.dump({'test_file': test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
-            print()
+        #     start = time.time()
+        #     mutants = await self.get_mutations_in_coverage_by_test(test)
+        #     end = time.time()
+        #     base_time = end - start
+        #     print(f"Time: {base_time}s")
+        #     in_coverage.update(mutants)
 
-        with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
-            pickle.dump({'source': self.source_name, 'total': largest_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(largest_mutants)) - in_coverage}, f)
+        #     print("Number of mutants in coverage", len(mutants))
+
+        #     if len(mutants) == 0:
+        #         with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
+        #             pickle.dump({'test_file': test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
+        #         print()
+        #         continue        
+
+        #     queue = asyncio.Queue()
+        #     stats = Stats(len(mutants))
+
+        #     for mutant in mutants:
+        #         queue.put_nowait(mutant)
+
+        #     tasks = []
+        #     for i in range(min(self.max_parallel_tasks, len(mutants))):
+        #         task = asyncio.create_task(self.mutation_test_task(queue, killed, stats, test, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST))
+        #         tasks.append(task)
+
+        #     await queue.join()
+
+        #     for task in tasks:
+        #         task.cancel()
+
+        #     await asyncio.gather(*tasks, return_exceptions=True)
+        #     with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
+        #         pickle.dump({'test_file': test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
+        #     print()
+
+        # with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
+        #     pickle.dump({'source': self.source_name, 'total': largest_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(largest_mutants)) - in_coverage}, f)
 
     
