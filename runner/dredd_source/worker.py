@@ -26,14 +26,17 @@ class DreddAndCompileWorker:
 
         # Apply mutation to source file
         if dredd_type == DreddType.coverage:
-            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', f'{self.res_dir}/{file_wo_extension}_{dredd_type.name}_info.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', f'{src_dir}/temp.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
         else:
-            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', f'{self.res_dir}/{file_wo_extension}_{dredd_type.name}_info.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', f'{src_dir}/temp.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
         subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
 
         # Compile testfixture mutation/coverage
         subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_dir)
         shutil.copy(f'{src_dir}/{target}', f'{self.res_dir}/{target}_{file_wo_extension}_{dredd_type.name}')
+
+        # Copy mutation info file (only one is needed as it is the same for tracking and mutation mode)
+        shutil.copy(f'{src_dir}/temp.json', f'{self.res_dir}/{file_wo_extension}_{target}_info.json')
 
     
     def run(self, file: str, target: str) -> str:
@@ -46,10 +49,10 @@ class DreddAndCompileWorker:
             # Keep a clean copy of file
             shutil.copy(file_abs_path, f'{temp_src_dir}/clean_{file}')
 
-            self.prepare_compilation_database('testfixture', temp_src_dir)
-            self.mutate_and_compile(file_abs_path, temp_src_dir, DreddType.mutation, 'testfixture')
+            self.prepare_compilation_database(target, temp_src_dir)
+            self.mutate_and_compile(file_abs_path, temp_src_dir, DreddType.mutation, target)
             shutil.copy(f'{temp_src_dir}/clean_{file}', file_abs_path) # Reset file
-            self.mutate_and_compile(file_abs_path, temp_src_dir, DreddType.coverage, 'testfixture')
+            self.mutate_and_compile(file_abs_path, temp_src_dir, DreddType.coverage, target)
 
             # # Reset file
             # subprocess.run(['make', 'clean'], stdout=subprocess.DEVNULL, cwd=src_dir)

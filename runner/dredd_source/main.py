@@ -43,7 +43,7 @@ worker = DreddAndCompileWorker(SQLITE_SRC_CHECKOUT, '/home/ubuntu/dredd-sqlite3/
 # sqlite_c_src_c_files=[('main.c', 'testfixture'), ('main.c', 'sqlite3')]
 if __name__ == '__main__':
     # print(f"Starting multiproceses with {cpu_count()} worker")
-    pool = Pool(processes=8)
+    pool = Pool(processes=64)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
     for i in tqdm(pool.istarmap(worker.run, worker_task), total=len(worker_task), position=0, leave=False):
