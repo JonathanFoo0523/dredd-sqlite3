@@ -38,7 +38,7 @@ worker_task = [(file, target) for file in sqlite_c_src_c_files for target in tar
 #         print(f"{file} FAILED WITH ERROR")
 #         print(err)
 
-worker = DreddAndCompileWorker(SQLITE_SRC_CHECKOUT, '/home/ubuntu/dredd-sqlite3/sample_binary2')
+worker = DreddAndCompileWorker(SQLITE_SRC_CHECKOUT, '/home/ubuntu/dredd-sqlite3/sample_binary')
 
 # sqlite_c_src_c_files=[('main.c', 'testfixture'), ('main.c', 'sqlite3')]
 if __name__ == '__main__':

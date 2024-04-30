@@ -23,20 +23,18 @@ class DreddAndCompileWorker:
 
     def mutate_and_compile(self, file_abs_path: str, src_dir: str, dredd_type: DreddType, target: str):
         file_wo_extension = file_abs_path.split('/')[-1].split('.')[0]
+        mutation_info_path = f'{self.res_dir}/{file_wo_extension}_{target}_info.json'
 
         # Apply mutation to source file
         if dredd_type == DreddType.coverage:
-            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', f'{src_dir}/temp.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
         else:
-            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', f'{src_dir}/temp.json'], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
         subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
 
         # Compile testfixture mutation/coverage
         subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_dir)
         shutil.copy(f'{src_dir}/{target}', f'{self.res_dir}/{target}_{file_wo_extension}_{dredd_type.name}')
-
-        # Copy mutation info file (only one is needed as it is the same for tracking and mutation mode)
-        shutil.copy(f'{src_dir}/temp.json', f'{self.res_dir}/{file_wo_extension}_{target}_info.json')
 
     
     def run(self, file: str, target: str) -> str:
