@@ -135,23 +135,6 @@ class TestGenerationWorker:
                 
 
 
-    # async def differential_test_task(self, queue, stat, killed_set, log_path, cov_result):
-    #     while True:
-    #         mutant = await queue.get()
-
-    #         if mutant in killed_set:
-    #             stat.add_skipper(mutant)
-    #         else:
-    #             if self.differential_oracle(mutant, log_path, cov_result):
-    #                 killed_set.add(mutant)
-    #                 stat.add_killed(mutant)
-    #             else:
-    #                 stat.add_survived(mutant)
-
-    #         print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
-    #         queue.task_done()
-
-
     async def slice_runner(self, killed: set[MutantID]):
         while self.still_testing():
             sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100 * 100 
