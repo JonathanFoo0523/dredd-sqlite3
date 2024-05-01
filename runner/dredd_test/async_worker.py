@@ -29,6 +29,11 @@ class MutationTestingWorker:
         if not os.path.isdir(os.path.join(output_dir, source_name)):
             os.mkdir(os.path.join(output_dir, source_name))
 
+        self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
+        self.killedfile = os.path.join(output_dir, source_name, 'killed.txt')
+        self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.pkl')
+        self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.pkl')
+
 
     async def get_total_mutants(self) -> int:
         stdout, stderr, code = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
@@ -87,99 +92,109 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_CRASHED, f"died with code {returncode}")
 
 
-    async def mutation_test_task(self, queue, killed_set, stat, test, timeout):
-        while True:
-            mutant = await queue.get()
-
-            if mutant in killed_set:
-                stat.add_skipper(mutant)
-            else:
-                status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
-                if status == TestStatus.SURVIVED:
-                    stat.add_survived(mutant)
-                else:
-                    stat.add_killed(mutant)
-                    with open(f'{self.output_dir}/{self.source_name}/killed.txt', 'a+') as killedfile:
-                        killedfile.write(f"{mutant}\n")
-                    killed_set.add(mutant)
-
-                with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
-                    outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
-
-            print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
-            queue.task_done()
-
-
-    def load_pickle(self) -> (set[MutantID], set[MutantID], set[str]):
-        # return killed, in_coverage, tests
+    def load_progress(self) -> (asyncio.Queue, set[MutantID], set[MutantID], set[str], int):
+        # queue, killed, in_coverage, coverage_checked_test, queue_length
+        queue = asyncio.Queue()
         killed = set()
         in_coverage = set()
-        covered_tests = set()
-        with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'rb') as f:
-            try:
-                while True:
-                    obj = pickle.load(f)
-                    killed.update(obj['killed'])
-                    in_coverage.update(obj['in_coverage'])
-                    covered_tests.add(obj['test_file'])
-            except Exception as err:
-                pass
+        queue_length = 0
 
-        return killed, in_coverage, covered_tests
+        # dict(test, (set[MutantID], time))
+        test_to_check = dict()
+
+        if os.path.isfile(self.coverage_checkpoint):
+            with open(self.coverage_checkpoint, 'rb') as f:
+                try:
+                    while True:
+                        obj = pickle.load(f)
+                        # test, in_coverage, time
+                        test_to_check[obj['test']] = (obj['in_coverage'], obj['time'])
+                        in_coverage.update(obj['in_coverage'])
+                        queue_length += len(obj['in_coverage'])
+                except Exception as err:
+                    pass
+
+        if os.path.isfile(self.regression_checkpoint):
+            with open(self.regression_checkpoint, 'rb') as f:
+                try:
+                    while True:
+                        obj = pickle.load(f)
+                        # test, mutant, status
+                        if obj['status'] != TestStatus.SURVIVED.name:
+                            killed.add(obj['mutant'])
+                        test_to_check[obj['test']][0].remove(obj['mutant'])
+                except Exception as err:
+                    pass
+
+        for test, (survived_mutants, base_time) in test_to_check.items():
+            for mutant in survived_mutants:
+                queue.put_nowait((test, base_time, mutant))
+
+
+        return queue, killed, in_coverage, set(test_to_check.keys()), queue_length
+
+
+    # def load_pickle(self) -> (set[MutantID], set[MutantID], set[str]):
+    #     killed = set()
+    #     in_coverage = set()
+    #     covered_tests = set()
+    #     with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'rb') as f:
+    #         try:
+    #             while True:
+    #                 obj = pickle.load(f)
+    #                 killed.update(obj['killed'])
+    #                 in_coverage.update(obj['in_coverage'])
+    #                 covered_tests.add(obj['test_file'])
+    #         except Exception as err:
+    #             pass
+
+    #     return killed, in_coverage, covered_tests
+
 
     async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], tests: list[str], pbar=None):
         for test in tests:
             
-            # start = time.time()
-            # try:
-            #     mutants = await self.get_mutations_in_coverage_by_test(test)
-            # except Exception as err:
-            #     print(err)
-            # end = time.time()
-            # base_time = end - start
-            # for mutant in mutants:
-            #     if mutant in killed:
-            #         continue
-            #     queue.put_nowait((test, base_time, mutant))
+            start = time.time()
+            try:
+                mutants = await self.get_mutations_in_coverage_by_test(test)
+            except Exception as err:
+                print(err)
+            end = time.time()
+            base_time = end - start
+            in_coverage.update(mutants)
+            for mutant in mutants:
+                if mutant in killed:
+                    continue
+                queue.put_nowait((test, base_time, mutant))
 
-            time.sleep(0.001)
+            with open(self.coverage_checkpoint, 'ab+') as f:
+                pickle.dump({'test': test, 'in_coverage': mutants, 'time': base_time}, f) 
 
             if pbar:
                 pbar.update(1)
                 pbar.set_postfix({'Covered': len(in_coverage)})
-            
-            queue.put_nowait(0)
-            
 
-            
-        
+
     async def mutant_queue_consumer(self, queue: asyncio.Queue, killed: set[MutantID], pbar=None):
-        while True:
-            await queue.get()
-            time.sleep(0.001)
-            
-            # test, base_time, mutant = await queue.get()
+        while True:            
+            test, base_time, mutant = await queue.get()
 
-            # if mutant in killed:
-            #     # skip
-            #     print("skipped", mutant)
-            #     pass
-            # else:
-            #     timeout = base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
-            #     status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
-            #     if status == TestStatus.SURVIVED:
-            #         # stat.add_survived(mutant)
-            #         pass
-            #     else:
-            #         # stat.add_killed(mutant)
-            #         # with open(f'{self.output_dir}/{self.source_name}/killed.txt', 'a+') as killedfile:
-            #         #     killedfile.write(f"{mutant}\n")
-            #         killed.add(mutant)
+            if mutant not in killed:
+                timeout = base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
+                status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
+                if status != TestStatus.SURVIVED:
+                    with open(self.killedfile, 'a+') as killedfile:
+                        killedfile.write(f"{mutant}\n")
+                    killed.add(mutant)
 
-                # with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
-                #     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
+                with open(self.outputfile, 'a+') as outputfile:
+                    outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
-            # print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+                with open(self.regression_checkpoint, 'ab+') as f:
+                    pickle.dump({'test': test, 'mutant': mutant, 'status': status.name}, f) 
+            else:
+                with open(self.regression_checkpoint, 'ab+') as f:
+                    pickle.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
 
             queue.task_done()
 
@@ -187,47 +202,80 @@ class MutationTestingWorker:
                 pbar.update(1)
                 pbar.set_postfix({'Killed': len(killed)})
 
-            
 
-
-
+    
     async def async_slice_runner(self, testset: list[str]):
-        
-        if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
-            print("Continuing progress: ")
-            killed, in_coverage, covered_tests = self.load_pickle()
-            print("Covered Mutants so far:", len(in_coverage))
-            print("Killed so far:", len(killed))
-            print("Covered Tests:", len(covered_tests))
-            print()
-            testset = list(set(testset) - covered_tests)
-        else:
-            killed = set()
-            in_coverage = set()
-            with open(f'{self.output_dir}/{self.source_name}/output.csv', 'w+') as outputfile:
-                outputfile.write(f"status, test_name, mutant_id, description\n")
-        
+
         print()
         print("Running regression test:", self.source_name)
+        
+        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
+        #     print("Continuing progress: ")
+        #     killed, in_coverage, covered_tests = self.load_pickle()
+        #     print("Covered Mutants so far:", len(in_coverage))
+        #     print("Killed so far:", len(killed))
+        #     print("Covered Tests:", len(covered_tests))
+        #     print()
+        #     testset = list(set(testset) - covered_tests)
+        # else:
+        #     killed = set()
+        #     in_coverage = set()
+        #     with open(f'{self.output_dir}/{self.source_name}/output.csv', 'w+') as outputfile:
+        #         outputfile.write(f"status, test_name, mutant_id, description\n")
 
-        total_mutants = await self.get_total_mutants()
-        print("Total Mutants", total_mutants)
+        self.total_mutants = await self.get_total_mutants()
+        print("Total Mutants", self.total_mutants)
 
-        queue = asyncio.Queue()
+        # queue = asyncio.Queue()
+        # killed = set()
+        # in_coverage = set()
+        queue, killed, in_coverage, coverage_checked_test, queue_length = self.load_progress()
 
+        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/coverage_checkpoint.pkl'):
+        #     checked, in_coverage = self.load_coverage_pickle()
+        #     testset = list(set(testset) - checked)
+        #     producers_pbar.update(n=len(checked))
+
+        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/regression_checkpoint.pkl'):
+        #     queue, killed = self.load_regression_pickle()
+
+        if not os.path.isfile(self.outputfile):
+            with open(self.outputfile, 'w+') as f:
+                f.write(f"status, test_name, mutant_id, description\n")
+
+        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/regression_checkpoint.pkl'):
+        #     queue, killed = self.load_regression_pickle()
+        #     checked, in_coverage = self.load_coverage_pickle()
+        #     print("In Coverage:", len(in_coverage))
+        # elif os.path.isfile(f'{self.output_dir}/{self.source_name}/coverage_checkpoint.pkl'):
+        #     checked, in_coverage = self.load_coverage_pickle()
+        #     testset = list(set(testset) - checked)
+        #     producers_pbar.update(n=len(checked))
+        # else:
+        #     with open(self.outputfile, 'w+') as f:
+        #         f.write(f"status, test_name, mutant_id, description\n")
+        
         producers_pbar = tqdm(total=len(testset), desc='Finding coverage')
+        testset = [test for test in testset if test not in coverage_checked_test]
+        producers_pbar.update(n=len(coverage_checked_test))
+        producers_pbar.refresh()
         producers = [asyncio.create_task(self.mutant_queue_producer(queue, killed, in_coverage, testset[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
         await asyncio.gather(*producers, return_exceptions=True)
         
-        consumer_pbar = tqdm(total=queue.qsize(), desc='Running unittest')
+        consumer_pbar = tqdm(total=max(queue.qsize(), queue_length), desc='Running unittest')
+        consumer_pbar.update(n=max(queue_length - queue.qsize(), 0))
+        consumer_pbar.refresh()
+
         consumers = [asyncio.create_task(self.mutant_queue_consumer(queue, killed, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
         await queue.join()
-
 
         for task in consumers:
             task.cancel()
 
         await asyncio.gather(*consumers, return_exceptions=True)
+
+        with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
+            pickle.dump({'source': self.source_name, 'total': self.total_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(self.total_mutants)) - in_coverage}, f)
 
 
 
