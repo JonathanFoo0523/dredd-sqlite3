@@ -8,6 +8,8 @@ import tempfile
 import time
 import random
 import asyncio
+import pickle
+from tqdm import tqdm
 
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
@@ -88,7 +90,6 @@ class TestGenerationWorker:
     def _process_result_is_difference(self, process1: subprocess.CompletedProcess, process2: subprocess.CompletedProcess) -> bool:
         return process1.returncode != process2.returncode or process1.stdout != process2.stdout or process1.stderr != process2.stderr
 
-
     # A simple testing condition to ensure a source is run on exactly 100 logs
     def still_testing(self):
         try:
@@ -97,21 +98,58 @@ class TestGenerationWorker:
             self.continue_testing = False
             return True
 
-    async def differential_test_task(self, queue, stat, killed_set, log_path, cov_result):
+    async def mutant_queue_producer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], logs: list[str], pbar=None):
+        for log in logs:
+            log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
+            mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
+
+            in_coverage.update(mutants)
+            for mutant in mutants:
+                if mutant in killed:
+                    continue
+                queue.put_nowait((log, cov_result, mutant))
+
+            # with open(self.fuzzing_checkpoint, 'ab+') as f:
+            #     pickle.dump({'seed': None, 'coverage': mutant, 'output': cov_result})
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Covered': len(in_coverage)})
+
+
+
+    async def mutant_queue_consumer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, killed: set[MutantID], pbar=None):
         while True:
-            mutant = await queue.get()
+            log, cov_result, mutant = await queue.get()
+            log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
 
-            if mutant in killed_set:
-                stat.add_skipper(mutant)
-            else:
-                if self.differential_oracle(mutant, log_path, cov_result):
-                    killed_set.add(mutant)
-                    stat.add_killed(mutant)
-                else:
-                    stat.add_survived(mutant)
+            if mutant not in killed and self.differential_oracle(mutant, log_path, cov_result):
+                killed.add(mutant)
 
-            print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+            # with open(self.generate_checkpoint, 'ab+') as f:
+            #     pickle.dump({'seed': None, 'coverage': mutant, 'output': cov_result})
+
             queue.task_done()
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Killed': len(killed)})
+                
+
+
+    # async def differential_test_task(self, queue, stat, killed_set, log_path, cov_result):
+    #     while True:
+    #         mutant = await queue.get()
+
+    #         if mutant in killed_set:
+    #             stat.add_skipper(mutant)
+    #         else:
+    #             if self.differential_oracle(mutant, log_path, cov_result):
+    #                 killed_set.add(mutant)
+    #                 stat.add_killed(mutant)
+    #             else:
+    #                 stat.add_survived(mutant)
+
+    #         print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+    #         queue.task_done()
 
 
     async def slice_runner(self, killed: set[MutantID]):
@@ -122,40 +160,24 @@ class TestGenerationWorker:
                 self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
 
                 logs = sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3')))
+
                 newly_killed = set()
-                for i, log in enumerate(logs):
-                    print(f"Running random db with seed: {sqlancer_seed + i}")
+                in_coverage = set()
+                queue = asyncio.Queue()
 
-                    log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
-                    try:
-                        mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
-                    except subprocess.TimeoutExpired:
-                        print(f"Skipped due to Timeout after {0}s")
-                        continue
-                    else:
-                        print("Number of mutants in coverage", len(mutants))
+                producers_pbar = tqdm(total=len(logs), desc='Finding coverage')
+                producers = [asyncio.create_task(self.mutant_queue_producer(sqlancer_temp_dir, queue, killed, in_coverage, logs[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
+                await asyncio.gather(*producers)
 
-                    if len(mutants) == 0:
-                        print()
-                        continue  
-                    
-                    queue = asyncio.Queue()
-                    stats = Stats(len(mutants))
+                consumer_pbar = tqdm(total=queue.qsize(), desc='Checking Difference')
+                consumers = [asyncio.create_task(self.mutant_queue_consumer(sqlancer_temp_dir, queue, killed, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
+                await queue.join()
 
-                    for mutant in mutants:
-                        queue.put_nowait(mutant)
+                for task in consumers:
+                    task.cancel()
 
-                    tasks = []
-                    for i in range(len(mutants)):
-                        task = asyncio.create_task(self.differential_test_task(queue, stats, killed, log_path, cov_result))
-                        tasks.append(task)
+                await asyncio.gather(*consumers, return_exceptions=True)
 
-                    await queue.join()
-
-                    for task in tasks:
-                        task.cancel()
-
-                    print()
 
     
 
