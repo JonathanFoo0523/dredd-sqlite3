@@ -1,5 +1,5 @@
 from runner.common.types import MutantID
-from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST
+from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST, RANDOM_SQLS_EXECUTION_TIMEOUT_SECONDS
 from runner.common.counter import Stats
 
 import os
@@ -9,16 +9,21 @@ import time
 import random
 import asyncio
 import pickle
+import time
 from tqdm import tqdm
 
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
 class TestGenerationWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, max_parallel_tasks: int = 1):
+    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, max_parallel_tasks: int = 4):
         self.source_name = source_name
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
         self.max_parallel_tasks = max_parallel_tasks
+
+        self.max_running_time = 60 * 2 
+        self.start_time = time.time()
+        self.run_time = 0
 
     def get_mutations_in_coverage_by_log(self, statements_path: str):
         with open(statements_path, 'rb') as f:
@@ -29,10 +34,9 @@ class TestGenerationWorker:
             env_copy["DREDD_MUTANT_TRACKING_FILE"] = temp_coverage_file.name
             try:
                 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
-                    proc_result = subprocess.run([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    proc_result = subprocess.run([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=RANDOM_SQLS_EXECUTION_TIMEOUT_SECONDS)
             except Exception as err:
-                print(err)
-                exit(1)
+                return set(), None
 
             temp_coverage_file.seek(0)
             covered_mutants = sorted([int(line.rstrip()) for line in temp_coverage_file])
@@ -74,7 +78,7 @@ class TestGenerationWorker:
             base_time = end_time - start_time
 
         if expected_result is not None and self._process_result_is_difference(proc_ref, expected_result):
-            print("Indeterministic test result")
+            # print("Indeterministic test result")
             return False
 
         env_copy["DREDD_ENABLED_MUTATION"] = str(mutation_id)
@@ -90,13 +94,9 @@ class TestGenerationWorker:
     def _process_result_is_difference(self, process1: subprocess.CompletedProcess, process2: subprocess.CompletedProcess) -> bool:
         return process1.returncode != process2.returncode or process1.stdout != process2.stdout or process1.stderr != process2.stderr
 
-    # A simple testing condition to ensure a source is run on exactly 100 logs
+
     def still_testing(self):
-        try:
-            return self.continue_testing
-        except:
-            self.continue_testing = False
-            return True
+        return time.time() - self.start_time <= self.max_running_time
 
     async def mutant_queue_producer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], logs: list[str], pbar=None):
         for log in logs:
@@ -136,6 +136,9 @@ class TestGenerationWorker:
 
 
     async def slice_runner(self, killed: set[MutantID]):
+        newly_killed = set()
+        in_coverage = set()
+
         while self.still_testing():
             sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100 * 100 
             with tempfile.TemporaryDirectory() as sqlancer_temp_dir:
@@ -144,22 +147,27 @@ class TestGenerationWorker:
 
                 logs = sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3')))
 
-                newly_killed = set()
-                in_coverage = set()
+                
                 queue = asyncio.Queue()
 
                 producers_pbar = tqdm(total=len(logs), desc='Finding coverage')
                 producers = [asyncio.create_task(self.mutant_queue_producer(sqlancer_temp_dir, queue, killed, in_coverage, logs[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
                 await asyncio.gather(*producers)
+                producers_pbar.close()
 
                 consumer_pbar = tqdm(total=queue.qsize(), desc='Checking Difference')
                 consumers = [asyncio.create_task(self.mutant_queue_consumer(sqlancer_temp_dir, queue, killed, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
                 await queue.join()
+                consumer_pbar.close()
 
                 for task in consumers:
                     task.cancel()
 
                 await asyncio.gather(*consumers, return_exceptions=True)
+
+                print()
+
+            # print(f"File: {self.source_name}, Covered: {len(in_coverage)}, New Kill: {len(newly_killed)}")
 
 
     
