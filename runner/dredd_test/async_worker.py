@@ -134,22 +134,6 @@ class MutationTestingWorker:
         return queue, killed, in_coverage, set(test_to_check.keys()), queue_length
 
 
-    # def load_pickle(self) -> (set[MutantID], set[MutantID], set[str]):
-    #     killed = set()
-    #     in_coverage = set()
-    #     covered_tests = set()
-    #     with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'rb') as f:
-    #         try:
-    #             while True:
-    #                 obj = pickle.load(f)
-    #                 killed.update(obj['killed'])
-    #                 in_coverage.update(obj['in_coverage'])
-    #                 covered_tests.add(obj['test_file'])
-    #         except Exception as err:
-    #             pass
-
-    #     return killed, in_coverage, covered_tests
-
 
     async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], tests: list[str], pbar=None):
         for test in tests:
@@ -208,52 +192,17 @@ class MutationTestingWorker:
 
         print()
         print("Running regression test:", self.source_name)
-        
-        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
-        #     print("Continuing progress: ")
-        #     killed, in_coverage, covered_tests = self.load_pickle()
-        #     print("Covered Mutants so far:", len(in_coverage))
-        #     print("Killed so far:", len(killed))
-        #     print("Covered Tests:", len(covered_tests))
-        #     print()
-        #     testset = list(set(testset) - covered_tests)
-        # else:
-        #     killed = set()
-        #     in_coverage = set()
-        #     with open(f'{self.output_dir}/{self.source_name}/output.csv', 'w+') as outputfile:
-        #         outputfile.write(f"status, test_name, mutant_id, description\n")
 
         self.total_mutants = await self.get_total_mutants()
         print("Total Mutants", self.total_mutants)
 
-        # queue = asyncio.Queue()
-        # killed = set()
-        # in_coverage = set()
         queue, killed, in_coverage, coverage_checked_test, queue_length = self.load_progress()
 
-        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/coverage_checkpoint.pkl'):
-        #     checked, in_coverage = self.load_coverage_pickle()
-        #     testset = list(set(testset) - checked)
-        #     producers_pbar.update(n=len(checked))
-
-        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/regression_checkpoint.pkl'):
-        #     queue, killed = self.load_regression_pickle()
 
         if not os.path.isfile(self.outputfile):
             with open(self.outputfile, 'w+') as f:
                 f.write(f"status, test_name, mutant_id, description\n")
 
-        # if os.path.isfile(f'{self.output_dir}/{self.source_name}/regression_checkpoint.pkl'):
-        #     queue, killed = self.load_regression_pickle()
-        #     checked, in_coverage = self.load_coverage_pickle()
-        #     print("In Coverage:", len(in_coverage))
-        # elif os.path.isfile(f'{self.output_dir}/{self.source_name}/coverage_checkpoint.pkl'):
-        #     checked, in_coverage = self.load_coverage_pickle()
-        #     testset = list(set(testset) - checked)
-        #     producers_pbar.update(n=len(checked))
-        # else:
-        #     with open(self.outputfile, 'w+') as f:
-        #         f.write(f"status, test_name, mutant_id, description\n")
         
         producers_pbar = tqdm(total=len(testset), desc='Finding coverage')
         testset = [test for test in testset if test not in coverage_checked_test]
@@ -276,49 +225,5 @@ class MutationTestingWorker:
 
         with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
             pickle.dump({'source': self.source_name, 'total': self.total_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(self.total_mutants)) - in_coverage}, f)
-
-
-
-        # for index, test in enumerate(testset):
-        #     print("Running:", test, f"{index + 1}/{len(testset)}")
-
-        #     start = time.time()
-        #     mutants = await self.get_mutations_in_coverage_by_test(test)
-        #     end = time.time()
-        #     base_time = end - start
-        #     print(f"Time: {base_time}s")
-        #     in_coverage.update(mutants)
-
-        #     print("Number of mutants in coverage", len(mutants))
-
-        #     if len(mutants) == 0:
-        #         with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
-        #             pickle.dump({'test_file': test, 'in_coverage': set(), 'time': base_time, 'killed': set(), 'survived': set(), 'skipped':  set()}, f)
-        #         print()
-        #         continue        
-
-        #     queue = asyncio.Queue()
-        #     stats = Stats(len(mutants))
-
-        #     for mutant in mutants:
-        #         queue.put_nowait(mutant)
-
-        #     tasks = []
-        #     for i in range(min(self.max_parallel_tasks, len(mutants))):
-        #         task = asyncio.create_task(self.mutation_test_task(queue, killed, stats, test, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST))
-        #         tasks.append(task)
-
-        #     await queue.join()
-
-        #     for task in tasks:
-        #         task.cancel()
-
-        #     await asyncio.gather(*tasks, return_exceptions=True)
-        #     with open(f'{self.output_dir}/{self.source_name}/checkpoint.pkl', 'ab+') as f:
-        #         pickle.dump({'test_file': test, 'in_coverage': mutants, 'time': base_time, 'killed': stats.killed_mutants, 'survived': stats.survived_mutants, 'skipped':  stats.skipped_mutants}, f)
-        #     print()
-
-        # with open(f'{self.output_dir}/regression_test.pkl', 'ab+') as f:
-        #     pickle.dump({'source': self.source_name, 'total': largest_mutants, 'killed': killed, 'in_coverage_survived': in_coverage - killed,  'not_in_coverage': set(m for m in range(largest_mutants)) - in_coverage}, f)
 
     
