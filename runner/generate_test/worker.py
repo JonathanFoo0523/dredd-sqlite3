@@ -12,10 +12,11 @@ import asyncio
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
 class TestGenerationWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str):
+    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, max_parallel_tasks: int = 1):
         self.source_name = source_name
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
+        self.max_parallel_tasks = max_parallel_tasks
 
     def get_mutations_in_coverage_by_log(self, statements_path: str):
         with open(statements_path, 'rb') as f:

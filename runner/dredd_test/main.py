@@ -44,7 +44,7 @@ if __name__ == '__main__':
     pool = Pool(processes=4)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
-    output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
+    output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output5'
     source_file_covered = []
     try:
         with open(os.path.join(output_dir, 'regression_test.pkl'), 'rb') as f:

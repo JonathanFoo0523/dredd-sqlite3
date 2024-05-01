@@ -9,13 +9,15 @@ import os
 import asyncio
 import re
 import pickle
-from tqdm.asyncio import tqdm_asyncio
+# from tqdm.asyncio import tqdm_asyncio
+from tqdm import tqdm
 
 DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
 
+
 # Performing Mutation Testing on One source file
 class MutationTestingWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 16):
+    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
         self.source_name = source_name
         self.max_parallel_tasks = max_parallel_tasks
         self.tracking_binary = tracking_binary
@@ -28,8 +30,13 @@ class MutationTestingWorker:
             os.mkdir(os.path.join(output_dir, source_name))
 
 
-    async def get_largest_mutant_id(self) -> set[MutantID]:
-        stdout, _, _ = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE)
+    async def get_total_mutants(self) -> int:
+        stdout, stderr, code = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
+        
+        #  TO FIX: dredd script crashed when no mutation is possible
+        if code:
+            return 0
+        
         # Added one since dredd mutants start counting from zero
         return int(stdout) + 1
 
@@ -120,46 +127,71 @@ class MutationTestingWorker:
 
         return killed, in_coverage, covered_tests
 
-    async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], tests: list[str]):
+    async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], tests: list[str], pbar=None):
         for test in tests:
-            start = time.time()
-            mutants = await self.get_mutations_in_coverage_by_test(test)
-            end = time.time()
-            base_time = end - start
-            for mutant in mutants:
-                if mutant in killed:
-                    continue
-                queue.put_nowait((test, base_time, mutant))
-        
-    async def mutant_queue_consumer(self, queue: asyncio.Queue, killed: set[MutantID]):
-        while True:
-            test, base_time, mutant = await queue.get()
+            
+            # start = time.time()
+            # try:
+            #     mutants = await self.get_mutations_in_coverage_by_test(test)
+            # except Exception as err:
+            #     print(err)
+            # end = time.time()
+            # base_time = end - start
+            # for mutant in mutants:
+            #     if mutant in killed:
+            #         continue
+            #     queue.put_nowait((test, base_time, mutant))
 
-            if mutant in killed:
-                # skip
-                pass
-            else:
-                timeout = base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
-                status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
-                if status == TestStatus.SURVIVED:
-                    # stat.add_survived(mutant)
-                    pass
-                else:
-                    # stat.add_killed(mutant)
-                    # with open(f'{self.output_dir}/{self.source_name}/killed.txt', 'a+') as killedfile:
-                    #     killedfile.write(f"{mutant}\n")
-                    killed.add(mutant)
+            time.sleep(0.001)
+
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Covered': len(in_coverage)})
+            
+            queue.put_nowait(0)
+            
+
+            
+        
+    async def mutant_queue_consumer(self, queue: asyncio.Queue, killed: set[MutantID], pbar=None):
+        while True:
+            await queue.get()
+            time.sleep(0.001)
+            
+            # test, base_time, mutant = await queue.get()
+
+            # if mutant in killed:
+            #     # skip
+            #     print("skipped", mutant)
+            #     pass
+            # else:
+            #     timeout = base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST
+            #     status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
+            #     if status == TestStatus.SURVIVED:
+            #         # stat.add_survived(mutant)
+            #         pass
+            #     else:
+            #         # stat.add_killed(mutant)
+            #         # with open(f'{self.output_dir}/{self.source_name}/killed.txt', 'a+') as killedfile:
+            #         #     killedfile.write(f"{mutant}\n")
+            #         killed.add(mutant)
 
                 # with open(f'{self.output_dir}/{self.source_name}/output.csv', 'a+') as outputfile:
                 #     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
             # print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+
             queue.task_done()
+
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Killed': len(killed)})
+
+            
 
 
 
     async def async_slice_runner(self, testset: list[str]):
-        print(f"Regression testing on source file: {self.source_name}")
         
         if os.path.isfile(f'{self.output_dir}/{self.source_name}/checkpoint.pkl'):
             print("Continuing progress: ")
@@ -175,22 +207,27 @@ class MutationTestingWorker:
             with open(f'{self.output_dir}/{self.source_name}/output.csv', 'w+') as outputfile:
                 outputfile.write(f"status, test_name, mutant_id, description\n")
         
-        largest_mutants = await self.get_largest_mutant_id()
+        print()
+        print("Running regression test:", self.source_name)
+
+        total_mutants = await self.get_total_mutants()
+        print("Total Mutants", total_mutants)
 
         queue = asyncio.Queue()
 
-        testset_partition_size = len(testset) // self.max_parallel_tasks
-        producers = [asyncio.create_task(self.mutant_queue_producer(queue, killed, testset[i :: testset_partition_size])) for i in range(testset_partition_size)]
-        consumers = [asyncio.create_task(self.mutant_queue_consumer(queue, killed)) for _ in range(self.max_parallel_tasks)]
-
-        await tqdm_asyncio.gather(*producers)
+        producers_pbar = tqdm(total=len(testset), desc='Finding coverage')
+        producers = [asyncio.create_task(self.mutant_queue_producer(queue, killed, in_coverage, testset[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
+        await asyncio.gather(*producers, return_exceptions=True)
+        
+        consumer_pbar = tqdm(total=queue.qsize(), desc='Running unittest')
+        consumers = [asyncio.create_task(self.mutant_queue_consumer(queue, killed, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
         await queue.join()
+
 
         for task in consumers:
             task.cancel()
 
-        await tqdm_asyncio.gather(*consumers, return_exceptions=True)
-
+        await asyncio.gather(*consumers, return_exceptions=True)
 
 
 
