@@ -41,7 +41,7 @@ def worker(file: str, output_dir: str):
 
 if __name__ == '__main__':
     # print(f"Starting multiproceses with {cpu_count()} worker")
-    pool = Pool(processes=4)
+    # pool = Pool(processes=4)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
     output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output5'
