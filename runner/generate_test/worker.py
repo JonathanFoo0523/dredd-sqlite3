@@ -10,23 +10,36 @@ import random
 import asyncio
 import pickle
 import time
+import shutil
+import re
 from tqdm import tqdm
 
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
 class TestGenerationWorker:
     def __init__(self, source_name: str, killed: set[MutantID], tracking_binary: str, mutation_binary: str, output_dir: str, max_parallel_tasks: int = 4):
+        assert(os.path.isfile(tracking_binary))
+        assert(os.path.isfile(mutation_binary))
+        assert(os.path.isdir(output_dir))
+        assert(max_parallel_tasks >= 0)
+
         self.source_name = source_name
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
         self.output_dir = output_dir
         self.max_parallel_tasks = max_parallel_tasks
-        self.killed = set()
+        self.killed = killed
 
         self.fuzzing_checkpoint = os.path.join(output_dir, source_name, 'fuzzing_checkpoint.pkl')
         self.diffential_checkpoint = os.path.join(output_dir, source_name, 'differential_checkpoint.pkl')
 
-        self.max_running_time = 60 * 1
+        self.outputfile = os.path.join(output_dir, source_name, 'diffentialtest_output.csv')
+
+        self.interesting_test_dir = os.path.join(output_dir, 'interesting_test_dir')
+        if not os.path.isdir(self.interesting_test_dir):
+            os.mkdir(self.interesting_test_dir)
+
+        self.max_running_time = 60 * 60
         self.start_time = time.time()
         self.run_time = 0
 
@@ -91,7 +104,7 @@ class TestGenerationWorker:
             try:
                 proc_mut = subprocess.run([self.mutation_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST)
             except subprocess.TimeoutExpired:
-                return TestStatus.TIMEOUT
+                return TestStatus.KILLED_TIMEOUT
 
         if self._process_result_is_difference(proc_ref, proc_mut):
             return TestStatus.KILLED_FAILED
@@ -105,8 +118,8 @@ class TestGenerationWorker:
     def still_testing(self):
         return time.time() - self.start_time <= self.max_running_time
 
-    async def mutant_queue_producer(self, base_seed: int, sqlancer_temp_dir: str, queue: asyncio.Queue, in_coverage: set[MutantID], logs: list[str], pbar=None):
-        for i, log in enumerate(logs):
+    async def mutant_queue_producer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, in_coverage: set[MutantID], seed_log_lists: list[(int, str)], pbar=None):
+        for i, (seed, log) in enumerate(seed_log_lists):
             log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
             mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
 
@@ -117,7 +130,7 @@ class TestGenerationWorker:
                 queue.put_nowait((log, seed, cov_result, mutant))
 
             with open(self.fuzzing_checkpoint, 'ab+') as f:
-                pickle.dump({'seed': i + base_seed, 'coverage': mutants, 'output': cov_result}, f)
+                pickle.dump({'seed': seed, 'coverage': mutants, 'output': cov_result}, f)
 
             if pbar:
                 pbar.update(1)
@@ -129,18 +142,24 @@ class TestGenerationWorker:
             log, seed, cov_result, mutant = await queue.get()
             log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
 
-            diffential_result = self.differential_oracle(mutant, log_path, cov_result)
-            if mutant not in self.killed and mutant not in new_kill and diffential_result != TestStatus.SURVIVED:
-                killed.add(mutant)
-                new_kill[mutant] = seed
+            if mutant not in self.killed and mutant not in new_kill:
+                diffential_result = self.differential_oracle(mutant, log_path, cov_result)
+                if diffential_result != TestStatus.SURVIVED:
+                    self.killed.add(mutant)
+                    new_kill[mutant] = seed
+                    shutil.copyfile(log_path, os.path.join(self.interesting_test_dir, f'database_{seed}.log'))
 
-            with open(self.diffential_checkpoint, 'ab+') as f:
-                pickle.dump({'seed': seed, 'mutant': mutant, 'status': diffential_result.name}, f)
+                with open(self.outputfile, 'a+') as f:
+                    f.write(f"{seed}, {mutant}, {diffential_result.name}\n")
+
+                with open(self.diffential_checkpoint, 'ab+') as f:
+                    pickle.dump({'seed': seed, 'mutant': mutant, 'status': diffential_result.name}, f)
+
 
             queue.task_done()
             if pbar:
                 pbar.update(1)
-                pbar.set_postfix({'Killed': len(killed)})
+                pbar.set_postfix({'Killed': len(new_kill)})
 
     def load_progress(self) -> (dict[MutantID, int], set[MutantID], set[int]):
         new_kill = dict()
@@ -166,6 +185,11 @@ class TestGenerationWorker:
     async def slice_runner(self):
         print("Start differential test:", self.source_name)
         new_kill, in_coverage, tested_seeds = self.load_progress()
+        print("continue", len(new_kill))
+
+        if not os.path.isfile(self.outputfile):
+            with open(self.outputfile, 'w+') as f:
+                f.write(f"seed, mutant, status\n")
 
         while self.still_testing():
             
@@ -178,12 +202,17 @@ class TestGenerationWorker:
                 print(f"Generating test case with seed {sqlancer_seed}")
                 self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
 
-                logs = sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3')))
+                file_re = r'^database(\d+)-cur.log$'
+                files_in_dir = os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3'))
+                logs = list(filter(lambda s: re.search(file_re, s) is not None, files_in_dir))
+                logs.sort(key=lambda s: int(re.search(file_re, s).group(1)))
+
+                seed_log_list = list(zip(range(sqlancer_seed, sqlancer_seed+99), logs))
 
                 queue = asyncio.Queue()
 
                 producers_pbar = tqdm(total=len(logs), desc='Finding coverage')
-                producers = [asyncio.create_task(self.mutant_queue_producer(sqlancer_seed, sqlancer_temp_dir, queue, in_coverage, logs[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
+                producers = [asyncio.create_task(self.mutant_queue_producer(sqlancer_temp_dir, queue, in_coverage, seed_log_list[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
                 await asyncio.gather(*producers)
                 producers_pbar.close()
 
@@ -237,3 +266,5 @@ class TestGenerationWorker:
 #         Run differential Test
 
     
+
+

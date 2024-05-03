@@ -18,6 +18,10 @@ DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
 # Performing Mutation Testing on One source file
 class MutationTestingWorker:
     def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+        assert(os.path.isfile(tracking_binary))
+        assert(os.path.isfile(mutation_binary))
+        assert(os.path.isfile(mutation_info))
+
         self.source_name = source_name
         self.max_parallel_tasks = max_parallel_tasks
         self.tracking_binary = tracking_binary
@@ -33,6 +37,7 @@ class MutationTestingWorker:
         self.killedfile = os.path.join(output_dir, source_name, 'killed.txt')
         self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.pkl')
         self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.pkl')
+
 
 
     async def get_total_mutants(self) -> int:
@@ -210,6 +215,7 @@ class MutationTestingWorker:
         producers_pbar.refresh()
         producers = [asyncio.create_task(self.mutant_queue_producer(queue, killed, in_coverage, testset[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
         await asyncio.gather(*producers, return_exceptions=True)
+        producers_pbar.close()
         
         consumer_pbar = tqdm(total=max(queue.qsize(), queue_length), desc='Running unittest')
         consumer_pbar.update(n=max(queue_length - queue.qsize(), 0))
@@ -217,6 +223,7 @@ class MutationTestingWorker:
 
         consumers = [asyncio.create_task(self.mutant_queue_consumer(queue, killed, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
         await queue.join()
+        consumer_pbar.close()
 
         for task in consumers:
             task.cancel()
