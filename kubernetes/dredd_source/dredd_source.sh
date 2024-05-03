@@ -26,7 +26,7 @@ echo "Mutated and compile file"
 ${DREDD_EXECUTABLE} $file --mutation-info-file /sample_binary/${FILE_NAME}_${TARGET}_info.json
 tclsh tool/mksqlite3c.tcl
 make ${TARGET}
-mv testfixture ${TARGET}_${FILE_NAME}_mutations
+mv ${TARGET} ${TARGET}_${FILE_NAME}_mutations
 
 # Reset file
 cp clean_$FILE_C $file
@@ -35,8 +35,8 @@ cp clean_$FILE_C $file
 echo "Apply coverage and compile file"
 ${DREDD_EXECUTABLE} --only-track-mutant-coverage $file --mutation-info-file /sample_binary/${FILE_NAME}_${TARGET}_info.json
 tclsh tool/mksqlite3c.tcl
-make testfixture
-mv testfixture ${TARGET}_${FILE_NAME}_tracking
+make ${TARGET}
+mv ${TARGET} ${TARGET}_${FILE_NAME}_tracking
 
 # Archive
 mv ${TARGET}_${FILE_NAME}_mutations /sample_binary/${TARGET}_${FILE_NAME}_mutations
