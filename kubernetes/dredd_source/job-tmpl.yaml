@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mutationtest-$SANFILE-$TARGET
+  labels:
+    jobgroup: mutationtest
+spec:
+  template:
+    metadata:
+      name: mutationtest
+      labels:
+        jobgroup: mutationtest
+    spec:
+      containers:
+      - name: dredd-source
+        image: jfjj/dredd_source
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /sample_binary
+        env:
+        - name: file
+          value: tsrc/$FILE.c
+        - name: target
+          value: $TARGET
+      volumes:
+      - name: persistent-storage
+        persistentVolumeClaim:
+          claimName: efs-claim
+      restartPolicy: Never
