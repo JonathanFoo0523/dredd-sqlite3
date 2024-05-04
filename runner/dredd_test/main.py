@@ -31,20 +31,20 @@ def worker(file: str, output_dir: str):
         tests = ['/home/ubuntu/sqlite-src/' + line.rstrip('\n') for line in test_files]
         # tests = ['/home/ubuntu/sqlite-src/test/tkt3630.test']
 
-        coverage_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary2/testfixture_{file}_coverage'
-        mutation_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary2/testfixture_{file}_mutation'
-        mutation_info = f'/home/ubuntu/dredd-sqlite3/sample_binary2/{file}_mutation_info.json'
+        coverage_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_{file}_coverage'
+        mutation_bin = f'/home/ubuntu/dredd-sqlite3/sample_binary/testfixture_{file}_mutation'
+        mutation_info = f'/home/ubuntu/dredd-sqlite3/sample_binary/{file}_testfixture_info.json'
 
         # output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
-        asyncio.run(MutationTestingWorker(file, coverage_bin, mutation_bin, mutation_info, output_dir).async_slice_runner(tests))
+        asyncio.run(MutationTestingWorker(file, coverage_bin, mutation_bin, mutation_info, output_dir, max_parallel_tasks=64).async_slice_runner(tests))
 
 
 if __name__ == '__main__':
     # print(f"Starting multiproceses with {cpu_count()} worker")
-    pool = Pool(processes=4)
+    pool = Pool(processes=64)
     # with Pool(8) as pool:
     #     pool.starmap(worker.run, tqdm(worker_task, total=len(worker_task)))
-    output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output4'
+    output_dir = f'/home/ubuntu/dredd-sqlite3/sample_output'
     source_file_covered = []
     try:
         with open(os.path.join(output_dir, 'regression_test.pkl'), 'rb') as f:
@@ -64,3 +64,5 @@ if __name__ == '__main__':
         worker(file, output_dir)
     # for i in tqdm(pool.imap(worker, sqlite_c_src_c_files), total=len(sqlite_c_src_c_files), position=0, leave=False):
     #     pass
+
+

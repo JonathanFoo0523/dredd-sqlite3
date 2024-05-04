@@ -28,7 +28,12 @@ class MutationTestingWorker:
 
 
     async def get_largest_mutant_id(self) -> set[MutantID]:
-        stdout, _, _ = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE)
+        stdout, stderr, code = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE)
+
+        #  TO FIX: dredd script crashed when no mutation is possible
+        if code:
+            return 0
+
         # Added one since dredd mutants start counting from zero
         return int(stdout) + 1
 
@@ -65,10 +70,13 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_TIMEOUT, stderr.decode().rstrip('/n'))
         elif returncode == 1:
             # Fail a test
-            output = ''.join(stdout.decode())
-            match = re.search('(\d)+ errors out of (\d)+', output)
-            description = match.group() if match is not None else ""
-            return (TestStatus.KILLED_FAILED, description)
+            try:
+                output = ''.join(stdout.decode())
+                match = re.search('(\d)+ errors out of (\d)+', output)
+                description = match.group() if match is not None else ""
+                return (TestStatus.KILLED_FAILED, description)
+            except:
+                return (TestStatus.KILLED_FAILED, "FAILED TO READ OUTPUT")
         elif returncode == 0:
             # Pass all test
             output = ''.join(stdout.decode())
@@ -138,6 +146,9 @@ class MutationTestingWorker:
                 outputfile.write(f"status, test_name, mutant_id, description\n")
         
         largest_mutants = await self.get_largest_mutant_id()
+
+        if largest_mutants == 0:
+            return
 
         for index, test in enumerate(testset):
             print("Running:", test, f"{index + 1}/{len(testset)}")
