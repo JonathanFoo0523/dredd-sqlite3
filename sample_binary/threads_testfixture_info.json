@@ -1,0 +1,1757 @@
+{
+ "infoForFiles": [
+  {
+   "filename": "/tmp/tmpq7sbsa_3/tsrc/threads.c",
+   "mutationTreeRoot": {
+    "mutationGroups": [],
+    "children": [
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 0,
+           "start": {
+            "line": 64,
+            "column": 3
+           },
+           "end": {
+            "line": 64,
+            "column": 16
+           },
+           "snippet": "*ppThread = 0"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 4,
+           "start": {
+            "line": 65,
+            "column": 3
+           },
+           "end": {
+            "line": 65,
+            "column": 32
+           },
+           "snippet": "p = sqlite3Malloc(sizeof(*p))"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 65,
+              "column": 21
+             },
+             "end": {
+              "line": 65,
+              "column": 31
+             },
+             "snippet": "sizeof(*p)",
+             "instances": [
+              {
+               "action": "InsertNot",
+               "mutationId": 1
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 2
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 3
+              }
+             ]
+            }
+           }
+          ],
+          "children": []
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 13,
+           "start": {
+            "line": 66,
+            "column": 3
+           },
+           "end": {
+            "line": 66,
+            "column": 38
+           },
+           "snippet": "if( p==0 ) return SQLITE_NOMEM_BKPT"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 66,
+                "column": 7
+               },
+               "end": {
+                "line": 66,
+                "column": 11
+               },
+               "snippet": "p==0",
+               "instances": [
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 5
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 6
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 7
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           },
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 66,
+                "column": 21
+               },
+               "end": {
+                "line": 66,
+                "column": 38
+               },
+               "snippet": "SQLITE_NOMEM_BKPT",
+               "instances": [
+                {
+                 "action": "InsertNot",
+                 "mutationId": 8
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 9
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 10
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 11
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 12
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 19,
+           "start": {
+            "line": 67,
+            "column": 3
+           },
+           "end": {
+            "line": 67,
+            "column": 27
+           },
+           "snippet": "memset(p, 0, sizeof(*p))"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 67,
+                "column": 13
+               },
+               "end": {
+                "line": 67,
+                "column": 14
+               },
+               "snippet": "0",
+               "instances": [
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 14
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 15
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           },
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 67,
+                "column": 16
+               },
+               "end": {
+                "line": 67,
+                "column": 26
+               },
+               "snippet": "sizeof(*p)",
+               "instances": [
+                {
+                 "action": "InsertNot",
+                 "mutationId": 16
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 17
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 18
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 20,
+           "start": {
+            "line": 68,
+            "column": 3
+           },
+           "end": {
+            "line": 68,
+            "column": 19
+           },
+           "snippet": "p-\u003exTask = xTask"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 21,
+           "start": {
+            "line": 69,
+            "column": 3
+           },
+           "end": {
+            "line": 69,
+            "column": 15
+           },
+           "snippet": "p-\u003epIn = pIn"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 64,
+           "start": {
+            "line": 74,
+            "column": 3
+           },
+           "end": {
+            "line": 78,
+            "column": 4
+           },
+           "snippet": "if( sqlite ... [snip] ...  pIn);\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 74,
+                "column": 7
+               },
+               "end": {
+                "line": 74,
+                "column": 27
+               },
+               "snippet": "sqlite3FaultSim(200)",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 27
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 28
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 29
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 30
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 31
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 32
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 74,
+                  "column": 23
+                 },
+                 "end": {
+                  "line": 74,
+                  "column": 26
+                 },
+                 "snippet": "200",
+                 "instances": [
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 22
+                  },
+                  {
+                   "action": "InsertMinus",
+                   "mutationId": 23
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 24
+                  },
+                  {
+                   "action": "ReplaceWithOneInt",
+                   "mutationId": 25
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 26
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "removeStmt": {
+               "mutationId": 46,
+               "start": {
+                "line": 75,
+                "column": 5
+               },
+               "end": {
+                "line": 75,
+                "column": 11
+               },
+               "snippet": "rc = 1"
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceBinaryOperator": {
+                 "exprStart": {
+                  "line": 75,
+                  "column": 5
+                 },
+                 "exprEnd": {
+                  "line": 75,
+                  "column": 11
+                 },
+                 "lhsStart": {
+                  "line": 75,
+                  "column": 5
+                 },
+                 "lhsEnd": {
+                  "line": 75,
+                  "column": 7
+                 },
+                 "rhsStart": {
+                  "line": 75,
+                  "column": 10
+                 },
+                 "rhsEnd": {
+                  "line": 75,
+                  "column": 11
+                 },
+                 "exprSnippet": "rc = 1",
+                 "lhsSnippet": "rc",
+                 "rhsSnippet": "1",
+                 "operator": "Assign",
+                 "instances": [
+                  {
+                   "action": "ReplaceWithAddAssign",
+                   "mutationId": 36
+                  },
+                  {
+                   "action": "ReplaceWithAndAssign",
+                   "mutationId": 37
+                  },
+                  {
+                   "action": "ReplaceWithDivAssign",
+                   "mutationId": 38
+                  },
+                  {
+                   "action": "ReplaceWithMulAssign",
+                   "mutationId": 39
+                  },
+                  {
+                   "action": "ReplaceWithOrAssign",
+                   "mutationId": 40
+                  },
+                  {
+                   "action": "ReplaceWithRemAssign",
+                   "mutationId": 41
+                  },
+                  {
+                   "action": "ReplaceWithShlAssign",
+                   "mutationId": 42
+                  },
+                  {
+                   "action": "ReplaceWithShrAssign",
+                   "mutationId": 43
+                  },
+                  {
+                   "action": "ReplaceWithSubAssign",
+                   "mutationId": 44
+                  },
+                  {
+                   "action": "ReplaceWithXorAssign",
+                   "mutationId": 45
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 75,
+                    "column": 10
+                   },
+                   "end": {
+                    "line": 75,
+                    "column": 11
+                   },
+                   "snippet": "1",
+                   "instances": [
+                    {
+                     "action": "InsertNot",
+                     "mutationId": 33
+                    },
+                    {
+                     "action": "ReplaceWithZeroInt",
+                     "mutationId": 34
+                    },
+                    {
+                     "action": "ReplaceWithMinusOneInt",
+                     "mutationId": 35
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": []
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "removeStmt": {
+               "mutationId": 63,
+               "start": {
+                "line": 77,
+                "column": 5
+               },
+               "end": {
+                "line": 77,
+                "column": 48
+               },
+               "snippet": "rc = pthre ... [snip] ... Task, pIn)"
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceBinaryOperator": {
+                 "exprStart": {
+                  "line": 77,
+                  "column": 5
+                 },
+                 "exprEnd": {
+                  "line": 77,
+                  "column": 48
+                 },
+                 "lhsStart": {
+                  "line": 77,
+                  "column": 5
+                 },
+                 "lhsEnd": {
+                  "line": 77,
+                  "column": 7
+                 },
+                 "rhsStart": {
+                  "line": 77,
+                  "column": 10
+                 },
+                 "rhsEnd": {
+                  "line": 77,
+                  "column": 48
+                 },
+                 "exprSnippet": "rc = pthre ... [snip] ... Task, pIn)",
+                 "lhsSnippet": "rc",
+                 "rhsSnippet": "pthread_cr ... [snip] ... Task, pIn)",
+                 "operator": "Assign",
+                 "instances": [
+                  {
+                   "action": "ReplaceWithAddAssign",
+                   "mutationId": 53
+                  },
+                  {
+                   "action": "ReplaceWithAndAssign",
+                   "mutationId": 54
+                  },
+                  {
+                   "action": "ReplaceWithDivAssign",
+                   "mutationId": 55
+                  },
+                  {
+                   "action": "ReplaceWithMulAssign",
+                   "mutationId": 56
+                  },
+                  {
+                   "action": "ReplaceWithOrAssign",
+                   "mutationId": 57
+                  },
+                  {
+                   "action": "ReplaceWithRemAssign",
+                   "mutationId": 58
+                  },
+                  {
+                   "action": "ReplaceWithShlAssign",
+                   "mutationId": 59
+                  },
+                  {
+                   "action": "ReplaceWithShrAssign",
+                   "mutationId": 60
+                  },
+                  {
+                   "action": "ReplaceWithSubAssign",
+                   "mutationId": 61
+                  },
+                  {
+                   "action": "ReplaceWithXorAssign",
+                   "mutationId": 62
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 77,
+                    "column": 10
+                   },
+                   "end": {
+                    "line": 77,
+                    "column": 48
+                   },
+                   "snippet": "pthread_cr ... [snip] ... Task, pIn)",
+                   "instances": [
+                    {
+                     "action": "InsertLNot",
+                     "mutationId": 47
+                    },
+                    {
+                     "action": "InsertNot",
+                     "mutationId": 48
+                    },
+                    {
+                     "action": "InsertMinus",
+                     "mutationId": 49
+                    },
+                    {
+                     "action": "ReplaceWithZeroInt",
+                     "mutationId": 50
+                    },
+                    {
+                     "action": "ReplaceWithOneInt",
+                     "mutationId": 51
+                    },
+                    {
+                     "action": "ReplaceWithMinusOneInt",
+                     "mutationId": 52
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": []
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 88,
+           "start": {
+            "line": 79,
+            "column": 3
+           },
+           "end": {
+            "line": 82,
+            "column": 4
+           },
+           "snippet": "if( rc ){\n ... [snip] ... (pIn);\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 79,
+                "column": 7
+               },
+               "end": {
+                "line": 79,
+                "column": 9
+               },
+               "snippet": "rc",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 67
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 68
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 69
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 70
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 71
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 72
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 79,
+                  "column": 7
+                 },
+                 "end": {
+                  "line": 79,
+                  "column": 9
+                 },
+                 "snippet": "rc",
+                 "instances": [
+                  {
+                   "action": "InsertPreInc",
+                   "mutationId": 65
+                  },
+                  {
+                   "action": "InsertPreDec",
+                   "mutationId": 66
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "mutationGroups": [],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 86,
+                 "start": {
+                  "line": 80,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 80,
+                  "column": 16
+                 },
+                 "snippet": "p-\u003edone = 1"
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceBinaryOperator": {
+                   "exprStart": {
+                    "line": 80,
+                    "column": 5
+                   },
+                   "exprEnd": {
+                    "line": 80,
+                    "column": 16
+                   },
+                   "lhsStart": {
+                    "line": 80,
+                    "column": 5
+                   },
+                   "lhsEnd": {
+                    "line": 80,
+                    "column": 12
+                   },
+                   "rhsStart": {
+                    "line": 80,
+                    "column": 15
+                   },
+                   "rhsEnd": {
+                    "line": 80,
+                    "column": 16
+                   },
+                   "exprSnippet": "p-\u003edone = 1",
+                   "lhsSnippet": "p-\u003edone",
+                   "rhsSnippet": "1",
+                   "operator": "Assign",
+                   "instances": [
+                    {
+                     "action": "ReplaceWithAddAssign",
+                     "mutationId": 76
+                    },
+                    {
+                     "action": "ReplaceWithAndAssign",
+                     "mutationId": 77
+                    },
+                    {
+                     "action": "ReplaceWithDivAssign",
+                     "mutationId": 78
+                    },
+                    {
+                     "action": "ReplaceWithMulAssign",
+                     "mutationId": 79
+                    },
+                    {
+                     "action": "ReplaceWithOrAssign",
+                     "mutationId": 80
+                    },
+                    {
+                     "action": "ReplaceWithRemAssign",
+                     "mutationId": 81
+                    },
+                    {
+                     "action": "ReplaceWithShlAssign",
+                     "mutationId": 82
+                    },
+                    {
+                     "action": "ReplaceWithShrAssign",
+                     "mutationId": 83
+                    },
+                    {
+                     "action": "ReplaceWithSubAssign",
+                     "mutationId": 84
+                    },
+                    {
+                     "action": "ReplaceWithXorAssign",
+                     "mutationId": 85
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": [
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 80,
+                      "column": 15
+                     },
+                     "end": {
+                      "line": 80,
+                      "column": 16
+                     },
+                     "snippet": "1",
+                     "instances": [
+                      {
+                       "action": "InsertNot",
+                       "mutationId": 73
+                      },
+                      {
+                       "action": "ReplaceWithZeroInt",
+                       "mutationId": 74
+                      },
+                      {
+                       "action": "ReplaceWithMinusOneInt",
+                       "mutationId": 75
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 87,
+                 "start": {
+                  "line": 81,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 81,
+                  "column": 25
+                 },
+                 "snippet": "p-\u003epOut = xTask(pIn)"
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 89,
+           "start": {
+            "line": 83,
+            "column": 3
+           },
+           "end": {
+            "line": 83,
+            "column": 16
+           },
+           "snippet": "*ppThread = p"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 92,
+           "start": {
+            "line": 84,
+            "column": 3
+           },
+           "end": {
+            "line": 84,
+            "column": 19
+           },
+           "snippet": "return SQLITE_OK"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 84,
+              "column": 10
+             },
+             "end": {
+              "line": 84,
+              "column": 19
+             },
+             "snippet": "SQLITE_OK",
+             "instances": [
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 90
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 91
+              }
+             ]
+            }
+           }
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 98,
+           "start": {
+            "line": 92,
+            "column": 3
+           },
+           "end": {
+            "line": 92,
+            "column": 45
+           },
+           "snippet": "if( NEVER( ... [snip] ... NOMEM_BKPT"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 92,
+              "column": 28
+             },
+             "end": {
+              "line": 92,
+              "column": 45
+             },
+             "snippet": "SQLITE_NOMEM_BKPT",
+             "instances": [
+              {
+               "action": "InsertNot",
+               "mutationId": 93
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 94
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 95
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 96
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 97
+              }
+             ]
+            }
+           }
+          ],
+          "children": []
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 155,
+           "start": {
+            "line": 93,
+            "column": 3
+           },
+           "end": {
+            "line": 98,
+            "column": 4
+           },
+           "snippet": "if( p-\u003edon ... [snip] ... TE_OK;\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 93,
+                "column": 7
+               },
+               "end": {
+                "line": 93,
+                "column": 14
+               },
+               "snippet": "p-\u003edone",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 101
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 102
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 103
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 104
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 105
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 106
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 93,
+                  "column": 7
+                 },
+                 "end": {
+                  "line": 93,
+                  "column": 14
+                 },
+                 "snippet": "p-\u003edone",
+                 "instances": [
+                  {
+                   "action": "InsertPreInc",
+                   "mutationId": 99
+                  },
+                  {
+                   "action": "InsertPreDec",
+                   "mutationId": 100
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "mutationGroups": [],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 107,
+                 "start": {
+                  "line": 94,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 94,
+                  "column": 21
+                 },
+                 "snippet": "*ppOut = p-\u003epOut"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 120,
+                 "start": {
+                  "line": 95,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 95,
+                  "column": 19
+                 },
+                 "snippet": "rc = SQLITE_OK"
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceBinaryOperator": {
+                   "exprStart": {
+                    "line": 95,
+                    "column": 5
+                   },
+                   "exprEnd": {
+                    "line": 95,
+                    "column": 19
+                   },
+                   "lhsStart": {
+                    "line": 95,
+                    "column": 5
+                   },
+                   "lhsEnd": {
+                    "line": 95,
+                    "column": 7
+                   },
+                   "rhsStart": {
+                    "line": 95,
+                    "column": 10
+                   },
+                   "rhsEnd": {
+                    "line": 95,
+                    "column": 19
+                   },
+                   "exprSnippet": "rc = SQLITE_OK",
+                   "lhsSnippet": "rc",
+                   "rhsSnippet": "SQLITE_OK",
+                   "operator": "Assign",
+                   "instances": [
+                    {
+                     "action": "ReplaceWithAddAssign",
+                     "mutationId": 110
+                    },
+                    {
+                     "action": "ReplaceWithAndAssign",
+                     "mutationId": 111
+                    },
+                    {
+                     "action": "ReplaceWithDivAssign",
+                     "mutationId": 112
+                    },
+                    {
+                     "action": "ReplaceWithMulAssign",
+                     "mutationId": 113
+                    },
+                    {
+                     "action": "ReplaceWithOrAssign",
+                     "mutationId": 114
+                    },
+                    {
+                     "action": "ReplaceWithRemAssign",
+                     "mutationId": 115
+                    },
+                    {
+                     "action": "ReplaceWithShlAssign",
+                     "mutationId": 116
+                    },
+                    {
+                     "action": "ReplaceWithShrAssign",
+                     "mutationId": 117
+                    },
+                    {
+                     "action": "ReplaceWithSubAssign",
+                     "mutationId": 118
+                    },
+                    {
+                     "action": "ReplaceWithXorAssign",
+                     "mutationId": 119
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": [
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 95,
+                      "column": 10
+                     },
+                     "end": {
+                      "line": 95,
+                      "column": 19
+                     },
+                     "snippet": "SQLITE_OK",
+                     "instances": [
+                      {
+                       "action": "ReplaceWithOneInt",
+                       "mutationId": 108
+                      },
+                      {
+                       "action": "ReplaceWithMinusOneInt",
+                       "mutationId": 109
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "removeStmt": {
+               "mutationId": 154,
+               "start": {
+                "line": 97,
+                "column": 5
+               },
+               "end": {
+                "line": 97,
+                "column": 64
+               },
+               "snippet": "rc = pthre ... [snip] ...  SQLITE_OK"
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceBinaryOperator": {
+                 "exprStart": {
+                  "line": 97,
+                  "column": 5
+                 },
+                 "exprEnd": {
+                  "line": 97,
+                  "column": 64
+                 },
+                 "lhsStart": {
+                  "line": 97,
+                  "column": 5
+                 },
+                 "lhsEnd": {
+                  "line": 97,
+                  "column": 7
+                 },
+                 "rhsStart": {
+                  "line": 97,
+                  "column": 10
+                 },
+                 "rhsEnd": {
+                  "line": 97,
+                  "column": 64
+                 },
+                 "exprSnippet": "rc = pthre ... [snip] ...  SQLITE_OK",
+                 "lhsSnippet": "rc",
+                 "rhsSnippet": "pthread_jo ... [snip] ...  SQLITE_OK",
+                 "operator": "Assign",
+                 "instances": [
+                  {
+                   "action": "ReplaceWithAddAssign",
+                   "mutationId": 144
+                  },
+                  {
+                   "action": "ReplaceWithAndAssign",
+                   "mutationId": 145
+                  },
+                  {
+                   "action": "ReplaceWithDivAssign",
+                   "mutationId": 146
+                  },
+                  {
+                   "action": "ReplaceWithMulAssign",
+                   "mutationId": 147
+                  },
+                  {
+                   "action": "ReplaceWithOrAssign",
+                   "mutationId": 148
+                  },
+                  {
+                   "action": "ReplaceWithRemAssign",
+                   "mutationId": 149
+                  },
+                  {
+                   "action": "ReplaceWithShlAssign",
+                   "mutationId": 150
+                  },
+                  {
+                   "action": "ReplaceWithShrAssign",
+                   "mutationId": 151
+                  },
+                  {
+                   "action": "ReplaceWithSubAssign",
+                   "mutationId": 152
+                  },
+                  {
+                   "action": "ReplaceWithXorAssign",
+                   "mutationId": 153
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 97,
+                    "column": 10
+                   },
+                   "end": {
+                    "line": 97,
+                    "column": 64
+                   },
+                   "snippet": "pthread_jo ... [snip] ...  SQLITE_OK",
+                   "instances": [
+                    {
+                     "action": "InsertLNot",
+                     "mutationId": 138
+                    },
+                    {
+                     "action": "InsertNot",
+                     "mutationId": 139
+                    },
+                    {
+                     "action": "InsertMinus",
+                     "mutationId": 140
+                    },
+                    {
+                     "action": "ReplaceWithZeroInt",
+                     "mutationId": 141
+                    },
+                    {
+                     "action": "ReplaceWithOneInt",
+                     "mutationId": 142
+                    },
+                    {
+                     "action": "ReplaceWithMinusOneInt",
+                     "mutationId": 143
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": [
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 97,
+                      "column": 10
+                     },
+                     "end": {
+                      "line": 97,
+                      "column": 37
+                     },
+                     "snippet": "pthread_join(p-\u003etid, ppOut)",
+                     "instances": [
+                      {
+                       "action": "InsertLNot",
+                       "mutationId": 127
+                      },
+                      {
+                       "action": "InsertNot",
+                       "mutationId": 128
+                      },
+                      {
+                       "action": "InsertMinus",
+                       "mutationId": 129
+                      },
+                      {
+                       "action": "ReplaceWithZeroInt",
+                       "mutationId": 130
+                      },
+                      {
+                       "action": "ReplaceWithOneInt",
+                       "mutationId": 131
+                      },
+                      {
+                       "action": "ReplaceWithMinusOneInt",
+                       "mutationId": 132
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": [
+                   {
+                    "mutationGroups": [
+                     {
+                      "replaceExpr": {
+                       "start": {
+                        "line": 97,
+                        "column": 23
+                       },
+                       "end": {
+                        "line": 97,
+                        "column": 29
+                       },
+                       "snippet": "p-\u003etid",
+                       "instances": [
+                        {
+                         "action": "InsertLNot",
+                         "mutationId": 123
+                        },
+                        {
+                         "action": "InsertNot",
+                         "mutationId": 124
+                        },
+                        {
+                         "action": "ReplaceWithZeroInt",
+                         "mutationId": 125
+                        },
+                        {
+                         "action": "ReplaceWithOneInt",
+                         "mutationId": 126
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "children": [
+                     {
+                      "mutationGroups": [
+                       {
+                        "replaceExpr": {
+                         "start": {
+                          "line": 97,
+                          "column": 23
+                         },
+                         "end": {
+                          "line": 97,
+                          "column": 29
+                         },
+                         "snippet": "p-\u003etid",
+                         "instances": [
+                          {
+                           "action": "InsertPreInc",
+                           "mutationId": 121
+                          },
+                          {
+                           "action": "InsertPreDec",
+                           "mutationId": 122
+                          }
+                         ]
+                        }
+                       }
+                      ],
+                      "children": []
+                     }
+                    ]
+                   }
+                  ]
+                 },
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 97,
+                      "column": 40
+                     },
+                     "end": {
+                      "line": 97,
+                      "column": 52
+                     },
+                     "snippet": "SQLITE_ERROR",
+                     "instances": [
+                      {
+                       "action": "InsertNot",
+                       "mutationId": 133
+                      },
+                      {
+                       "action": "ReplaceWithZeroInt",
+                       "mutationId": 134
+                      },
+                      {
+                       "action": "ReplaceWithMinusOneInt",
+                       "mutationId": 135
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": []
+                 },
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 97,
+                      "column": 55
+                     },
+                     "end": {
+                      "line": 97,
+                      "column": 64
+                     },
+                     "snippet": "SQLITE_OK",
+                     "instances": [
+                      {
+                       "action": "ReplaceWithOneInt",
+                       "mutationId": 136
+                      },
+                      {
+                       "action": "ReplaceWithMinusOneInt",
+                       "mutationId": 137
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 156,
+           "start": {
+            "line": 99,
+            "column": 3
+           },
+           "end": {
+            "line": 99,
+            "column": 18
+           },
+           "snippet": "sqlite3_free(p)"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 165,
+           "start": {
+            "line": 100,
+            "column": 3
+           },
+           "end": {
+            "line": 100,
+            "column": 12
+           },
+           "snippet": "return rc"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 100,
+              "column": 10
+             },
+             "end": {
+              "line": 100,
+              "column": 12
+             },
+             "snippet": "rc",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 159
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 160
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 161
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 162
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 163
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 164
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 100,
+                "column": 10
+               },
+               "end": {
+                "line": 100,
+                "column": 12
+               },
+               "snippet": "rc",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 157
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 158
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

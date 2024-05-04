@@ -1,0 +1,133 @@
+{
+ "infoForFiles": [
+  {
+   "filename": "/tmp/tmp1ckfgfbx/tsrc/fault.c",
+   "mutationTreeRoot": {
+    "mutationGroups": [],
+    "children": [
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 0,
+           "start": {
+            "line": 65,
+            "column": 3
+           },
+           "end": {
+            "line": 65,
+            "column": 39
+           },
+           "snippet": "wsdHooks.xBenignBegin = xBenignBegin"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 1,
+           "start": {
+            "line": 66,
+            "column": 3
+           },
+           "end": {
+            "line": 66,
+            "column": 35
+           },
+           "snippet": "wsdHooks.xBenignEnd = xBenignEnd"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "mutationGroups": [
+       {
+        "removeStmt": {
+         "mutationId": 3,
+         "start": {
+          "line": 76,
+          "column": 3
+         },
+         "end": {
+          "line": 78,
+          "column": 4
+         },
+         "snippet": "if( wsdHoo ... [snip] ... gin();\n  }"
+        }
+       }
+      ],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 2,
+           "start": {
+            "line": 77,
+            "column": 5
+           },
+           "end": {
+            "line": 77,
+            "column": 28
+           },
+           "snippet": "wsdHooks.xBenignBegin()"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "mutationGroups": [
+       {
+        "removeStmt": {
+         "mutationId": 5,
+         "start": {
+          "line": 82,
+          "column": 3
+         },
+         "end": {
+          "line": 84,
+          "column": 4
+         },
+         "snippet": "if( wsdHoo ... [snip] ... End();\n  }"
+        }
+       }
+      ],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 4,
+           "start": {
+            "line": 83,
+            "column": 5
+           },
+           "end": {
+            "line": 83,
+            "column": 26
+           },
+           "snippet": "wsdHooks.xBenignEnd()"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
