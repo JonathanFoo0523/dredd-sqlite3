@@ -1,5 +1,5 @@
-from runner.common.types import MutantID
-from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST
+from runner.common.types import MutantID, TestStatus
+from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST, RANDOM_SQLS_EXECUTION_TIMEOUT_SECONDS
 from runner.common.counter import Stats
 
 import os
@@ -8,14 +8,40 @@ import tempfile
 import time
 import random
 import asyncio
+import pickle
+import time
+import shutil
+import re
+from tqdm import tqdm
 
 SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
 class TestGenerationWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str):
+    def __init__(self, source_name: str, killed: set[MutantID], tracking_binary: str, mutation_binary: str, output_dir: str, max_parallel_tasks: int = 4):
+        assert(os.path.isfile(tracking_binary))
+        assert(os.path.isfile(mutation_binary))
+        assert(os.path.isdir(output_dir))
+        assert(max_parallel_tasks >= 0)
+
         self.source_name = source_name
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
+        self.output_dir = output_dir
+        self.max_parallel_tasks = max_parallel_tasks
+        self.killed = killed
+
+        self.fuzzing_checkpoint = os.path.join(output_dir, source_name, 'fuzzing_checkpoint.pkl')
+        self.diffential_checkpoint = os.path.join(output_dir, source_name, 'differential_checkpoint.pkl')
+
+        self.outputfile = os.path.join(output_dir, source_name, 'diffentialtest_output.csv')
+
+        self.interesting_test_dir = os.path.join(output_dir, 'interesting_test_dir')
+        if not os.path.isdir(self.interesting_test_dir):
+            os.mkdir(self.interesting_test_dir)
+
+        self.max_running_time = 60 * 60
+        self.start_time = time.time()
+        self.run_time = 0
 
     def get_mutations_in_coverage_by_log(self, statements_path: str):
         with open(statements_path, 'rb') as f:
@@ -26,10 +52,9 @@ class TestGenerationWorker:
             env_copy["DREDD_MUTANT_TRACKING_FILE"] = temp_coverage_file.name
             try:
                 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
-                    proc_result = subprocess.run([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    proc_result = subprocess.run([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=RANDOM_SQLS_EXECUTION_TIMEOUT_SECONDS)
             except Exception as err:
-                print(err)
-                exit(1)
+                return set(), None
 
             temp_coverage_file.seek(0)
             covered_mutants = sorted([int(line.rstrip()) for line in temp_coverage_file])
@@ -71,90 +96,144 @@ class TestGenerationWorker:
             base_time = end_time - start_time
 
         if expected_result is not None and self._process_result_is_difference(proc_ref, expected_result):
-            print("Indeterministic test result")
-            return False
+            # print("Indeterministic test result")
+            return TestStatus.KILLED_INDETERMINISTIC
 
         env_copy["DREDD_ENABLED_MUTATION"] = str(mutation_id)
         with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
             try:
                 proc_mut = subprocess.run([self.mutation_binary, temp_db.name], input=statements, env=env_copy, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=base_time * TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST)
             except subprocess.TimeoutExpired:
-                return True
+                return TestStatus.KILLED_TIMEOUT
 
-        return self._process_result_is_difference(proc_ref, proc_mut)
+        if self._process_result_is_difference(proc_ref, proc_mut):
+            return TestStatus.KILLED_FAILED
+        else:
+            return TestStatus.SURVIVED
 
 
     def _process_result_is_difference(self, process1: subprocess.CompletedProcess, process2: subprocess.CompletedProcess) -> bool:
         return process1.returncode != process2.returncode or process1.stdout != process2.stdout or process1.stderr != process2.stderr
 
-
-    # A simple testing condition to ensure a source is run on exactly 100 logs
     def still_testing(self):
-        try:
-            return self.continue_testing
-        except:
-            self.continue_testing = False
-            return True
+        return time.time() - self.start_time <= self.max_running_time
 
-    async def differential_test_task(self, queue, stat, killed_set, log_path, cov_result):
+    async def mutant_queue_producer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, in_coverage: set[MutantID], seed_log_lists: list[(int, str)], pbar=None):
+        for i, (seed, log) in enumerate(seed_log_lists):
+            log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
+            mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
+
+            in_coverage.update(mutants)
+            for mutant in mutants:
+                if mutant in self.killed:
+                    continue
+                queue.put_nowait((log, seed, cov_result, mutant))
+
+            with open(self.fuzzing_checkpoint, 'ab+') as f:
+                pickle.dump({'seed': seed, 'coverage': mutants, 'output': cov_result}, f)
+
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Covered': len(in_coverage)})
+
+
+    async def mutant_queue_consumer(self, sqlancer_temp_dir: str, queue: asyncio.Queue, new_kill: dict[MutantID, int], pbar=None):
         while True:
-            mutant = await queue.get()
+            log, seed, cov_result, mutant = await queue.get()
+            log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
 
-            if mutant in killed_set:
-                stat.add_skipper(mutant)
-            else:
-                if self.differential_oracle(mutant, log_path, cov_result):
-                    killed_set.add(mutant)
-                    stat.add_killed(mutant)
-                else:
-                    stat.add_survived(mutant)
+            if mutant not in self.killed and mutant not in new_kill:
+                diffential_result = self.differential_oracle(mutant, log_path, cov_result)
+                if diffential_result != TestStatus.SURVIVED:
+                    self.killed.add(mutant)
+                    new_kill[mutant] = seed
+                    shutil.copyfile(log_path, os.path.join(self.interesting_test_dir, f'database_{seed}.log'))
 
-            print(f"Killed: {stat.get_killed_count()}, Survived: {stat.get_survived_count()}, Skipped: {stat.get_skipped_count()}", end='\n' if stat.checked_all_mutants() else '\r')
+                with open(self.outputfile, 'a+') as f:
+                    f.write(f"{seed}, {mutant}, {diffential_result.name}\n")
+
+                with open(self.diffential_checkpoint, 'ab+') as f:
+                    pickle.dump({'seed': seed, 'mutant': mutant, 'status': diffential_result.name}, f)
+
+
             queue.task_done()
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Killed': len(new_kill)})
 
+    def load_progress(self) -> (dict[MutantID, int], set[MutantID], set[int]):
+        new_kill = dict()
+        in_coverage = set()
+        tested_seeds = set()
 
-    async def slice_runner(self, killed: set[MutantID]):
+        if os.path.isfile(self.diffential_checkpoint):
+            with open(self.diffential_checkpoint, 'rb') as f:
+                try:
+                    while True:
+                        obj = pickle.load(f)
+                        # seed, mutant, status
+                        tested_seeds.add(obj['seed'])
+                        in_coverage.add(obj['mutant'])
+                        if obj['status'] != TestStatus.SURVIVED:
+                            new_kill[obj['mutant']] = obj['seed']
+                except EOFError:
+                    # Ran out of input
+                    pass
+                
+        return new_kill, in_coverage, tested_seeds
+
+    async def slice_runner(self):
+        print("Start differential test:", self.source_name)
+        new_kill, in_coverage, tested_seeds = self.load_progress()
+        print("continue", len(new_kill))
+
+        if not os.path.isfile(self.outputfile):
+            with open(self.outputfile, 'w+') as f:
+                f.write(f"seed, mutant, status\n")
+
         while self.still_testing():
-            sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100 * 100 
+            
+            while True:
+                sqlancer_seed = random.randint(0, 2 ** 32 - 1) // 100 * 100 
+                if sqlancer_seed not in tested_seeds:
+                    break
+
             with tempfile.TemporaryDirectory() as sqlancer_temp_dir:
                 print(f"Generating test case with seed {sqlancer_seed}")
                 self.generate_random_testcases(sqlancer_seed, sqlancer_temp_dir)
 
-                logs = sorted(os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3')))
-                newly_killed = set()
-                for i, log in enumerate(logs):
-                    print(f"Running random db with seed: {sqlancer_seed + i}")
+                file_re = r'^database(\d+)-cur.log$'
+                files_in_dir = os.listdir(os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3'))
+                logs = list(filter(lambda s: re.search(file_re, s) is not None, files_in_dir))
+                logs.sort(key=lambda s: int(re.search(file_re, s).group(1)))
 
-                    log_path = os.path.join(sqlancer_temp_dir, 'logs', 'sqlite3', log)
-                    try:
-                        mutants, cov_result = self.get_mutations_in_coverage_by_log(log_path)
-                    except subprocess.TimeoutExpired:
-                        print(f"Skipped due to Timeout after {0}s")
-                        continue
-                    else:
-                        print("Number of mutants in coverage", len(mutants))
+                seed_log_list = list(zip(range(sqlancer_seed, sqlancer_seed+99), logs))
 
-                    if len(mutants) == 0:
-                        print()
-                        continue  
-                    
-                    queue = asyncio.Queue()
-                    stats = Stats(len(mutants))
+                queue = asyncio.Queue()
 
-                    for mutant in mutants:
-                        queue.put_nowait(mutant)
+                producers_pbar = tqdm(total=len(logs), desc='Finding coverage')
+                producers = [asyncio.create_task(self.mutant_queue_producer(sqlancer_temp_dir, queue, in_coverage, seed_log_list[i :: self.max_parallel_tasks], producers_pbar)) for i in range(self.max_parallel_tasks)]
+                await asyncio.gather(*producers)
+                producers_pbar.close()
 
-                    tasks = []
-                    for i in range(len(mutants)):
-                        task = asyncio.create_task(self.differential_test_task(queue, stats, killed, log_path, cov_result))
-                        tasks.append(task)
+                consumer_pbar = tqdm(total=queue.qsize(), desc='Checking Difference')
+                consumers = [asyncio.create_task(self.mutant_queue_consumer(sqlancer_temp_dir, queue, new_kill, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
+                await queue.join()
+                consumer_pbar.close()
 
-                    await queue.join()
+                for task in consumers:
+                    task.cancel()
 
-                    for task in tasks:
-                        task.cancel()
+                await asyncio.gather(*consumers, return_exceptions=True)
 
-                    print()
+            tested_seeds.add(sqlancer_seed)
+
+            print()
+
+        with open(f'{self.output_dir}/fuzzing_test.pkl', 'ab+') as f:
+            pickle.dump({'source': self.source_name, 'new kill': new_kill, 'seeds': tested_seeds, 'coverage': in_coverage}, f)
+            # print(f"File: {self.source_name}, Covered: {len(in_coverage)}, New Kill: {len(newly_killed)}")
+
 
     
 
@@ -173,8 +252,9 @@ class TestGenerationWorker:
 #     worker.generate_random_testcases(1, temp_dir)
 #     print(sorted(os.listdir(f'{temp_dir}/logs/sqlite3')))
 
-a = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
-asyncio.run(a.slice_runner(set()))
+# output
+# a = TestGenerationWorker('alter', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_tracking', '/home/ubuntu/dredd-sqlite3/sample_binary/sqlite3_alter_mutations')
+# asyncio.run(a.slice_runner(set()))
 
 # killed = set([from previous])
 # for log in logs:
@@ -186,3 +266,5 @@ asyncio.run(a.slice_runner(set()))
 #         Run differential Test
 
     
+
+
