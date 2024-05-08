@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dredd-source-deployment
+  labels:
+    app: dredd-source
+spec:
+  replicas: 20
+  selector:
+    matchLabels:
+      app: dredd-source
+  template:
+    metadata:
+      labels:
+        app: dredd-source
+    spec:
+      serviceAccountName: my-service-account
+      containers:
+      - image: jfjj/dredd-source
+        name: dredd-source
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /sample_binary
+        - mountPath: /required_tools
+          name: binary-persistent-storage
+      volumes:
+      - name: persistent-storage
+        persistentVolumeClaim:
+          claimName: efs-claim
+      - name: binary-persistent-storage
+        persistentVolumeClaim:
+          claimName: dredd-efs-claim
+      
+      
+
+

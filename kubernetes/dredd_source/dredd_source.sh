@@ -8,7 +8,6 @@ TARGET=$(echo $target)
 
 echo $FILE_NAME $TARGET
 
-
 # Keep a clean copy of file
 cp $file clean_$FILE_C
 

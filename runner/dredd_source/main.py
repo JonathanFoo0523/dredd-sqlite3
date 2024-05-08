@@ -2,8 +2,8 @@ from runner.dredd_source.worker import DreddAndCompileWorker
 import argparse
 from pathlib import Path
 
-from os import listdir
-from os.path import isfile, join
+from os import listdir, mkdir
+from os.path import isfile, join, isdir
 from tqdm import tqdm
 
 # SQLITE_SRC_CHECKOUT='/home/ubuntu/sqlite-src-cp'
@@ -22,6 +22,11 @@ def main():
                         help="Directory to score binary of mutated file, binary of mutant coverage, and mutant info file",
                         type=Path)
     args = parser.parse_args()
+
+    if isdir(args.output_directory):
+        print(f"Replacing content in {args.output_directory}")
+    else:
+        mkdir(args.output_directory)
 
     # All files that compose sqlite3 can be found in tsrc
     sqlite_c_src_directory = f'{args.sqlite_src_path}/tsrc'

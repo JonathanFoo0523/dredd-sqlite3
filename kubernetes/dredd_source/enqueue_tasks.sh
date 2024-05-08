@@ -2,6 +2,7 @@
 
 SOURCE_FILE=$(cd ${SQLITE_SRC_CHECKOUT} && ls tsrc/*.c)
 TARGETS="testfixture sqlite3"
+DREDD_SOURCE_QUEUE_URL=$(aws sqs get-queue-url --queue-name dredd-source-queue  --output text)
 
 for target in ${TARGETS}
 do
@@ -16,8 +17,14 @@ do
 	then
 		continue
 	fi
+
+        MESSAGE=$( jq -n \
+                  --arg fn "$FILE_C" \
+                  --arg tg "$TARGET" \
+                  '{file: $fn, target: $tg}' )
 		
-        cat job-tmpl.yaml | sed -e "s/\$FILE/$FILE_NAME/" -e "s/\$TARGET/$TARGET/" -e "s/\$SANFILE/$SAN_FILE_NAME/" > jobs/job-$SAN_FILE_NAME-$TARGET.yaml
+        aws sqs send-message --queue-url $DREDD_SOURCE_QUEUE_URL --message-body "$MESSAGE"
+        # cat job-tmpl.yaml | sed -e "s/\$FILE/$FILE_NAME/" -e "s/\$TARGET/$TARGET/" -e "s/\$SANFILE/$SAN_FILE_NAME/" > jobs/job-$SAN_FILE_NAME-$TARGET.yaml
 
 done
 done
