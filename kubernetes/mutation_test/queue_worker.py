@@ -89,7 +89,7 @@ while True:
         sqs.delete_message(QueueUrl=dredd_test_queue_url,ReceiptHandle=receipt_handle)
         continue
 
-    # argument for MutationTestingWorker, assume binary is defoned in /sample_binary
+    # argument for MutationTestingWorker, assume binary is defined in /sample_binary
     file = file.split('.')[0]
     coverage_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_coverage')
     mutation_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_mutation')
