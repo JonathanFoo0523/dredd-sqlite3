@@ -2,7 +2,7 @@ from runner.dredd_test.worker import MutationTestingWorker
 
 from multiprocessing import Pool
 import asyncio
-import os
+x
 import pickle
 import argparse
 from pathlib import Path
@@ -10,7 +10,6 @@ from os.path import isdir, join, isfile
 
 
 def main():
-    parser = argparse.ArgumentParser()
     parser = argparse.ArgumentParser(description='Peform mutation testing on dredd-mutated binary.')
     parser.add_argument("dredd_src_path",
                         help="Directory containing dredd binary, and clang tool associated with it.",

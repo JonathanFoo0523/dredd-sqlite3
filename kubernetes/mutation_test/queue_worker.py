@@ -5,28 +5,62 @@ import asyncio
 import json
 import argparse
 from pathlib import Path
+import os
+from os.path import isdir, join, isfile
 
 # expected arguments 
-parser = argparse.ArgumentParser(description='Apply mutation to file.')
-parser.add_argument('binary_dir', help='Directory that contains testfixture mutated binary, coverage binary and mutation-info-file.', type=Path)
-parser.add_argument('output_dir', help='Directory to store result of mutation testing.', type=Path)
+parser = argparse.ArgumentParser(description='Peform mutation testing on dredd-mutated binary.')
+parser.add_argument("dredd_src_path",
+                    help="Directory containing dredd binary, and clang tool associated with it.",
+                    type=Path)
+parser.add_argument("sqlite_src_path",
+                    help="Directory containing sqlite3 source file and test file.",
+                    type=Path)
+parser.add_argument("test_files_path",
+                    help="Files containing list of test file (eg: test/alter.test\n) to run mutation testing on.",
+                    type=Path)
+parser.add_argument("mutation_binary_path",
+                    help="Directory containing binary of mutated file, binary of mutant coverage, and mutant info file",
+                    type=Path)
+parser.add_argument("output_directory",
+                    help="Directory to result of mutation testing",
+                    type=Path)
 args = parser.parse_args()
 
-with open('test_list.txt', 'r') as test_list:
-    tests = ['/home/ubuntu/sqlite-src/' + line.rstrip('\n') for line in test_list]
+if not isdir(args.output_directory):
+    os.mkdir(args.output_directory)
+
+with open(args.test_files_path, 'r') as test_files:
+    tests = [os.path.join(args.sqlite_src_path, line.rstrip('\n')) for line in test_files]
+
 
 # Create SQS client
 sqs = boto3.client('sqs')
 
-# Get URL for SQS queue
-response = sqs.get_queue_url(QueueName='dredd-source-queue')
-queue_url = response['QueueUrl']
-print("queue_url:", queue_url)
+# Get URL for SQS test queue
+response = sqs.get_queue_url(QueueName='dredd-test-queue-sample')
+dredd_test_queue_url = response['QueueUrl']
+print("dredd_test_queue_url:", dredd_test_queue_url)
+
+# Get URL for dredd fuzz SQS queue
+response = sqs.get_queue_url(QueueName='dredd-fuzz-queue')
+dredd_test_fuzz_url = response['QueueUrl']
+print("dredd_test_fuzz_url:", dredd_test_fuzz_url)
+
+# class TimeoutExtender:
+#     def __init__(self, period, queue_url):
+#         self.time_since_reset = period
+#         self.period = period
+#         pass
+
+#     def run(self):
+#         pass
+
 
 while True:
     # Receive message from SQS queue
     response = sqs.receive_message(
-        QueueUrl=queue_url,
+        QueueUrl=dredd_test_queue_url,
         AttributeNames=[
             'SentTimestamp'
         ],
@@ -51,19 +85,22 @@ while True:
         obj = json.loads(message['Body'])
         file = obj['file']
     except:
-        print("Message can;t be parse in expected format")
+        print("Message can't be parse in expected format")
+        sqs.delete_message(QueueUrl=dredd_test_queue_url,ReceiptHandle=receipt_handle)
         continue
 
     # argument for MutationTestingWorker, assume binary is defoned in /sample_binary
-    coverage_bin = f'{args.binary_dir}/testfixture_{file}_coverage'
-    mutation_bin = f'{args.binary_dir}/testfixture_{file}_mutation'
-    mutation_info = f'{args.binary_dir}/{file}_mutation_info.json'
-
+    file = file.split('.')[0]
+    coverage_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_coverage')
+    mutation_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_mutation')
+    mutation_info = os.path.join(args.mutation_binary_path, f'{file}_testfixture_info.json')
+    mutant_info_script = os.path.join(args.dredd_src_path, 'scripts', 'query_mutant_info.py')
+    
     # process the work queue
-    asyncio.run(MutationTestingWorker(file, coverage_bin, mutation_bin, mutation_info, args.output_dir).async_slice_runner(tests))
+    asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.output_directory).async_slice_runner(tests))
 
     # Delete received message from queue
-    sqs.delete_message(
-        QueueUrl=queue_url,
-        ReceiptHandle=receipt_handle
-    )
+    sqs.delete_message(QueueUrl=dredd_test_queue_url, ReceiptHandle=receipt_handle)
+
+    # Add message to next pipeline
+    sqs.send_message(QueueUrl=dredd_test_fuzz_url, MessageBody=json.dumps({"file": file}))

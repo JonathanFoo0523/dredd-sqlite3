@@ -16,7 +16,7 @@ parser.add_argument("sqlite_src_path",
                     help="Directory containing sqlite3 source file and test file",
                     type=Path)
 parser.add_argument("output_directory",
-                    help="Directory to score binary of mutated file, binary of mutant coverage, and mutant info file",
+                    help="Directory to store binary of mutated file, binary of mutant coverage, and mutant info file",
                     type=Path)
 args = parser.parse_args()
 
