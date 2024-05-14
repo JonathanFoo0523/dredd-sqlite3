@@ -5,15 +5,16 @@ import os
 import subprocess
 from enum import Enum
 
-DREDD_EXECUTABLE='/home/ubuntu/dredd/third_party/clang+llvm/bin/dredd'
 
 DreddType = Enum('DreddType', ['coverage', 'mutation'])
 
 
 class DreddAndCompileWorker:
-    def __init__(self, tree_src_dir: str, res_dir: str):
+    def __init__(self, dredd_src_path, tree_src_dir: str, res_dir: str):
+        self.dredd_src_path = dredd_src_path
         self.tree_src_dir = tree_src_dir
         self.res_dir = res_dir
+        self.dredd_executable = os.path.join(dredd_src_path, 'third_party', 'clang+llvm', 'bin', 'dredd')
 
     def prepare_compilation_database(self, target: str, src_path: str):
         subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_path)
@@ -27,9 +28,9 @@ class DreddAndCompileWorker:
 
         # Apply mutation to source file
         if dredd_type == DreddType.coverage:
-            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([self.dredd_executable, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
         else:
-            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
+            subprocess.run([self.dredd_executable , file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
         subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
 
         # Compile testfixture mutation/coverage

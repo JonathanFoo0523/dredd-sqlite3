@@ -11,21 +11,23 @@ import re
 import pickle
 from tqdm import tqdm
 
-DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
+# DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
 
 
-# Performing Mutation Testing on One source file
+# Performing Mutation Testing on one source file
 class MutationTestingWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+    def __init__(self, dredd_mutant_info_script_path, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+        assert(os.path.isfile(dredd_mutant_info_script_path))
         assert(os.path.isfile(tracking_binary))
         assert(os.path.isfile(mutation_binary))
         assert(os.path.isfile(mutation_info))
 
+        self.dredd_mutant_info_script_path = dredd_mutant_info_script_path
         self.source_name = source_name
-        self.max_parallel_tasks = max_parallel_tasks
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
         self.mutation_info = mutation_info
+        self.max_parallel_tasks = max_parallel_tasks
 
         assert os.path.isdir(output_dir)
         self.output_dir = output_dir
@@ -40,7 +42,7 @@ class MutationTestingWorker:
 
 
     async def get_total_mutants(self) -> int:
-        stdout, stderr, code = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
+        stdout, stderr, code = await subprocess_run(['python3', self.dredd_mutant_info_script_path, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
     
         if code:    #  TO FIX: dredd script crashed when no mutation is possible
             return 0        
@@ -67,7 +69,7 @@ class MutationTestingWorker:
         return set(covered_mutants)
 
 
-    async def run_testfixture(self, test_path: str, mutant: MutantID = None, timeout: float = None) -> (TestStatus, str):
+    async def run_testfixture(self, test_path: str, mutant: MutantID = None, timeout: float = None) -> tuple[TestStatus, str]:
         env_copy = os.environ.copy()
         if mutant is not None:
             env_copy["DREDD_ENABLED_MUTATION"] = str(mutant)
@@ -97,7 +99,7 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_CRASHED, f"died with code {returncode}")
 
 
-    def load_progress(self) -> (asyncio.Queue, set[MutantID], set[MutantID], set[str], int):
+    def load_progress(self) -> tuple[asyncio.Queue, set[MutantID], set[MutantID], set[str], int]:
         # queue, killed, in_coverage, coverage_checked_test, queue_length
         queue = asyncio.Queue()
         killed = set()
