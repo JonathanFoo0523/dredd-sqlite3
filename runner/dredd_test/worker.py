@@ -9,6 +9,8 @@ import os
 import asyncio
 import re
 import pickle
+import json
+import ndjson
 from tqdm import tqdm
 
 # DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
@@ -36,8 +38,8 @@ class MutationTestingWorker:
 
         self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
         self.killedfile = os.path.join(output_dir, source_name, 'killed.txt')
-        self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.pkl')
-        self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.pkl')
+        self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.json')
+        self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.json')
 
 
 
@@ -82,10 +84,13 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_TIMEOUT, stderr.decode().rstrip('/n'))
         elif returncode == 1:
             # Fail a test
-            output = ''.join(stdout.decode())
-            match = re.search('(\d)+ errors out of (\d)+', output)
-            description = match.group() if match is not None else ""
-            return (TestStatus.KILLED_FAILED, description)
+            try:
+                output = ''.join(stdout.decode())
+                match = re.search('(\d)+ errors out of (\d)+', output)
+                description = match.group() if match is not None else ""
+                return (TestStatus.KILLED_FAILED, description)
+            except:
+                return (TestStatus.KILLED_FAILED, "FAILED TO READ OUTPUT")
         elif returncode == 0:
             # Pass all test
             output = ''.join(stdout.decode())
@@ -107,27 +112,28 @@ class MutationTestingWorker:
         test_to_check = dict()
 
         if os.path.isfile(self.coverage_checkpoint):
-            with open(self.coverage_checkpoint, 'rb') as f:
+            with open(self.coverage_checkpoint, 'r') as f:
                 try:
-                    while True:
-                        obj = pickle.load(f)
-                        # test, in_coverage, time
+                    objs = ndjson.load(f)
+                    for obj in objs:
                         test_to_check[obj['test']] = (obj['in_coverage'], obj['time'])
                         in_coverage.update(obj['in_coverage'])
                         queue_length += len(obj['in_coverage'])
                 except Exception as err:
+                    print(err)
                     pass
 
         if os.path.isfile(self.regression_checkpoint):
-            with open(self.regression_checkpoint, 'rb') as f:
+            with open(self.regression_checkpoint, 'r') as f:
                 try:
-                    while True:
-                        obj = pickle.load(f)
+                    objs = ndjson.load(f)
+                    for obj in objs:
                         # test, mutant, status
                         if obj['status'] != TestStatus.SURVIVED.name:
                             killed.add(obj['mutant'])
                         test_to_check[obj['test']][0].remove(obj['mutant'])
                 except Exception as err:
+                    print(err)
                     pass
 
         for test, (survived_mutants, base_time) in test_to_check.items():
@@ -155,8 +161,10 @@ class MutationTestingWorker:
                     continue
                 queue.put_nowait((test, base_time, mutant))
 
-            with open(self.coverage_checkpoint, 'ab+') as f:
-                pickle.dump({'test': test, 'in_coverage': mutants, 'time': base_time}, f) 
+            # print(mutants)
+            with open(self.coverage_checkpoint, 'a+') as f:
+                json.dump({'test': test, 'in_coverage': list(mutants), 'time': base_time}, f)
+                f.write('\n')
 
             if pbar:
                 pbar.update(1)
@@ -178,11 +186,13 @@ class MutationTestingWorker:
                 with open(self.outputfile, 'a+') as outputfile:
                     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
-                with open(self.regression_checkpoint, 'ab+') as f:
-                    pickle.dump({'test': test, 'mutant': mutant, 'status': status.name}, f) 
+                with open(self.regression_checkpoint, 'a+') as f:
+                    json.dump({'test': test, 'mutant': mutant, 'status': status.name, 'description': description}, f) 
+                    f.write('\n')
             else:
-                with open(self.regression_checkpoint, 'ab+') as f:
-                    pickle.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
+                with open(self.regression_checkpoint, 'a+') as f:
+                    json.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
+                    f.write('\n')
 
             queue.task_done()
 

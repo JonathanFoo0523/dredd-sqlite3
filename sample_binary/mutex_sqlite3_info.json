@@ -1,0 +1,2337 @@
+{
+ "infoForFiles": [
+  {
+   "filename": "/tmp/tmp4vpaqufw/tsrc/mutex.c",
+   "mutationTreeRoot": {
+    "mutationGroups": [],
+    "children": [
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "replaceExpr": {
+           "start": {
+            "line": 220,
+            "column": 12
+           },
+           "end": {
+            "line": 220,
+            "column": 21
+           },
+           "snippet": "SQLITE_OK",
+           "instances": [
+            {
+             "action": "ReplaceWithOneInt",
+             "mutationId": 0
+            },
+            {
+             "action": "ReplaceWithMinusOneInt",
+             "mutationId": 1
+            }
+           ]
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 27,
+           "start": {
+            "line": 221,
+            "column": 3
+           },
+           "end": {
+            "line": 249,
+            "column": 4
+           },
+           "snippet": "if( !sqlit ... [snip] ... Alloc;\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 221,
+                "column": 7
+               },
+               "end": {
+                "line": 221,
+                "column": 45
+               },
+               "snippet": "!sqlite3Gl ... [snip] ... MutexAlloc",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 2
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 3
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 4
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 5
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 6
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 7
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           },
+           {
+            "mutationGroups": [],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 16,
+                 "start": {
+                  "line": 230,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 238,
+                  "column": 6
+                 },
+                 "snippet": "if( sqlite ... [snip] ... x();\n    }"
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [],
+                "children": [
+                 {
+                  "mutationGroups": [
+                   {
+                    "replaceExpr": {
+                     "start": {
+                      "line": 230,
+                      "column": 9
+                     },
+                     "end": {
+                      "line": 230,
+                      "column": 39
+                     },
+                     "snippet": "sqlite3GlobalConfig.bCoreMutex",
+                     "instances": [
+                      {
+                       "action": "InsertLNot",
+                       "mutationId": 10
+                      },
+                      {
+                       "action": "InsertNot",
+                       "mutationId": 11
+                      },
+                      {
+                       "action": "ReplaceWithZeroInt",
+                       "mutationId": 12
+                      },
+                      {
+                       "action": "ReplaceWithOneInt",
+                       "mutationId": 13
+                      }
+                     ]
+                    }
+                   }
+                  ],
+                  "children": [
+                   {
+                    "mutationGroups": [
+                     {
+                      "replaceExpr": {
+                       "start": {
+                        "line": 230,
+                        "column": 9
+                       },
+                       "end": {
+                        "line": 230,
+                        "column": 39
+                       },
+                       "snippet": "sqlite3GlobalConfig.bCoreMutex",
+                       "instances": [
+                        {
+                         "action": "InsertPreInc",
+                         "mutationId": 8
+                        },
+                        {
+                         "action": "InsertPreDec",
+                         "mutationId": 9
+                        }
+                       ]
+                      }
+                     }
+                    ],
+                    "children": []
+                   }
+                  ]
+                 },
+                 {
+                  "mutationGroups": [
+                   {
+                    "removeStmt": {
+                     "mutationId": 14,
+                     "start": {
+                      "line": 234,
+                      "column": 7
+                     },
+                     "end": {
+                      "line": 234,
+                      "column": 36
+                     },
+                     "snippet": "pFrom = sqlite3DefaultMutex()"
+                    }
+                   }
+                  ],
+                  "children": []
+                 },
+                 {
+                  "mutationGroups": [
+                   {
+                    "removeStmt": {
+                     "mutationId": 15,
+                     "start": {
+                      "line": 237,
+                      "column": 7
+                     },
+                     "end": {
+                      "line": 237,
+                      "column": 33
+                     },
+                     "snippet": "pFrom = sqlite3NoopMutex()"
+                    }
+                   }
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 17,
+                 "start": {
+                  "line": 239,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 239,
+                  "column": 40
+                 },
+                 "snippet": "pTo-\u003exMutexInit = pFrom-\u003exMutexInit"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 18,
+                 "start": {
+                  "line": 240,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 240,
+                  "column": 38
+                 },
+                 "snippet": "pTo-\u003exMutexEnd = pFrom-\u003exMutexEnd"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 19,
+                 "start": {
+                  "line": 241,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 241,
+                  "column": 40
+                 },
+                 "snippet": "pTo-\u003exMutexFree = pFrom-\u003exMutexFree"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 20,
+                 "start": {
+                  "line": 242,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 242,
+                  "column": 42
+                 },
+                 "snippet": "pTo-\u003exMute ... [snip] ... MutexEnter"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 21,
+                 "start": {
+                  "line": 243,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 243,
+                  "column": 38
+                 },
+                 "snippet": "pTo-\u003exMutexTry = pFrom-\u003exMutexTry"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 22,
+                 "start": {
+                  "line": 244,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 244,
+                  "column": 42
+                 },
+                 "snippet": "pTo-\u003exMute ... [snip] ... MutexLeave"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 23,
+                 "start": {
+                  "line": 245,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 245,
+                  "column": 40
+                 },
+                 "snippet": "pTo-\u003exMutexHeld = pFrom-\u003exMutexHeld"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 24,
+                 "start": {
+                  "line": 246,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 246,
+                  "column": 46
+                 },
+                 "snippet": "pTo-\u003exMute ... [snip] ... texNotheld"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 25,
+                 "start": {
+                  "line": 247,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 247,
+                  "column": 27
+                 },
+                 "snippet": "sqlite3MemoryBarrier()"
+                }
+               }
+              ],
+              "children": []
+             },
+             {
+              "mutationGroups": [
+               {
+                "removeStmt": {
+                 "mutationId": 26,
+                 "start": {
+                  "line": 248,
+                  "column": 5
+                 },
+                 "end": {
+                  "line": 248,
+                  "column": 42
+                 },
+                 "snippet": "pTo-\u003exMute ... [snip] ... MutexAlloc"
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 44,
+           "start": {
+            "line": 251,
+            "column": 3
+           },
+           "end": {
+            "line": 251,
+            "column": 46
+           },
+           "snippet": "rc = sqlit ... [snip] ... utexInit()"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceBinaryOperator": {
+             "exprStart": {
+              "line": 251,
+              "column": 3
+             },
+             "exprEnd": {
+              "line": 251,
+              "column": 46
+             },
+             "lhsStart": {
+              "line": 251,
+              "column": 3
+             },
+             "lhsEnd": {
+              "line": 251,
+              "column": 5
+             },
+             "rhsStart": {
+              "line": 251,
+              "column": 8
+             },
+             "rhsEnd": {
+              "line": 251,
+              "column": 46
+             },
+             "exprSnippet": "rc = sqlit ... [snip] ... utexInit()",
+             "lhsSnippet": "rc",
+             "rhsSnippet": "sqlite3Glo ... [snip] ... utexInit()",
+             "operator": "Assign",
+             "instances": [
+              {
+               "action": "ReplaceWithAddAssign",
+               "mutationId": 34
+              },
+              {
+               "action": "ReplaceWithAndAssign",
+               "mutationId": 35
+              },
+              {
+               "action": "ReplaceWithDivAssign",
+               "mutationId": 36
+              },
+              {
+               "action": "ReplaceWithMulAssign",
+               "mutationId": 37
+              },
+              {
+               "action": "ReplaceWithOrAssign",
+               "mutationId": 38
+              },
+              {
+               "action": "ReplaceWithRemAssign",
+               "mutationId": 39
+              },
+              {
+               "action": "ReplaceWithShlAssign",
+               "mutationId": 40
+              },
+              {
+               "action": "ReplaceWithShrAssign",
+               "mutationId": 41
+              },
+              {
+               "action": "ReplaceWithSubAssign",
+               "mutationId": 42
+              },
+              {
+               "action": "ReplaceWithXorAssign",
+               "mutationId": 43
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 251,
+                "column": 8
+               },
+               "end": {
+                "line": 251,
+                "column": 46
+               },
+               "snippet": "sqlite3Glo ... [snip] ... utexInit()",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 28
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 29
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 30
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 31
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 32
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 33
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 45,
+           "start": {
+            "line": 257,
+            "column": 3
+           },
+           "end": {
+            "line": 257,
+            "column": 25
+           },
+           "snippet": "sqlite3MemoryBarrier()"
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 54,
+           "start": {
+            "line": 258,
+            "column": 3
+           },
+           "end": {
+            "line": 258,
+            "column": 12
+           },
+           "snippet": "return rc"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 258,
+              "column": 10
+             },
+             "end": {
+              "line": 258,
+              "column": 12
+             },
+             "snippet": "rc",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 48
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 49
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 50
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 51
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 52
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 53
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 258,
+                "column": 10
+               },
+               "end": {
+                "line": 258,
+                "column": 12
+               },
+               "snippet": "rc",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 46
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 47
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "replaceExpr": {
+           "start": {
+            "line": 266,
+            "column": 12
+           },
+           "end": {
+            "line": 266,
+            "column": 21
+           },
+           "snippet": "SQLITE_OK",
+           "instances": [
+            {
+             "action": "ReplaceWithOneInt",
+             "mutationId": 55
+            },
+            {
+             "action": "ReplaceWithMinusOneInt",
+             "mutationId": 56
+            }
+           ]
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 74,
+           "start": {
+            "line": 267,
+            "column": 3
+           },
+           "end": {
+            "line": 269,
+            "column": 4
+           },
+           "snippet": "if( sqlite ... [snip] ... End();\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "removeStmt": {
+             "mutationId": 73,
+             "start": {
+              "line": 268,
+              "column": 5
+             },
+             "end": {
+              "line": 268,
+              "column": 47
+             },
+             "snippet": "rc = sqlit ... [snip] ... MutexEnd()"
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceBinaryOperator": {
+               "exprStart": {
+                "line": 268,
+                "column": 5
+               },
+               "exprEnd": {
+                "line": 268,
+                "column": 47
+               },
+               "lhsStart": {
+                "line": 268,
+                "column": 5
+               },
+               "lhsEnd": {
+                "line": 268,
+                "column": 7
+               },
+               "rhsStart": {
+                "line": 268,
+                "column": 10
+               },
+               "rhsEnd": {
+                "line": 268,
+                "column": 47
+               },
+               "exprSnippet": "rc = sqlit ... [snip] ... MutexEnd()",
+               "lhsSnippet": "rc",
+               "rhsSnippet": "sqlite3Glo ... [snip] ... MutexEnd()",
+               "operator": "Assign",
+               "instances": [
+                {
+                 "action": "ReplaceWithAddAssign",
+                 "mutationId": 63
+                },
+                {
+                 "action": "ReplaceWithAndAssign",
+                 "mutationId": 64
+                },
+                {
+                 "action": "ReplaceWithDivAssign",
+                 "mutationId": 65
+                },
+                {
+                 "action": "ReplaceWithMulAssign",
+                 "mutationId": 66
+                },
+                {
+                 "action": "ReplaceWithOrAssign",
+                 "mutationId": 67
+                },
+                {
+                 "action": "ReplaceWithRemAssign",
+                 "mutationId": 68
+                },
+                {
+                 "action": "ReplaceWithShlAssign",
+                 "mutationId": 69
+                },
+                {
+                 "action": "ReplaceWithShrAssign",
+                 "mutationId": 70
+                },
+                {
+                 "action": "ReplaceWithSubAssign",
+                 "mutationId": 71
+                },
+                {
+                 "action": "ReplaceWithXorAssign",
+                 "mutationId": 72
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 268,
+                  "column": 10
+                 },
+                 "end": {
+                  "line": 268,
+                  "column": 47
+                 },
+                 "snippet": "sqlite3Glo ... [snip] ... MutexEnd()",
+                 "instances": [
+                  {
+                   "action": "InsertLNot",
+                   "mutationId": 57
+                  },
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 58
+                  },
+                  {
+                   "action": "InsertMinus",
+                   "mutationId": 59
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 60
+                  },
+                  {
+                   "action": "ReplaceWithOneInt",
+                   "mutationId": 61
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 62
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 83,
+           "start": {
+            "line": 275,
+            "column": 3
+           },
+           "end": {
+            "line": 275,
+            "column": 12
+           },
+           "snippet": "return rc"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 275,
+              "column": 10
+             },
+             "end": {
+              "line": 275,
+              "column": 12
+             },
+             "snippet": "rc",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 77
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 78
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 79
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 80
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 81
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 82
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 275,
+                "column": 10
+               },
+               "end": {
+                "line": 275,
+                "column": 12
+               },
+               "snippet": "rc",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 75
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 76
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 115,
+           "start": {
+            "line": 283,
+            "column": 3
+           },
+           "end": {
+            "line": 283,
+            "column": 68
+           },
+           "snippet": "if( id\u003c=SQ ... [snip] ... ) return 0"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceBinaryOperator": {
+             "exprStart": {
+              "line": 283,
+              "column": 7
+             },
+             "exprEnd": {
+              "line": 283,
+              "column": 57
+             },
+             "lhsStart": {
+              "line": 283,
+              "column": 7
+             },
+             "lhsEnd": {
+              "line": 283,
+              "column": 33
+             },
+             "rhsStart": {
+              "line": 283,
+              "column": 37
+             },
+             "rhsEnd": {
+              "line": 283,
+              "column": 57
+             },
+             "exprSnippet": "id\u003c=SQLITE ... [snip] ... itialize()",
+             "lhsSnippet": "id\u003c=SQLITE_MUTEX_RECURSIVE",
+             "rhsSnippet": "sqlite3_initialize()",
+             "operator": "LAnd",
+             "instances": []
+            }
+           },
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 283,
+              "column": 7
+             },
+             "end": {
+              "line": 283,
+              "column": 57
+             },
+             "snippet": "id\u003c=SQLITE ... [snip] ... itialize()",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 109
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 110
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 111
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 112
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 113
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 114
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceBinaryOperator": {
+               "exprStart": {
+                "line": 283,
+                "column": 7
+               },
+               "exprEnd": {
+                "line": 283,
+                "column": 33
+               },
+               "lhsStart": {
+                "line": 283,
+                "column": 7
+               },
+               "lhsEnd": {
+                "line": 283,
+                "column": 9
+               },
+               "rhsStart": {
+                "line": 283,
+                "column": 11
+               },
+               "rhsEnd": {
+                "line": 283,
+                "column": 33
+               },
+               "exprSnippet": "id\u003c=SQLITE_MUTEX_RECURSIVE",
+               "lhsSnippet": "id",
+               "rhsSnippet": "SQLITE_MUTEX_RECURSIVE",
+               "operator": "LE",
+               "instances": [
+                {
+                 "action": "ReplaceWithEQ",
+                 "mutationId": 95
+                },
+                {
+                 "action": "ReplaceWithLT",
+                 "mutationId": 96
+                }
+               ]
+              }
+             },
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 283,
+                "column": 7
+               },
+               "end": {
+                "line": 283,
+                "column": 33
+               },
+               "snippet": "id\u003c=SQLITE_MUTEX_RECURSIVE",
+               "instances": [
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 97
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 98
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 99
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 283,
+                  "column": 7
+                 },
+                 "end": {
+                  "line": 283,
+                  "column": 9
+                 },
+                 "snippet": "id",
+                 "instances": [
+                  {
+                   "action": "InsertLNot",
+                   "mutationId": 86
+                  },
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 87
+                  },
+                  {
+                   "action": "InsertMinus",
+                   "mutationId": 88
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 89
+                  },
+                  {
+                   "action": "ReplaceWithOneInt",
+                   "mutationId": 90
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 91
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 283,
+                    "column": 7
+                   },
+                   "end": {
+                    "line": 283,
+                    "column": 9
+                   },
+                   "snippet": "id",
+                   "instances": [
+                    {
+                     "action": "InsertPreInc",
+                     "mutationId": 84
+                    },
+                    {
+                     "action": "InsertPreDec",
+                     "mutationId": 85
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": []
+               }
+              ]
+             },
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 283,
+                  "column": 11
+                 },
+                 "end": {
+                  "line": 283,
+                  "column": 33
+                 },
+                 "snippet": "SQLITE_MUTEX_RECURSIVE",
+                 "instances": [
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 92
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 93
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 94
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 283,
+                "column": 37
+               },
+               "end": {
+                "line": 283,
+                "column": 57
+               },
+               "snippet": "sqlite3_initialize()",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 100
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 101
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 102
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 103
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 104
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 105
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 147,
+           "start": {
+            "line": 284,
+            "column": 3
+           },
+           "end": {
+            "line": 284,
+            "column": 65
+           },
+           "snippet": "if( id\u003eSQL ... [snip] ... ) return 0"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceBinaryOperator": {
+             "exprStart": {
+              "line": 284,
+              "column": 7
+             },
+             "exprEnd": {
+              "line": 284,
+              "column": 54
+             },
+             "lhsStart": {
+              "line": 284,
+              "column": 7
+             },
+             "lhsEnd": {
+              "line": 284,
+              "column": 32
+             },
+             "rhsStart": {
+              "line": 284,
+              "column": 36
+             },
+             "rhsEnd": {
+              "line": 284,
+              "column": 54
+             },
+             "exprSnippet": "id\u003eSQLITE_ ... [snip] ... utexInit()",
+             "lhsSnippet": "id\u003eSQLITE_MUTEX_RECURSIVE",
+             "rhsSnippet": "sqlite3MutexInit()",
+             "operator": "LAnd",
+             "instances": []
+            }
+           },
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 284,
+              "column": 7
+             },
+             "end": {
+              "line": 284,
+              "column": 54
+             },
+             "snippet": "id\u003eSQLITE_ ... [snip] ... utexInit()",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 141
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 142
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 143
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 144
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 145
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 146
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceBinaryOperator": {
+               "exprStart": {
+                "line": 284,
+                "column": 7
+               },
+               "exprEnd": {
+                "line": 284,
+                "column": 32
+               },
+               "lhsStart": {
+                "line": 284,
+                "column": 7
+               },
+               "lhsEnd": {
+                "line": 284,
+                "column": 9
+               },
+               "rhsStart": {
+                "line": 284,
+                "column": 10
+               },
+               "rhsEnd": {
+                "line": 284,
+                "column": 32
+               },
+               "exprSnippet": "id\u003eSQLITE_MUTEX_RECURSIVE",
+               "lhsSnippet": "id",
+               "rhsSnippet": "SQLITE_MUTEX_RECURSIVE",
+               "operator": "GT",
+               "instances": [
+                {
+                 "action": "ReplaceWithNE",
+                 "mutationId": 127
+                },
+                {
+                 "action": "ReplaceWithGE",
+                 "mutationId": 128
+                }
+               ]
+              }
+             },
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 284,
+                "column": 7
+               },
+               "end": {
+                "line": 284,
+                "column": 32
+               },
+               "snippet": "id\u003eSQLITE_MUTEX_RECURSIVE",
+               "instances": [
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 129
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 130
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 131
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 284,
+                  "column": 7
+                 },
+                 "end": {
+                  "line": 284,
+                  "column": 9
+                 },
+                 "snippet": "id",
+                 "instances": [
+                  {
+                   "action": "InsertLNot",
+                   "mutationId": 118
+                  },
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 119
+                  },
+                  {
+                   "action": "InsertMinus",
+                   "mutationId": 120
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 121
+                  },
+                  {
+                   "action": "ReplaceWithOneInt",
+                   "mutationId": 122
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 123
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 284,
+                    "column": 7
+                   },
+                   "end": {
+                    "line": 284,
+                    "column": 9
+                   },
+                   "snippet": "id",
+                   "instances": [
+                    {
+                     "action": "InsertPreInc",
+                     "mutationId": 116
+                    },
+                    {
+                     "action": "InsertPreDec",
+                     "mutationId": 117
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": []
+               }
+              ]
+             },
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 284,
+                  "column": 10
+                 },
+                 "end": {
+                  "line": 284,
+                  "column": 32
+                 },
+                 "snippet": "SQLITE_MUTEX_RECURSIVE",
+                 "instances": [
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 124
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 125
+                  },
+                  {
+                   "action": "ReplaceWithMinusOneInt",
+                   "mutationId": 126
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 284,
+                "column": 36
+               },
+               "end": {
+                "line": 284,
+                "column": 54
+               },
+               "snippet": "sqlite3MutexInit()",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 132
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 133
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 134
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 135
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 136
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 137
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 156,
+           "start": {
+            "line": 287,
+            "column": 3
+           },
+           "end": {
+            "line": 287,
+            "column": 51
+           },
+           "snippet": "return sql ... [snip] ... xAlloc(id)"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 287,
+              "column": 48
+             },
+             "end": {
+              "line": 287,
+              "column": 50
+             },
+             "snippet": "id",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 150
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 151
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 152
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 153
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 154
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 155
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 287,
+                "column": 48
+               },
+               "end": {
+                "line": 287,
+                "column": 50
+               },
+               "snippet": "id",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 148
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 149
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 172,
+           "start": {
+            "line": 291,
+            "column": 3
+           },
+           "end": {
+            "line": 293,
+            "column": 4
+           },
+           "snippet": "if( !sqlit ... [snip] ... urn 0;\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceUnaryOperator": {
+               "exprStart": {
+                "line": 291,
+                "column": 7
+               },
+               "exprEnd": {
+                "line": 291,
+                "column": 38
+               },
+               "operandStart": {
+                "line": 291,
+                "column": 8
+               },
+               "operandEnd": {
+                "line": 291,
+                "column": 38
+               },
+               "exprSnippet": "!sqlite3GlobalConfig.bCoreMutex",
+               "operandSnippet": "sqlite3GlobalConfig.bCoreMutex",
+               "operator": "LNot",
+               "instances": [
+                {
+                 "action": "ReplaceWithNot",
+                 "mutationId": 163
+                },
+                {
+                 "action": "ReplaceWithMinus",
+                 "mutationId": 164
+                }
+               ]
+              }
+             },
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 291,
+                "column": 7
+               },
+               "end": {
+                "line": 291,
+                "column": 38
+               },
+               "snippet": "!sqlite3GlobalConfig.bCoreMutex",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 165
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 166
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 167
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 168
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 169
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 170
+                }
+               ]
+              }
+             }
+            ],
+            "children": [
+             {
+              "mutationGroups": [
+               {
+                "replaceExpr": {
+                 "start": {
+                  "line": 291,
+                  "column": 8
+                 },
+                 "end": {
+                  "line": 291,
+                  "column": 38
+                 },
+                 "snippet": "sqlite3GlobalConfig.bCoreMutex",
+                 "instances": [
+                  {
+                   "action": "InsertLNot",
+                   "mutationId": 159
+                  },
+                  {
+                   "action": "InsertNot",
+                   "mutationId": 160
+                  },
+                  {
+                   "action": "ReplaceWithZeroInt",
+                   "mutationId": 161
+                  },
+                  {
+                   "action": "ReplaceWithOneInt",
+                   "mutationId": 162
+                  }
+                 ]
+                }
+               }
+              ],
+              "children": [
+               {
+                "mutationGroups": [
+                 {
+                  "replaceExpr": {
+                   "start": {
+                    "line": 291,
+                    "column": 8
+                   },
+                   "end": {
+                    "line": 291,
+                    "column": 38
+                   },
+                   "snippet": "sqlite3GlobalConfig.bCoreMutex",
+                   "instances": [
+                    {
+                     "action": "InsertPreInc",
+                     "mutationId": 157
+                    },
+                    {
+                     "action": "InsertPreDec",
+                     "mutationId": 158
+                    }
+                   ]
+                  }
+                 }
+                ],
+                "children": []
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "mutationGroups": [
+             {
+              "removeStmt": {
+               "mutationId": 171,
+               "start": {
+                "line": 292,
+                "column": 5
+               },
+               "end": {
+                "line": 292,
+                "column": 13
+               },
+               "snippet": "return 0"
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 181,
+           "start": {
+            "line": 296,
+            "column": 3
+           },
+           "end": {
+            "line": 296,
+            "column": 51
+           },
+           "snippet": "return sql ... [snip] ... xAlloc(id)"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 296,
+              "column": 48
+             },
+             "end": {
+              "line": 296,
+              "column": 50
+             },
+             "snippet": "id",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 175
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 176
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 177
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 178
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 179
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 180
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 296,
+                "column": 48
+               },
+               "end": {
+                "line": 296,
+                "column": 50
+               },
+               "snippet": "id",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 173
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 174
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [
+       {
+        "removeStmt": {
+         "mutationId": 183,
+         "start": {
+          "line": 303,
+          "column": 3
+         },
+         "end": {
+          "line": 306,
+          "column": 4
+         },
+         "snippet": "if( p ){\n  ... [snip] ... ee(p);\n  }"
+        }
+       }
+      ],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 182,
+           "start": {
+            "line": 305,
+            "column": 5
+           },
+           "end": {
+            "line": 305,
+            "column": 44
+           },
+           "snippet": "sqlite3Glo ... [snip] ... texFree(p)"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "mutationGroups": [
+       {
+        "removeStmt": {
+         "mutationId": 185,
+         "start": {
+          "line": 314,
+          "column": 3
+         },
+         "end": {
+          "line": 317,
+          "column": 4
+         },
+         "snippet": "if( p ){\n  ... [snip] ... er(p);\n  }"
+        }
+       }
+      ],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 184,
+           "start": {
+            "line": 316,
+            "column": 5
+           },
+           "end": {
+            "line": 316,
+            "column": 45
+           },
+           "snippet": "sqlite3Glo ... [snip] ... exEnter(p)"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "mutationGroups": [],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "replaceExpr": {
+           "start": {
+            "line": 325,
+            "column": 12
+           },
+           "end": {
+            "line": 325,
+            "column": 21
+           },
+           "snippet": "SQLITE_OK",
+           "instances": [
+            {
+             "action": "ReplaceWithOneInt",
+             "mutationId": 186
+            },
+            {
+             "action": "ReplaceWithMinusOneInt",
+             "mutationId": 187
+            }
+           ]
+          }
+         }
+        ],
+        "children": []
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 195,
+           "start": {
+            "line": 326,
+            "column": 3
+           },
+           "end": {
+            "line": 329,
+            "column": 4
+           },
+           "snippet": "if( p ){\n  ... [snip] ... ry(p);\n  }"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "removeStmt": {
+             "mutationId": 194,
+             "start": {
+              "line": 328,
+              "column": 5
+             },
+             "end": {
+              "line": 328,
+              "column": 50
+             },
+             "snippet": "return sql ... [snip] ... utexTry(p)"
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 328,
+                "column": 12
+               },
+               "end": {
+                "line": 328,
+                "column": 50
+               },
+               "snippet": "sqlite3Glo ... [snip] ... utexTry(p)",
+               "instances": [
+                {
+                 "action": "InsertLNot",
+                 "mutationId": 188
+                },
+                {
+                 "action": "InsertNot",
+                 "mutationId": 189
+                },
+                {
+                 "action": "InsertMinus",
+                 "mutationId": 190
+                },
+                {
+                 "action": "ReplaceWithZeroInt",
+                 "mutationId": 191
+                },
+                {
+                 "action": "ReplaceWithOneInt",
+                 "mutationId": 192
+                },
+                {
+                 "action": "ReplaceWithMinusOneInt",
+                 "mutationId": 193
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 204,
+           "start": {
+            "line": 330,
+            "column": 3
+           },
+           "end": {
+            "line": 330,
+            "column": 12
+           },
+           "snippet": "return rc"
+          }
+         }
+        ],
+        "children": [
+         {
+          "mutationGroups": [
+           {
+            "replaceExpr": {
+             "start": {
+              "line": 330,
+              "column": 10
+             },
+             "end": {
+              "line": 330,
+              "column": 12
+             },
+             "snippet": "rc",
+             "instances": [
+              {
+               "action": "InsertLNot",
+               "mutationId": 198
+              },
+              {
+               "action": "InsertNot",
+               "mutationId": 199
+              },
+              {
+               "action": "InsertMinus",
+               "mutationId": 200
+              },
+              {
+               "action": "ReplaceWithZeroInt",
+               "mutationId": 201
+              },
+              {
+               "action": "ReplaceWithOneInt",
+               "mutationId": 202
+              },
+              {
+               "action": "ReplaceWithMinusOneInt",
+               "mutationId": 203
+              }
+             ]
+            }
+           }
+          ],
+          "children": [
+           {
+            "mutationGroups": [
+             {
+              "replaceExpr": {
+               "start": {
+                "line": 330,
+                "column": 10
+               },
+               "end": {
+                "line": 330,
+                "column": 12
+               },
+               "snippet": "rc",
+               "instances": [
+                {
+                 "action": "InsertPreInc",
+                 "mutationId": 196
+                },
+                {
+                 "action": "InsertPreDec",
+                 "mutationId": 197
+                }
+               ]
+              }
+             }
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "mutationGroups": [
+       {
+        "removeStmt": {
+         "mutationId": 206,
+         "start": {
+          "line": 340,
+          "column": 3
+         },
+         "end": {
+          "line": 343,
+          "column": 4
+         },
+         "snippet": "if( p ){\n  ... [snip] ... ve(p);\n  }"
+        }
+       }
+      ],
+      "children": [
+       {
+        "mutationGroups": [
+         {
+          "removeStmt": {
+           "mutationId": 205,
+           "start": {
+            "line": 342,
+            "column": 5
+           },
+           "end": {
+            "line": 342,
+            "column": 45
+           },
+           "snippet": "sqlite3Glo ... [snip] ... exLeave(p)"
+          }
+         }
+        ],
+        "children": []
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
