@@ -57,11 +57,15 @@ def main():
                             'geopoly.c'     # #include-ed onto the end of "rtree.c"
                         ]
 
+    sqlite_c_src_files = list(set(sqlite_c_src_files) - set(source_file_covered))
     sqlite_c_src_c_files = sorted(list(filter(lambda s: s.split('.')[-1] == 'c' and s not in excluded_souce_file, sqlite_c_src_files) ))
 
     # Loop through each source file and perform mutation testing
     for file in sqlite_c_src_c_files:
         file = file.split('.')[0]
+
+        if file != 'select':
+            continue
 
         with open(args.test_files_path) as test_files:
             tests = [os.path.join(args.sqlite_src_path, line.rstrip('\n')) for line in test_files]
@@ -72,7 +76,7 @@ def main():
             mutant_info_script = os.path.join(args.dredd_src_path, 'scripts', 'query_mutant_info.py')
 
 
-            asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.output_directory).async_slice_runner(tests))
+            asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.output_directory, max_parallel_tasks=64).async_slice_runner(tests))
 
 if __name__ == '__main__':
     main()
