@@ -163,3 +163,4 @@ cython_debug/
 kubernetes/*/dredd/*
 kubernetes/*/sqlite-src/*
 kubernetes/*/jobs/*
+sample_binary/*
