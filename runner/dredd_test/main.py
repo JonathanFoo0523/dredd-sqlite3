@@ -75,7 +75,6 @@ def main():
             mutation_info = os.path.join(args.mutation_binary_path, f'{file}_testfixture_info.json')
             mutant_info_script = os.path.join(args.dredd_src_path, 'scripts', 'query_mutant_info.py')
 
-
             asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.output_directory, max_parallel_tasks=64).async_slice_runner(tests))
 
 if __name__ == '__main__':

@@ -36,7 +36,7 @@ class MutationTestingWorker:
         if not os.path.isdir(os.path.join(output_dir, source_name)):
             os.mkdir(os.path.join(output_dir, source_name))
 
-        self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
+        # self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
         self.killedfile = os.path.join(output_dir, source_name, 'killed.txt')
         self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.json')
         self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.json')
@@ -107,6 +107,7 @@ class MutationTestingWorker:
         killed = set()
         in_coverage = set()
         queue_length = 0
+        checked = dict()
 
         # dict(test, (set[MutantID], time))
         test_to_check = dict()
@@ -131,14 +132,21 @@ class MutationTestingWorker:
                         # test, mutant, status
                         if obj['status'] != TestStatus.SURVIVED.name:
                             killed.add(obj['mutant'])
-                        test_to_check[obj['test']][0].remove(obj['mutant'])
+                        # This remove killed and survived test_mutant
+                        try:
+                            test_to_check[obj['test']][0].remove(obj['mutant'])
+                        except Exception as err:
+                            print(err, obj['test'], obj['mutant'])
+
                 except Exception as err:
                     print(err)
                     pass
 
-        for test, (survived_mutants, base_time) in test_to_check.items():
-            for mutant in survived_mutants:
-                queue.put_nowait((test, base_time, mutant))
+        for test, (mutants, base_time) in test_to_check.items():
+            for mutant in mutants:
+                # This remove skipped and to-be-skip mutant
+                if mutant not in killed:
+                    queue.put_nowait((test, base_time, mutant))
 
 
         return queue, killed, in_coverage, set(test_to_check.keys()), queue_length
@@ -183,16 +191,16 @@ class MutationTestingWorker:
                         killedfile.write(f"{mutant}\n")
                     killed.add(mutant)
 
-                with open(self.outputfile, 'a+') as outputfile:
-                    outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
+                # with open(self.outputfile, 'a+') as outputfile:
+                #     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
                 with open(self.regression_checkpoint, 'a+') as f:
                     json.dump({'test': test, 'mutant': mutant, 'status': status.name, 'description': description}, f) 
                     f.write('\n')
-            else:
-                with open(self.regression_checkpoint, 'a+') as f:
-                    json.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
-                    f.write('\n')
+            # else:
+            #     with open(self.regression_checkpoint, 'a+') as f:
+            #         json.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
+            #         f.write('\n')
 
             queue.task_done()
 
@@ -213,9 +221,9 @@ class MutationTestingWorker:
         queue, killed, in_coverage, coverage_checked_test, queue_length = self.load_progress()
 
 
-        if not os.path.isfile(self.outputfile):
-            with open(self.outputfile, 'w+') as f:
-                f.write(f"status, test_name, mutant_id, description\n")
+        # if not os.path.isfile(self.outputfile):
+        #     with open(self.outputfile, 'w+') as f:
+        #         f.write(f"status, test_name, mutant_id, description\n")
 
         
         producers_pbar = tqdm(total=len(testset), desc='Finding coverage')
