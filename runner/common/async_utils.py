@@ -35,5 +35,12 @@ async def subprocess_run(args, timeout=None, stdin=None, input=None, stdout=None
             except:
                 pass
             # proc.terminate()
+        
+        if proc.stdin:
+            try:
+                await proc.stdin.wait_closed()
+            except BrokenPipeError:
+                pass
+
 
     return (stdout, stderr, proc.returncode)

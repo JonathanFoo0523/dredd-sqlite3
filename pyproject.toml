@@ -7,7 +7,7 @@ find = {}
 
 [project]
 name = "dredd-sqlite3"
-version = "0.0.11"
+version = "0.0.13"
 authors = [
   { name="Jonathan Foo", email="jjf120@ic.ac.uk" },
 ]
