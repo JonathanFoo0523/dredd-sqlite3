@@ -64,8 +64,8 @@ def main():
     for file in sqlite_c_src_c_files:
         file = file.split('.')[0]
 
-        if file != 'select':
-            continue
+        # if file != 'select':
+        #     continue
 
         with open(args.test_files_path) as test_files:
             tests = [os.path.join(args.sqlite_src_path, line.rstrip('\n')) for line in test_files]
