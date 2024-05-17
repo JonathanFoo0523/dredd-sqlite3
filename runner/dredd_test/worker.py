@@ -9,38 +9,42 @@ import os
 import asyncio
 import re
 import pickle
+import json
+import ndjson
 from tqdm import tqdm
 
-DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
+# DREDD_MUTANT_INFO_SCRIPT='/home/ubuntu/dredd/scripts/query_mutant_info.py'
 
 
-# Performing Mutation Testing on One source file
+# Performing Mutation Testing on one source file
 class MutationTestingWorker:
-    def __init__(self, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+    def __init__(self, dredd_mutant_info_script_path, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+        assert(os.path.isfile(dredd_mutant_info_script_path))
         assert(os.path.isfile(tracking_binary))
         assert(os.path.isfile(mutation_binary))
         assert(os.path.isfile(mutation_info))
 
+        self.dredd_mutant_info_script_path = dredd_mutant_info_script_path
         self.source_name = source_name
-        self.max_parallel_tasks = max_parallel_tasks
         self.tracking_binary = tracking_binary
         self.mutation_binary = mutation_binary
         self.mutation_info = mutation_info
+        self.max_parallel_tasks = max_parallel_tasks
 
         assert os.path.isdir(output_dir)
         self.output_dir = output_dir
         if not os.path.isdir(os.path.join(output_dir, source_name)):
             os.mkdir(os.path.join(output_dir, source_name))
 
-        self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
+        # self.outputfile = os.path.join(output_dir, source_name, 'output.csv')
         self.killedfile = os.path.join(output_dir, source_name, 'killed.txt')
-        self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.pkl')
-        self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.pkl')
+        self.coverage_checkpoint = os.path.join(output_dir, source_name, 'coverage_checkpoint.json')
+        self.regression_checkpoint = os.path.join(output_dir, source_name, 'regression_checkpoint.json')
 
 
 
     async def get_total_mutants(self) -> int:
-        stdout, stderr, code = await subprocess_run(['python3', DREDD_MUTANT_INFO_SCRIPT, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
+        stdout, stderr, code = await subprocess_run(['python3', self.dredd_mutant_info_script_path, self.mutation_info, '--largest-mutant-id'], stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
     
         if code:    #  TO FIX: dredd script crashed when no mutation is possible
             return 0        
@@ -67,7 +71,7 @@ class MutationTestingWorker:
         return set(covered_mutants)
 
 
-    async def run_testfixture(self, test_path: str, mutant: MutantID = None, timeout: float = None) -> (TestStatus, str):
+    async def run_testfixture(self, test_path: str, mutant: MutantID = None, timeout: float = None) -> tuple[TestStatus, str]:
         env_copy = os.environ.copy()
         if mutant is not None:
             env_copy["DREDD_ENABLED_MUTATION"] = str(mutant)
@@ -80,10 +84,13 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_TIMEOUT, stderr.decode().rstrip('/n'))
         elif returncode == 1:
             # Fail a test
-            output = ''.join(stdout.decode())
-            match = re.search('(\d)+ errors out of (\d)+', output)
-            description = match.group() if match is not None else ""
-            return (TestStatus.KILLED_FAILED, description)
+            try:
+                output = ''.join(stdout.decode())
+                match = re.search('(\d)+ errors out of (\d)+', output)
+                description = match.group() if match is not None else ""
+                return (TestStatus.KILLED_FAILED, description)
+            except:
+                return (TestStatus.KILLED_FAILED, "FAILED TO READ OUTPUT")
         elif returncode == 0:
             # Pass all test
             output = ''.join(stdout.decode())
@@ -94,43 +101,52 @@ class MutationTestingWorker:
             return (TestStatus.KILLED_CRASHED, f"died with code {returncode}")
 
 
-    def load_progress(self) -> (asyncio.Queue, set[MutantID], set[MutantID], set[str], int):
+    def load_progress(self) -> tuple[asyncio.Queue, set[MutantID], set[MutantID], set[str], int]:
         # queue, killed, in_coverage, coverage_checked_test, queue_length
         queue = asyncio.Queue()
         killed = set()
         in_coverage = set()
         queue_length = 0
+        checked = dict()
 
         # dict(test, (set[MutantID], time))
         test_to_check = dict()
 
         if os.path.isfile(self.coverage_checkpoint):
-            with open(self.coverage_checkpoint, 'rb') as f:
+            with open(self.coverage_checkpoint, 'r') as f:
                 try:
-                    while True:
-                        obj = pickle.load(f)
-                        # test, in_coverage, time
+                    objs = ndjson.load(f)
+                    for obj in objs:
                         test_to_check[obj['test']] = (obj['in_coverage'], obj['time'])
                         in_coverage.update(obj['in_coverage'])
                         queue_length += len(obj['in_coverage'])
                 except Exception as err:
+                    print(err)
                     pass
 
         if os.path.isfile(self.regression_checkpoint):
-            with open(self.regression_checkpoint, 'rb') as f:
+            with open(self.regression_checkpoint, 'r') as f:
                 try:
-                    while True:
-                        obj = pickle.load(f)
+                    objs = ndjson.load(f)
+                    for obj in objs:
                         # test, mutant, status
                         if obj['status'] != TestStatus.SURVIVED.name:
                             killed.add(obj['mutant'])
-                        test_to_check[obj['test']][0].remove(obj['mutant'])
+                        # This remove killed and survived test_mutant
+                        try:
+                            test_to_check[obj['test']][0].remove(obj['mutant'])
+                        except Exception as err:
+                            print(err, obj['test'], obj['mutant'])
+
                 except Exception as err:
+                    print(err)
                     pass
 
-        for test, (survived_mutants, base_time) in test_to_check.items():
-            for mutant in survived_mutants:
-                queue.put_nowait((test, base_time, mutant))
+        for test, (mutants, base_time) in test_to_check.items():
+            for mutant in mutants:
+                # This remove skipped and to-be-skip mutant
+                if mutant not in killed:
+                    queue.put_nowait((test, base_time, mutant))
 
 
         return queue, killed, in_coverage, set(test_to_check.keys()), queue_length
@@ -153,8 +169,10 @@ class MutationTestingWorker:
                     continue
                 queue.put_nowait((test, base_time, mutant))
 
-            with open(self.coverage_checkpoint, 'ab+') as f:
-                pickle.dump({'test': test, 'in_coverage': mutants, 'time': base_time}, f) 
+            # print(mutants)
+            with open(self.coverage_checkpoint, 'a+') as f:
+                json.dump({'test': test, 'in_coverage': list(mutants), 'time': base_time}, f)
+                f.write('\n')
 
             if pbar:
                 pbar.update(1)
@@ -173,14 +191,16 @@ class MutationTestingWorker:
                         killedfile.write(f"{mutant}\n")
                     killed.add(mutant)
 
-                with open(self.outputfile, 'a+') as outputfile:
-                    outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
+                # with open(self.outputfile, 'a+') as outputfile:
+                #     outputfile.write(f"{status.name}, {test[24:]}, {mutant}, {description}\n")
 
-                with open(self.regression_checkpoint, 'ab+') as f:
-                    pickle.dump({'test': test, 'mutant': mutant, 'status': status.name}, f) 
-            else:
-                with open(self.regression_checkpoint, 'ab+') as f:
-                    pickle.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
+                with open(self.regression_checkpoint, 'a+') as f:
+                    json.dump({'test': test, 'mutant': mutant, 'status': status.name, 'description': description}, f) 
+                    f.write('\n')
+            # else:
+            #     with open(self.regression_checkpoint, 'a+') as f:
+            #         json.dump({'test': test, 'mutant': mutant, 'status': 'SKIPPED'}, f) 
+            #         f.write('\n')
 
             queue.task_done()
 
@@ -201,9 +221,9 @@ class MutationTestingWorker:
         queue, killed, in_coverage, coverage_checked_test, queue_length = self.load_progress()
 
 
-        if not os.path.isfile(self.outputfile):
-            with open(self.outputfile, 'w+') as f:
-                f.write(f"status, test_name, mutant_id, description\n")
+        # if not os.path.isfile(self.outputfile):
+        #     with open(self.outputfile, 'w+') as f:
+        #         f.write(f"status, test_name, mutant_id, description\n")
 
         
         producers_pbar = tqdm(total=len(testset), desc='Finding coverage')

@@ -5,15 +5,16 @@ import os
 import subprocess
 from enum import Enum
 
-DREDD_EXECUTABLE='/home/ubuntu/dredd/third_party/clang+llvm/bin/dredd'
 
 DreddType = Enum('DreddType', ['coverage', 'mutation'])
 
 
 class DreddAndCompileWorker:
-    def __init__(self, tree_src_dir: str, res_dir: str):
+    def __init__(self, dredd_src_path, tree_src_dir: str, res_dir: str):
+        self.dredd_src_path = dredd_src_path
         self.tree_src_dir = tree_src_dir
         self.res_dir = res_dir
+        self.dredd_executable = os.path.join(dredd_src_path, 'third_party', 'clang+llvm', 'bin', 'dredd')
 
     def prepare_compilation_database(self, target: str, src_path: str):
         subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_path)
@@ -27,14 +28,30 @@ class DreddAndCompileWorker:
 
         # Apply mutation to source file
         if dredd_type == DreddType.coverage:
-            subprocess.run([DREDD_EXECUTABLE, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
+            proc = subprocess.run([self.dredd_executable, '--only-track-mutant-coverage', file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.PIPE, cwd=src_dir)
         else:
-            subprocess.run([DREDD_EXECUTABLE, file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.DEVNULL, cwd=src_dir)
-        subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
+            proc = subprocess.run([self.dredd_executable , file_abs_path, '--mutation-info-file', mutation_info_path], stderr=subprocess.PIPE, cwd=src_dir)
+
+        # check that dredd success
+        if proc.returncode != 0:
+            print(proc.stderr)
+            raise Exception(f"Dredd fail with code {proc.returncode}")
+
+        # Compose sqlite3.c file
+        proc = subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
+        if proc.returncode != 0:
+            raise Exception(f"Compose sqlite3 with failed code {proc.returncode}")
 
         # Compile testfixture mutation/coverage
-        subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_dir)
+        proc = subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_dir, stderr=subprocess.PIPE)
+        if proc.returncode != 0:
+            raise Exception(f"Compile mutated sqlite3 failed with code {proc.returncode}")
+
+        # Save the target binary in result directory
         shutil.copy(f'{src_dir}/{target}', f'{self.res_dir}/{target}_{file_wo_extension}_{dredd_type.name}')
+
+        # (Optional) Accounting purpose
+        shutil.copy(f'{src_dir}/sqlite3.c', f'{self.res_dir}/{target}_{file_wo_extension}_sqlite3.c')
 
     
     def run(self, file: str, target: str) -> str:
@@ -63,6 +80,10 @@ class DreddAndCompileWorker:
             # self.mutate_and_compile(file_abs_path, temp_src_dir, DreddType.coverage, 'sqlite3')
 
         return file
+
+    def run_mp_wrapper(self, input: tuple[str, str]):
+        file, target = input
+        self.run(file, target)
 
 
 
