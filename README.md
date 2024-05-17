@@ -52,6 +52,11 @@ CC=${DREDD_CHECKOUT}/third_party/clang+llvm/bin/clang CFLAGS='-MJ cd.json -Wno-e
 make .target_source # This create directory containing all source files for sqlite3.c
 ```
 
+Modify Makefile so `sqlite` and `testfixture` share the same compilation flag. Add this to last moditication of `SHELL_OPT`.
+```
+SHELL_OPT = -DSQLITE_NO_SYNC=1 $(TEMP_STORE) $(TESTFIXTURE_FLAGS)
+```
+
 ### Install SQLancer
 At suitable directory, run the following command. Refer to installation instruction [here](https://github.com/sqlancer/sqlancer).
 ```shell
