@@ -5,6 +5,7 @@ from pathlib import Path
 from os import listdir, mkdir
 from os.path import isfile, join, isdir
 from tqdm import tqdm
+import multiprocessing
 
 # SQLITE_SRC_CHECKOUT='/home/ubuntu/sqlite-src-cp'
 # DREDD_EXECUTABLE='/home/ubuntu/dredd/third_party/clang+llvm/bin/dredd'
@@ -47,9 +48,14 @@ def main():
     worker_task = [(file, target) for file in sqlite_c_src_c_files for target in targets]
     worker = DreddAndCompileWorker(args.dredd_src_path, args.sqlite_src_path, args.output_directory)
 
-    # dredd and compile
-    for file, target in tqdm(worker_task):
-        worker.run(file, target)
+
+    #dredd and compile
+    with multiprocessing.Pool() as p:
+        list(tqdm(p.imap(worker.run_mp_wrapper, worker_task), total=len(worker_task)))
+    # with multiprocessing.Pool() as p:
+        # for file, target in tqdm(worker_task):
+        #     worker.run(file, target)
+    
 
 if __name__ == "__main__":
     main()
