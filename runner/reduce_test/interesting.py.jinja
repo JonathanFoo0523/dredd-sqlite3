@@ -20,6 +20,9 @@ with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-reduction-db', suffi
     end_time = time.time()
     base_time = end_time - start_time
 
+if 'syntax error' in proc_ref.stderr.decode():
+    exit(3)
+
 env_copy["DREDD_ENABLED_MUTATION"] = str({{ mutation_id }})
 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-reduction-db', suffix='.db') as temp_db:
     try:
