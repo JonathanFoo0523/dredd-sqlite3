@@ -1,7 +1,10 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
 # kill mutants ['7112', '7113', '7114', '7117']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-1.1 {
+do_execsql_test whereexpr-dredd-1.1 {
   CREATE TABLE a(b);
   ALTER TABLE a RENAME TO c;
   CREATE INDEX d ON c(b);
@@ -9,12 +12,12 @@ do_execsql_test alter-dredd-1.1 {
   REPLACE INTO c VALUES(NULL, NULL);
   ALTER TABLE c RENAME TO a;
   SELECT 0 FROM a WHERE((0)OR '1203868068') NOTNULL;
-} {0}
+} {0 }
 
 # kill mutants ['5396']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-2.1 {
+do_execsql_test whereexpr-dredd-2.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES('1418982234');
   CREATE INDEX c ON a(CASE WHEN 0 THEN 0 END);
@@ -22,5 +25,6 @@ do_execsql_test alter-dredd-2.1 {
   INSERT INTO d VALUES('2106504304');
   SELECT 0.578365916309834 FROM d,
       a WHERE(0 NOTNULL == (0.8925304372663835 AND '0.0989635064717087'));
-} {0.578365916309834}
+} {0.578365916309834 }
 
+finish_test

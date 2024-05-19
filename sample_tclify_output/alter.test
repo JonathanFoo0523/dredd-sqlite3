@@ -1,3 +1,6 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
 # kill mutants ['5248', '5251', '5252', '5257', '5262', '5274']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
@@ -20,7 +23,7 @@ do_execsql_test alter-dredd-2.1 {
       (0.7716346881230244, '', '');
   CREATE INDEX f ON d(e DESC);
   SELECT(CAST(e AS)) FROM d;
-} {0 {}}
+} {0 {} }
 
 # kill mutants ['5249', '5256', '5258', '5259']
 reset_db
@@ -51,7 +54,7 @@ do_catchsql_test alter-dredd-5.1 {
   ALTER TABLE a RENAME c TO d;
   ALTER TABLE a RENAME b TO e;
   UPDATE a SET(d) = 0;
-} {1 {CHECK constraint failed: CASE WHEN 3 THEN(d) WHEN 1 THEN TRUE END (19)}}
+} {1 {CHECK constraint failed: CASE WHEN 3 THEN(d) WHEN 1 THEN TRUE END}}
 
 # kill mutants ['2438', '2470']
 reset_db
@@ -70,3 +73,4 @@ do_execsql_test alter-dredd-7.1 {
   ALTER TABLE a ADD c;
 } {}
 
+finish_test

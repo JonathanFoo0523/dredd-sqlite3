@@ -1,28 +1,32 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
 # kill mutants ['6400', '6404', '6408']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-1.1 {
+do_execsql_test util-dredd-1.1 {
   VALUES(0xe);
-} {14}
+} {14 }
 
 # kill mutants ['6409']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-2.1 {
+do_execsql_test util-dredd-2.1 {
   VALUES('', NULL, x''), (0x7, '', x'');
-} { {}  7}
+} { {} {} 7 {}  }
 
 # kill mutants ['523']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-3.1 {
+do_catchsql_test util-dredd-3.1 {
   UPDATE a SET b = 0;
 } {1 {no such table: a}}
 
 # kill mutants ['5980']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-4.1 {
+do_execsql_test util-dredd-4.1 {
   SELECT 0Xaf13a4f3;
-} {2937300211}
+} {2937300211 }
 
+finish_test

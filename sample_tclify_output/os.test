@@ -1,7 +1,10 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
 # kill mutants ['552', '553', '554', '555', '556', '558']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-1.1 {
+do_catchsql_test os-dredd-1.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES('_kj\n');
   ALTER TABLE a ADD c;
@@ -9,3 +12,4 @@ do_catchsql_test alter-dredd-1.1 {
   UPDATE d SET c = load_extension(6);
 } {1 {6.so: cannot open shared object file: No such file or directory}}
 
+finish_test

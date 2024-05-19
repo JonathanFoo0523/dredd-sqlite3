@@ -1,14 +1,17 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
 # kill mutants ['259', '260', '261', '262', '263']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-1.1 {
+do_catchsql_test window-dredd-1.1 {
   SELECT NTH_VALUE('', 0) OVER(RANGE CURRENT ROW EXCLUDE NO OTHERS);
 } {1 {second argument to nth_value must be a positive integer}}
 
 # kill mutants ['10942']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-2.1 {
+do_catchsql_test window-dredd-2.1 {
   CREATE TABLE f (a ) ;
                    CREATE TEMP TABLE    b (a  , c  , c2 );
                    ALTER TABLE b ADD c43 c44;
@@ -20,31 +23,31 @@ do_catchsql_test alter-dredd-2.1 {
 # kill mutants ['2379', '2381', '2388', '2411', '2413']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-3.1 {
+do_execsql_test window-dredd-3.1 {
   SELECT TOTAL(0 IS FALSE) OVER();
-} {1.0}
+} {1.0 }
 
 # kill mutants ['3609', '3641']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-4.1 {
+do_execsql_test window-dredd-4.1 {
   CREATE TABLE a(b);
   ALTER TABLE a ADD c;
   REPLACE INTO a VALUES('1f84', ''), (NULL, 0.31702424464621537), ('', NULL);
   SELECT DISTINCT DENSE_RANK() OVER(), LAST_VALUE(0) OVER(PARTITION BY 0) FROM a;
-} {1 0}
+} {1 0 }
 
 # kill mutants ['7561', '7593']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-5.1 {
+do_execsql_test window-dredd-5.1 {
   SELECT PERCENT_RANK() OVER(), LAG(0, CAST(CASE WHEN 0 THEN 6 END AS), 0) OVER();
-} {0.0 0}
+} {0.0 0 }
 
 # kill mutants ['11983', '12015']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-6.1 {
+do_catchsql_test window-dredd-6.1 {
   SELECT LAST_VALUE(NULL)
       OVER(ORDER BY(0, CASE WHEN 8 THEN 6 END, 0) >
            (0, 0, CASE WHEN 3 THEN 'k|l)d' END)GROUPS(a) PRECEDING);
@@ -53,7 +56,7 @@ do_catchsql_test alter-dredd-6.1 {
 # kill mutants ['10910']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test alter-dredd-7.1 {
+do_execsql_test window-dredd-7.1 {
   CREATE TABLE c(a);
   CREATE TABLE b(d, e);
   ALTER TABLE b ADD f;
@@ -61,19 +64,20 @@ do_execsql_test alter-dredd-7.1 {
   ALTER TABLE b RENAME TO h;
   SELECT COUNT() OVER(PARTITION BY CASE WHEN f THEN 2 END BETWEEN e AND f > 0),
       AVG(0) FROM h RIGHT JOIN c ON 0 BETWEEN f > g AND 0;
-} {1 {}}
+} {1 {} }
 
 # kill mutants ['1322']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-8.1 {
+do_catchsql_test window-dredd-8.1 {
   SELECT ROW_NUMBER() OVER(RANGE BETWEEN a PRECEDING AND b FOLLOWING);
 } {1 {RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression}}
 
 # kill mutants ['1325']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test alter-dredd-9.1 {
+do_catchsql_test window-dredd-9.1 {
   SELECT LAG(a) OVER(RANGE b PRECEDING);
 } {1 {RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression}}
 
+finish_test
