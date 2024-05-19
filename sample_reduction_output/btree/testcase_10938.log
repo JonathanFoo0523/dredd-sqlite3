@@ -1,0 +1,7 @@
+ PRAGMA cell_size_check = true;
+                CREATE TABLE a (c );
+                ALTER TABLE a RENAME TO b;
+                BEGIN  ;
+                INSERT INTO b VALUES (0.9594641972313799);
+                ROLLBACK ;
+                INSERT INTO b VALUES (0.18514760508456096);

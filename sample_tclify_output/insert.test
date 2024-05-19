@@ -1,0 +1,103 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14577']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-1.1 {
+   CREATE TABLE IF NOT EXISTS t1 (CONFLICT IGNORE CHECK ( 0)   );
+                   CREATE INDEX i89 ON t1((+0) ,CASE WHEN 0 THEN 0 END ) WHERE 0;
+                   VACUUM ;
+} {}
+
+# kill mutants ['14578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-2.1 {
+  CREATE TABLE b(a UNIQUE );
+    VACUUM ;
+} {}
+
+# kill mutants ['8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-3.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(0.1444187409454054);
+  ALTER TABLE a ADD d;
+  UPDATE a SET d = '264521275', c = d;
+} {1 {NOT NULL constraint failed: a.c}}
+
+# kill mutants ['14581']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-4.1 {
+  CREATE TABLE a(b );
+    CREATE INDEX i86 ON a(CASE WHEN 0 THEN(0)                            END ) ;
+    VACUUM ;
+} {}
+
+# kill mutants ['14573']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-5.1 {
+  CREATE TABLE b(c0  c1 );
+   CREATE INDEX a ON b(  FALSE) ;
+   VACUUM ;
+} {}
+
+# kill mutants ['14574']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-6.1 {
+  CREATE TABLE a(c0);
+  ALTER TABLE a RENAME TO b;
+  CREATE INDEX c ON b(9);
+  VACUUM;
+} {}
+
+# kill mutants ['14585']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-7.1 {
+  CREATE TABLE a(b UNIQUE );
+   VACUUM ;
+} {}
+
+# kill mutants ['11660', '11692']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-8.1 {
+  CREATE TABLE a(b, c PRIMARY KEY, d)
+  WITHOUT ROWID;
+  REPLACE INTO a VALUES(7.959774410024423E18, 0.5346447959813333,
+                        0.5420831416276481);
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['14586']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-9.1 {
+   CREATE TABLE t1 (c0 a );
+          ALTER TABLE t1 RENAME TO t0;
+          CREATE INDEX i73 ON t0(NOT 0) ;
+          VACUUM;
+} {}
+
+# kill mutants ['14597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-10.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME d TO e;
+  PRAGMA reverse_unordered_selects = true;
+  CREATE INDEX f ON a(e);
+  REPLACE INTO a VALUES(0.8693181798085129, '', 9);
+  INSERT INTO a(c) VALUES(6);
+  VACUUM;
+  UPDATE a SET(e) = 0;
+} {}
+
+finish_test

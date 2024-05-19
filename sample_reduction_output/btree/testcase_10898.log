@@ -1,0 +1,4 @@
+PRAGMA cell_size_check = true;
+BEGIN;
+CREATE VIRTUAL TABLE a USING b;
+INSERT INTO c VALUES(8);

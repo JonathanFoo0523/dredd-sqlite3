@@ -1,0 +1,4 @@
+ CREATE TABLE t0 (c0 , a , b );
+                                INSERT INTO t0 VALUES ('', 0.07305203361194446, x'');
+                                INSERT OR IGNORE INTO t0(c0) VALUES (0.9795695777765214);
+                                CREATE UNIQUE INDEX i39 ON t0(0 ASC,(0)GLOB(0) ASC,CAST(6 COLLATE NOCASE AS BLOB) COLLATE NOCASEc1 COLLATE RTRIM) WHERE 0<>'';

@@ -1,0 +1,4 @@
+CREATE TABLE b(a);
+INSERT INTO b VALUES('*|');
+UPDATE b SET a ='';
+SELECT 0 BETWEEN json_type(a) AND 0 FROM b;

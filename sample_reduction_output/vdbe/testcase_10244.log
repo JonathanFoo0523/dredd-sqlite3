@@ -1,0 +1,5 @@
+CREATE TABLE a(b);
+ALTER TABLE a ADD c d;
+INSERT INTO a VALUES('', NULL);
+ALTER TABLE a ADD e b;
+PRAGMA integrity_check;

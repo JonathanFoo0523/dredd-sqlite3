@@ -1,0 +1,4 @@
+UPDATE OR IGNORE rt0 SET c2 =
+    0.9602397116849096 WHERE CASE((((rt0c0)AND(rt0c2)))OR(rt0c2))
+        WHEN((rt0.c0)NOT BETWEEN(rt0c2) AND(rt0.c2)) THEN
+        LOWER(DISTINCT rt0c1) ELSE(rt0.c2 IN()) END;

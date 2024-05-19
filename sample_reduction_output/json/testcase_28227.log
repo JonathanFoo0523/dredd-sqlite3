@@ -1,0 +1,1 @@
+SELECT json_array_length(7, 0);

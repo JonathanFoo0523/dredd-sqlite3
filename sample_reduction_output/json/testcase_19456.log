@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('*|');
+UPDATE a SET b = x'';
+SELECT(json_array(b)) FROM a;
