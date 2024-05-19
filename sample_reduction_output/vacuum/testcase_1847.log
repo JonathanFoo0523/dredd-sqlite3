@@ -1,0 +1,5 @@
+PRAGMA case_sensitive_like = ON;
+CREATE TABLE a(b);
+ALTER TABLE a RENAME TO c;
+VACUUM;
+CREATE INDEX d ON c((6)LIKE(0));

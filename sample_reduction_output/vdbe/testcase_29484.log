@@ -1,0 +1,2 @@
+BEGIN;
+PRAGMA journal_mode = WAL;

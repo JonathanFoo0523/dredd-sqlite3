@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16';
+         CREATE TEMPORARY VIEW v00 AS SELECT ALL0 FROM vt1t1,     vt0 WHERE0 GROUP     BY((CAST(vt0.c2 AS TEXT))ISNULL) HAVING((((vt1.c0)ISNULL))NOT BETWEEN(         CASE vt0.c2 WHEN vt0.c2 THEN t1.c66 ELSE NULL END)                                                 AND(0)) ORDER     BY(((((-(t1.c66)))AND(CAST('-1132263021' AS REAL))))OR(LIKELY(vt0.c1))) ASC,     t1.c34 LIMIT - 138073592;
+         PRAGMA cell_size_check = true;
+         ANALYZE temp;

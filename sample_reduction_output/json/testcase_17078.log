@@ -1,0 +1,1 @@
+     SELECT    (((json_insert(x'f42e', 0.9141245801084092, ''))>=LOWER(x'')));

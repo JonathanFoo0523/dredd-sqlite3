@@ -1,0 +1,6 @@
+ CREATE TABLE t1 (a  );
+      ALTER TABLE t1 RENAME a TO c35;
+      ALTER TABLE t1 RENAME  c35 TO c15;
+      ALTER TABLE t1 RENAME TO t0;
+      CREATE  INDEX IF NOT EXISTS b ON t0((c15, 15, NULL, c15, 15) BETWEEN (0, c15, c15, json_insert(c15), (c15)) AND ((c15, 0, c15, ((0)), (5 IN (c15))))) ;
+      UPDATE t0 SET c15=0;

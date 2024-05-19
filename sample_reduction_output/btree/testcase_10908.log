@@ -1,0 +1,7 @@
+PRAGMA temp_store = MEMORY;
+PRAGMA cell_size_check = true;
+CREATE TEMPORARY TABLE b(a);
+INSERT INTO b VALUES(') ('), (NULL);
+BEGIN;
+CREATE UNIQUE INDEX c ON b(0);
+CREATE INDEX d ON b(0);

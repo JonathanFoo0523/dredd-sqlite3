@@ -1,0 +1,4 @@
+ CREATE TABLE a (b , c , d );
+                        ALTER TABLE a ADD e ;
+                        INSERT INTO a VALUES (NULL, x'15a1', NULL, '654762396');
+                         SELECT SUBSTR(c, 0 )FROM a;

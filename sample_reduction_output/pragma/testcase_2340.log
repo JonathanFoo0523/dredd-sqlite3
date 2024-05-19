@@ -1,0 +1,3 @@
+PRAGMA integrity_check;
+PRAGMA secure_delete = true;
+PRAGMA temp.secure_delete;

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS t0 (c0  );
+     PRAGMA cell_size_check = true;
+     ALTER TABLE t0 RENAME TO t1;
+     PRAGMA shrink_memory;
+     ALTER TABLE t1 RENAME TO t0;

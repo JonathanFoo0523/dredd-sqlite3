@@ -1,0 +1,5 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('_kj\n');
+ALTER TABLE a ADD c;
+ALTER TABLE a RENAME TO d;
+UPDATE d SET c = load_extension(6);

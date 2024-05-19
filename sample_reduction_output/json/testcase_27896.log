@@ -1,0 +1,3 @@
+CREATE TABLE t1(c0);
+INSERT INTO t1 VALUES('');
+SELECT DISTINCT(0 - json_array_length(t1.c0, '')) FROM t1;

@@ -1,0 +1,6 @@
+CREATE TABLE f (a ) ;
+                 CREATE TEMP TABLE    b (a  , c  , c2 );
+                 ALTER TABLE b ADD c43 c44;
+                 ALTER TABLE b RENAME a TO d  ;
+                 ALTER TABLE b RENAME TO e;
+                 SELECT  COUNT((c)GLOB(d)) OVER ( PARTITION BY CASE e.c2  WHEN e.c43 THEN e.c2 END BETWEEN e.c=e.c43 AND 0>d, 0 ROWS BETWEEN 0 FOLLOWING AND END FOLLOWING), AVG(0)FROM e RIGHT  JOIN f ON 0 BETWEEN (e.c43>d) AND 0;

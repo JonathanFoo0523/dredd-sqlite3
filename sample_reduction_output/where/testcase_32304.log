@@ -1,0 +1,5 @@
+ PRAGMA reverse_unordered_selects = true;
+                 SELECT a, CASE WHEN b THEN c.e END     FROM     g((i, CASE i WHEN '626c8b197406' THEN h END)) ;
+                 SELECT     j IN() LIMIT 9 OFFSET 4;
+                 SELECT d(go), f LIMIT 8;
+                 SELECT DENSE_RANK() OVER()  ;

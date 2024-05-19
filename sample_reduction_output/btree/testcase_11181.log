@@ -1,0 +1,4 @@
+ANALYZE;
+  PRAGMA cell_size_check = true;
+  PRAGMA shrink_memory;
+  CREATE VIRTUAL TABLE a USING b;

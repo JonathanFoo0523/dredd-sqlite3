@@ -1,0 +1,6 @@
+PRAGMA encoding = 'UTF16';
+                        CREATE TABLE t0 (c0 TEXT );
+                        ALTER TABLE t0 ADD c3 INT;
+                        CREATE INDEX i72 ON t0(c0 ASC,((0)AND(0)) COLLATE NOCASE DESC);
+                        PRAGMA cell_size_check = true;
+                        CREATE INDEX i56 ON t0(((((((((((((((c0)IS(c0)))AND(((c0) BETWEEN (c0) AND (2058017123)))))AND((+ (c0)))))AND((c0 IN ()))))AND(MAX(1.67485134E8, c0, c0, c0))))AND(CASE c3  WHEN c0 THEN c0 END)))OR(((((((((c3)OR(c3)))OR(x'6c7c')))OR(c0)))OR(c0)))) COLLATE RTRIM,((json_remove(c0, c0, c0, c3)) ISNULL) DESC) WHERE x'';

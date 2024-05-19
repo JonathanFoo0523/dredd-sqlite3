@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES(3);
+UPDATE a SET b = load_extension(0);
+PRAGMA cache_spill;

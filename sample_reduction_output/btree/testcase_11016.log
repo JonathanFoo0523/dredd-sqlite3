@@ -1,0 +1,3 @@
+PRAGMA cell_size_check = true;
+VACUUM;
+VACUUM;

@@ -1,0 +1,4 @@
+ANALYZE;
+CREATE VIRTUAL TABLE a USING b;
+INSERT INTO c VALUES('optimize');
+PRAGMA temp.cache_size;

@@ -1,0 +1,2 @@
+PRAGMA defer_foreign_keys = a;
+INSERT INTO b VALUES('merge=21188628858');

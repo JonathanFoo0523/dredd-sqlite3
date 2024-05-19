@@ -1,0 +1,4 @@
+CREATE TEMPORARY VIEW a AS SELECT 2;
+PRAGMA cell_size_check = true;
+BEGIN;
+ANALYZE temp;

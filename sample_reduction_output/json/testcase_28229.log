@@ -1,0 +1,2 @@
+ VALUES(')
+    AVG('BETWEEN(json_array_length(7, 0)) AND 0) ;

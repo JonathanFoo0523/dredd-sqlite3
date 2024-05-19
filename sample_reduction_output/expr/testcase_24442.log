@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+UPDATE a SET(b) = 0 WHERE(NOT(0) IS NOT(0));

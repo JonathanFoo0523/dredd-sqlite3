@@ -1,0 +1,4 @@
+BEGIN;
+CREATE VIRTUAL TABLE a USING fts4;
+PRAGMA optimize;
+UPDATE a SET(b) = 0;

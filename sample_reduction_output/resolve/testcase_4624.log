@@ -1,0 +1,3 @@
+PRAGMA case_sensitive_like = ON;
+CREATE TABLE a(b);
+CREATE INDEX c ON a((1)LIKE(1));

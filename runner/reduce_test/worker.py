@@ -26,34 +26,36 @@ class TestReductionWorker:
             if not os.path.isdir(os.path.join(self.output_dir, source)):
                 os.mkdir(os.path.join(self.output_dir, source))
 
-            interestingness_test_template = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(
-                searchpath=os.path.dirname(os.path.realpath(__file__)))).get_template("interesting.py.jinja")
+            if not os.path.isfile(os.path.join(self.output_dir, source, f'testcase_{mutant}.log')):
+                interestingness_test_template = jinja2.Environment(
+                loader=jinja2.FileSystemLoader(
+                    searchpath=os.path.dirname(os.path.realpath(__file__)))).get_template("interesting.py.jinja")
 
-            with tempfile.TemporaryDirectory() as tempdir:
-                open(os.path.join(tempdir, 'interesting.py'), 'w').write(interestingness_test_template.render(
-                    sqlite3_mutation_binary=os.path.join(self.mutation_binary, f'sqlite3_{source}_mutation'),
-                    mutation_id = mutant,
-                    testcase_to_check = f'database_{testcase}.log',
-                    timeout_multiplier = TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST,
-                    min_timeout = MINIMUM_DIFFERENTIAL_TEST_TIMEOUT_SECONDS
-                ))
+                with tempfile.TemporaryDirectory() as tempdir:
+                    open(os.path.join(tempdir, 'interesting.py'), 'w').write(interestingness_test_template.render(
+                        sqlite3_mutation_binary=os.path.join(self.mutation_binary, f'sqlite3_{source}_mutation'),
+                        mutation_id = mutant,
+                        testcase_to_check = f'database_{testcase}.log',
+                        timeout_multiplier = TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST,
+                        min_timeout = MINIMUM_DIFFERENTIAL_TEST_TIMEOUT_SECONDS
+                    ))
 
-                # shutil.copy(os.path.join(tempdir, 'interesting.py'), os.path.join(self.output_dir, source, f'interesting_{mutant}.py'))
+                    # shutil.copy(os.path.join(tempdir, 'interesting.py'), os.path.join(self.output_dir, source, f'interesting_{mutant}.py'))
 
-                # Make the interestingness test executable
-                st = os.stat(os.path.join(tempdir, 'interesting.py'))
-                os.chmod(os.path.join(tempdir, 'interesting.py'), st.st_mode | stat.S_IEXEC)
+                    # Make the interestingness test executable
+                    st = os.stat(os.path.join(tempdir, 'interesting.py'))
+                    os.chmod(os.path.join(tempdir, 'interesting.py'), st.st_mode | stat.S_IEXEC)
 
-                statements_path = os.path.join(self.generation_directory, 'interesting_test_dir', f'database_{testcase}.log')
-                shutil.copy(statements_path, os.path.join(tempdir, f'database_{testcase}.log'))
+                    statements_path = os.path.join(self.generation_directory, 'interesting_test_dir', f'database_{testcase}.log')
+                    shutil.copy(statements_path, os.path.join(tempdir, f'database_{testcase}.log'))
 
-                # Execute 
-                proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
-                if proc[2] != 0:
-                    raise Exception(f'creduce failed, Source: {source}, Mutant {mutant}, Testcase {testcase}')
+                    # Execute 
+                    proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
+                    # if proc[2] != 0:
+                    #     raise Exception(f'creduce failed, Source: {source}, Mutant {mutant}, Testcase {testcase}')
 
-                shutil.copy(os.path.join(tempdir, f'database_{testcase}.log'), os.path.join(self.output_dir, source, f'testcase_{mutant}.log'))
+                    if proc[2] == 0:
+                        shutil.copy(os.path.join(tempdir, f'database_{testcase}.log'), os.path.join(self.output_dir, source, f'testcase_{mutant}.log'))
 
             queue.task_done()
             if pbar:
