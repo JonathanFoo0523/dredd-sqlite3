@@ -57,7 +57,6 @@ class TestReductionWorker:
             queue.task_done()
             if pbar:
                 pbar.update(1)
-                pbar.set_postfix({'Killed': len(new_kill)})
 
 
     async def runner(self):
