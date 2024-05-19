@@ -21,7 +21,7 @@ class TCLifyWorker:
 
     async def readline(self, stream: asyncio.StreamReader, timeout: float):
         try:
-            return await asyncio.wait_for(stream.read(1024), timeout=timeout)
+            return await asyncio.wait_for(stream.read(8192), timeout=timeout)
         except asyncio.TimeoutError:
             return None
 
@@ -46,6 +46,8 @@ class TCLifyWorker:
                     res.append(str('{}'))
                 elif type(row[col]) is str and ' ' in row[col]:
                     res.append('{' + str(row[col]) + '}')
+                elif type(row[col]) is float:
+                    res.append('%s' % float('%.15g' % row[col]))
                 else:
                     res.append(str(row[col]))
 

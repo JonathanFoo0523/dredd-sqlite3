@@ -99,7 +99,7 @@ do_execsql_test where-dredd-8.1 {
   PRAGMA reverse_unordered_selects = true;
   ALTER TABLE c RENAME TO d;
   SELECT b FROM d;
-} {0.44026056052630147 {}}
+} {0.440260560526301 {}}
 
 # kill mutants ['31073']
 reset_db
