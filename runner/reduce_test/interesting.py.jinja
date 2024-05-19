@@ -20,6 +20,9 @@ with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-reduction-db', suffi
     end_time = time.time()
     base_time = end_time - start_time
 
+if 'unrecognized token' in proc_ref.stderr.decode():
+    exit(4)
+
 if 'syntax error' in proc_ref.stderr.decode():
     exit(3)
 
