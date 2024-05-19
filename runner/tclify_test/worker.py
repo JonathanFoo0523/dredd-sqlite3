@@ -47,9 +47,9 @@ class TCLifyWorker:
                     stderr = await self.readline(proc.stderr, timeout=0.01)
 
                     if stdout:
-                        stdout = stdout.decode().rstrip(' ')
+                        stdout = stdout.decode().replace('  ', ' {} ')
                     if stderr:
-                        stderr = stderr.decode()
+                        stderr = stderr.decode().replace(' (19)', '')
 
                     if stderr is not None:
                         stderr = self.sanitise_stderr_msg(stderr)
@@ -76,6 +76,8 @@ class TCLifyWorker:
                 testcase_mutants_dict[hash] = [mutant]
 
         with open(os.path.join(self.output_dir, f'{source}.test'), 'w+') as f:
+            f.write('set testdir [file dirname $argv0]\n')
+            f.write('source $testdir/tester.tcl\n\n')
             for j, mutants in enumerate(testcase_mutants_dict.values()):
                 file_path = os.path.join(self.reduction_dir, source, f'testcase_{mutants[0]}.log')
                 try:
@@ -88,21 +90,19 @@ class TCLifyWorker:
                 f.write('sqlite3_db_config db DEFENSIVE 1\n')
                 for i, (sqls, (stdout, stderr)) in enumerate(groups):
                     if stderr is not None:
-                        f.write(f'do_catchsql_test alter-dredd-{j+1}.{i+1}' + ' {\n')
+                        f.write(f'do_catchsql_test {source}-dredd-{j+1}.{i+1}' + ' {\n')
                         f.write('  ')
                         f.write('  '.join(sqls))
                         f.write('} {1 {' + stderr + '}}\n')
                     else:
-                        f.write(f'do_execsql_test alter-dredd-{j+1}.{i+1}' + ' {\n')
+                        f.write(f'do_execsql_test {source}-dredd-{j+1}.{i+1}' + ' {\n')
                         f.write('  ')
                         f.write('  '.join(sqls))
                         f.write('} {' + (stdout if stdout else "") + '}\n')
 
-                # print(groups)
+
                 f.write('\n')
-                # for (sqls, (stdout, stderr)) in testcase:
-                #     print(sqls)
-                # exit(0)
+            f.write('finish_test\n')
 
     def mpwrap_runner(self, source):
         asyncio.run(self.runner(source))
