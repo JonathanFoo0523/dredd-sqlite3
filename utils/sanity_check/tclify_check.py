@@ -21,7 +21,9 @@ def main():
             proc = subprocess.run([sqlite3_bin, tcl_test], cwd=tmpdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if proc.returncode != 0:
+            print(proc.returncode)
             print(proc.stdout.decode())
+            print(proc.stderr.decode())
 
 if __name__ == '__main__':
     main()

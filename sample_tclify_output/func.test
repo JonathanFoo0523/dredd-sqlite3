@@ -156,7 +156,8 @@ do_execsql_test func-dredd-10.1 {
 # kill mutants ['8945', '8946', '8947', '8948', '8950', '8951', '8956', '8958', '8962', '8965', '8966', '8979', '8980', '8981', '8982', '8983', '8994', '8998', '9011', '9012', '9013', '9014', '9015']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-11.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-11.1 {
   SELECT load_extension(2);
 } {1 {2.so: cannot open shared object file: No such file or directory}}
 
@@ -203,7 +204,8 @@ do_execsql_test func-dredd-14.1 {
 # kill mutants ['8974', '8977', '8978', '9006', '9009', '9010']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_execsql_test func-dredd-15.1 {
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-15.1 {
   CREATE TABLE a(b);
   ALTER TABLE a RENAME b TO c;
   INSERT INTO a VALUES(NULL);
@@ -261,7 +263,8 @@ do_execsql_test func-dredd-19.1 {
 # kill mutants ['8975']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_execsql_test func-dredd-20.1 {
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-20.1 {
   CREATE TABLE a(b);
     ALTER TABLE a RENAME TO c;
     INSERT INTO c VALUES(0.7649772177776033);
@@ -303,7 +306,8 @@ do_execsql_test func-dredd-23.1 {
 # kill mutants ['8961']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-24.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-24.1 {
   CREATE TABLE t0(a, b);
   ALTER TABLE t0 ADD c76;
   INSERT INTO t0(a, b) VALUES('', '');
@@ -324,7 +328,8 @@ do_execsql_test func-dredd-25.1 {
 # kill mutants ['8944']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-26.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-26.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES(3);
   UPDATE a SET b = load_extension(0);
@@ -336,7 +341,8 @@ do_execsql_test func-dredd-26.2 {
 # kill mutants ['9007']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_execsql_test func-dredd-27.1 {
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-27.1 {
   CREATE TABLE a(b);
   ALTER TABLE a RENAME TO c;
   INSERT INTO c VALUES(0.7649772177776033);
@@ -349,7 +355,8 @@ do_catchsql_test func-dredd-27.2 {
 # kill mutants ['8997']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-28.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-28.1 {
   SELECT load_extension('834788099');
 } {1 {834788099.so: cannot open shared object file: No such file or directory}}
 
@@ -398,7 +405,8 @@ do_execsql_test func-dredd-33.1 {
 # kill mutants ['8995']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-34.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-34.1 {
   SELECT load_extension(0, 1);
 } {1 {0.so: cannot open shared object file: No such file or directory}}
 
@@ -428,14 +436,16 @@ do_execsql_test func-dredd-37.1 {
 # kill mutants ['8963']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test func-dredd-38.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-38.1 {
   SELECT load_extension(6, 0);
 } {1 {6.so: cannot open shared object file: No such file or directory}}
 
 # kill mutants ['8992']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_execsql_test func-dredd-39.1 {
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-39.1 {
   CREATE TABLE a(b);
       ALTER TABLE a RENAME TO c;
       INSERT INTO c VALUES(0.7649772177776033);

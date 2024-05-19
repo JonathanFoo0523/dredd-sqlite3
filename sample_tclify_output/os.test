@@ -4,7 +4,8 @@ source $testdir/tester.tcl
 # kill mutants ['552', '553', '554', '555', '556', '558']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1do_catchsql_test os-dredd-1.1 {
+sqlite3_enable_load_extension db 1
+do_catchsql_test os-dredd-1.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES('_kj\n');
   ALTER TABLE a ADD c;

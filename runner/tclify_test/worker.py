@@ -106,11 +106,12 @@ class TCLifyWorker:
                 f.write(f'# kill mutants {sorted(mutants)}\n')
                 f.write('reset_db\n')
                 f.write('sqlite3_db_config db DEFENSIVE 1\n')
+                # f.write('fconfigure db -encoding binary -translation binary\n')
                
                 # check if sqls contain load_extension()
                 for sqls, _ in groups:
                     if 'load_extension' in ''.join(sqls):
-                        f.write('sqlite3_enable_load_extension db 1')
+                        f.write('sqlite3_enable_load_extension db 1\n')
                         break
                 
 
