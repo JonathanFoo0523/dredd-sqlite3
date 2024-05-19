@@ -72,7 +72,7 @@ do_execsql_test pragma-dredd-9.1 {
 # kill mutants ['3912', '3914', '3915', '3944', '3946', '3947']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test pragma-dredd-10.1 {
+sqlite3_enable_load_extension db 1do_catchsql_test pragma-dredd-10.1 {
   PRAGMA cache_spill = 7080762562;
   SELECT load_extension('');
 } {1 {unable to open shared library []}}
@@ -147,7 +147,7 @@ do_execsql_test pragma-dredd-18.1 {
 # kill mutants ['3931']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test pragma-dredd-19.1 {
+sqlite3_enable_load_extension db 1do_catchsql_test pragma-dredd-19.1 {
   PRAGMA cache_spill = -2851909032242852183;
   SELECT load_extension('');
 } {1 {unable to open shared library []}}

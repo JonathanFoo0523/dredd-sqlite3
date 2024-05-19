@@ -106,6 +106,14 @@ class TCLifyWorker:
                 f.write(f'# kill mutants {sorted(mutants)}\n')
                 f.write('reset_db\n')
                 f.write('sqlite3_db_config db DEFENSIVE 1\n')
+               
+                # check if sqls contain load_extension()
+                for sqls, _ in groups:
+                    if 'load_extension' in ''.join(sqls):
+                        f.write('sqlite3_enable_load_extension db 1')
+                        break
+                
+
                 for i, (sqls, (stdout, stderr)) in enumerate(groups):
                     if stderr is not None:
                         f.write(f'do_catchsql_test {source}-dredd-{j+1}.{i+1}' + ' {\n')
