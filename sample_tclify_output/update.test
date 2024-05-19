@@ -1,0 +1,100 @@
+# kill mutants ['149', '152', '181', '184']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE a(b, c);
+  REPLACE INTO a(b) VALUES('e818');
+  ALTER TABLE a RENAME c TO d;
+  CREATE INDEX e ON a(d)
+  WHERE b;
+  UPDATE a SET b = 0.12192030747872595;
+  ALTER TABLE a RENAME TO f;
+  UPDATE f SET d = 0;
+} {}
+
+# kill mutants ['1819', '1820']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-2.1 {
+  CREATE TABLE a(b);
+  UPDATE a SET(b, c) = ('', x'');
+} {1 {no such column: c}}
+
+# kill mutants ['173']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-3.1 {
+  CREATE TABLE d(a );
+     ALTER TABLE d RENAME a TO b;
+     ALTER TABLE d RENAME TO t0;
+     CREATE     INDEX c ON t0((((b, b, NULL, b, b))BETWEEN(         0, b, (b), json_insert(), 0)                                               AND(5, 0, b, 0, 0)));
+     UPDATE t0 SET b = (00.5062308122805136);
+} {}
+
+# kill mutants ['178']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-4.1 {
+  CREATE TABLE a(b, c);
+  REPLACE INTO a(b) VALUES('e818');
+  ALTER TABLE a RENAME c TO d;
+  CREATE INDEX e ON a(CASE WHEN 0 THEN 0 END) WHERE b;
+  UPDATE a SET b = 0.12192030747872595;
+  ALTER TABLE a RENAME TO f;
+  UPDATE f SET d = 0;
+} {}
+
+# kill mutants ['179']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-5.1 {
+  CREATE TABLE a(c);
+  ALTER TABLE a RENAME c TO d;
+  ALTER TABLE a RENAME TO e;
+  CREATE INDEX b ON e(5);
+  UPDATE e SET d = 0;
+} {}
+
+# kill mutants ['175']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-6.1 {
+   CREATE TABLE t1 (a  );
+        ALTER TABLE t1 RENAME a TO c35;
+        ALTER TABLE t1 RENAME  c35 TO c15;
+        ALTER TABLE t1 RENAME TO t0;
+        CREATE  INDEX IF NOT EXISTS b ON t0((c15, 15, NULL, c15, 15) BETWEEN (0, c15, c15, json_insert(c15), (c15)) AND ((c15, 0, c15, ((0)), (5 IN (c15))))) ;
+        UPDATE t0 SET c15=0;
+} {}
+
+# kill mutants ['4645']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-7.1 {
+  CREATE TABLE a(b TEXT, PRIMARY KEY(b)) WITHOUT ROWID;
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES('94399978'), (0.8967735730738071);
+  UPDATE OR REPLACE a SET c = NULL WHERE CASE(c) OR(c) AND(c)
+      WHEN CASE c WHEN c THEN 7 END THEN 0 ELSE c BETWEEN c AND c END;
+} {1 {NOT NULL constraint failed: a.c (19)}}
+
+# kill mutants ['1837']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-8.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  UPDATE c SET d ='' WHERE e;
+} {1 {no such column: d}}
+
+# kill mutants ['4610']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-9.1 {
+  CREATE TABLE b(a TEXT, PRIMARY KEY(a)) WITHOUT ROWID;
+  ALTER TABLE b RENAME a TO c;
+  INSERT INTO b VALUES(1.068457089E9);
+  INSERT INTO b VALUES('');
+  UPDATE b SET(c) = 0;
+} {1 {UNIQUE constraint failed: b.c (19)}}
+

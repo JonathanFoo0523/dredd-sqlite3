@@ -1,0 +1,122 @@
+# kill mutants ['24704', '24705', '24707']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE a(b);
+  ANALYZE;
+  ALTER TABLE a RENAME TO c;
+} {}
+
+# kill mutants ['14403']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-2.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  CREATE INDEX d ON a(c IN(c));
+  ALTER TABLE a RENAME TO e;
+  INSERT INTO e VALUES(1);
+  SELECT '' FROM e;
+} {}
+
+# kill mutants ['14402']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-3.1 {
+  CREATE TABLE a(b PRIMARY KEY);
+  INSERT INTO a VALUES(7);
+  INSERT INTO a VALUES(1);
+  UPDATE a SET b = CASE WHEN '338787490' THEN b IN(b) END;
+} {1 {UNIQUE constraint failed: a.b (19)}}
+
+# kill mutants ['14482']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-4.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CASE WHEN(b IN(b)) THEN 0 END);
+  BEGIN;
+  INSERT INTO a VALUES('1348796372');
+  ROLLBACK;
+} {}
+
+# kill mutants ['25157']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-5.1 {
+  CREATE TABLE t0(c0);
+  ALTER TABLE t0 ADD a;
+  INSERT INTO t0(c0) VALUES(4), (''), (NULL);
+  UPDATE t0 SET c0 ='' WHERE(0 BETWEEN(a) AND 0) IS FALSE;
+  SELECT c0 FROM t0;
+} {4  {}}
+
+# kill mutants ['24706', '24708']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-6.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+} {}
+
+# kill mutants ['24140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-7.1 {
+  SELECT 0 WHERE(4) AND(NULL) OR(NULL);
+} {}
+
+# kill mutants ['14401']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-8.1 {
+  CREATE TABLE a(b CHECK(b IN(b)));
+  REPLACE INTO a VALUES(2);
+} {}
+
+# kill mutants ['14481']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-9.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CASE WHEN(b IN(b)) THEN 0 END);
+  INSERT INTO a VALUES('1348796372');
+} {}
+
+# kill mutants ['24711']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-10.1 {
+  SELECT TOTAL(0) OVER() WHERE(NOT(7));
+} {}
+
+# kill mutants ['24709']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-11.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ANALYZE;
+  ALTER TABLE c RENAME TO a;
+} {}
+
+# kill mutants ['14404']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-12.1 {
+  CREATE TABLE a(b);
+  CREATE UNIQUE INDEX c ON a(0);
+  ALTER TABLE a ADD d;
+  ALTER TABLE a RENAME TO e;
+  CREATE INDEX f ON e(0 IN(0, 0));
+  REPLACE INTO e VALUES(6, NULL), (0.012077390713527203, 1.835997714E9);
+} {}
+
+# kill mutants ['24442']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-13.1 {
+  CREATE TABLE a(b);
+  UPDATE a SET(b) = 0 WHERE(NOT(0) IS NOT(0));
+} {}
+

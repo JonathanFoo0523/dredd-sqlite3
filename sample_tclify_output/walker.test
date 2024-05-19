@@ -1,0 +1,7 @@
+# kill mutants ['276']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-1.1 {
+  SELECT(0 BETWEEN(a) AND(b));
+} {1 {no such column: a}}
+

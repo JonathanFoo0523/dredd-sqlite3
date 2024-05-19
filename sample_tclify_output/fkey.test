@@ -1,0 +1,9 @@
+# kill mutants ['5613', '5619', '5621']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE a(b, c, d UNIQUE,
+                 FOREIGN KEY(b) REFERENCES a ON DELETE SET DEFAULT);
+  REPLACE INTO a VALUES('379190025', NULL, NULL);
+} {}
+

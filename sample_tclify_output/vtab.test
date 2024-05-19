@@ -1,0 +1,7 @@
+# kill mutants ['2193', '2225']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+

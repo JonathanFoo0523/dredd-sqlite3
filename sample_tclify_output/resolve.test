@@ -1,0 +1,74 @@
+# kill mutants ['4657', '4658', '4659', '4660']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-1.1 {
+  PRAGMA case_sensitive_like = ON;
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a('949940191' COLLATE d) WHERE(1) LIKE(1);
+} {1 {non-deterministic functions prohibited in partial index WHERE clauses}}
+
+# kill mutants ['4624', '4656']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-2.1 {
+  PRAGMA case_sensitive_like = ON;
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a((1)LIKE(1));
+} {1 {non-deterministic functions prohibited in index expressions}}
+
+# kill mutants ['4330']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-3.1 {
+  SELECT(a) OR(b);
+} {1 {no such column: a}}
+
+# kill mutants ['6512', '6528', '6530', '6536', '6539', '6540', '6542', '6560', '6562', '6568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-4.1 {
+  SELECT(a) IS(b.c);
+} {1 {no such column: a}}
+
+# kill mutants ['8029']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-5.1 {
+  SELECT COUNT() GROUP BY 0;
+} {1 {1st GROUP BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['6786', '6789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-6.1 {
+  SELECT a() BETWEEN 0 AND(b);
+} {1 {no such function: a}}
+
+# kill mutants ['8265']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-7.1 {
+  SELECT 1 GROUP BY 91422;
+} {1 {1st GROUP BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['7468']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-8.1 {
+  SELECT 0 EXCEPT SELECT 4.99654881E8 ORDER BY 9;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['4632', '4633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-9.1 {
+  SELECT LIKELIHOOD(NULL, 0.7253765557722026);
+} {{}}
+
+# kill mutants ['4075']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-10.1 {
+  SELECT a;
+} {1 {no such column: a}}
+
