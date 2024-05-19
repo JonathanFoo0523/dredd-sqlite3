@@ -7,6 +7,6 @@ sqlite3_db_config db DEFENSIVE 1
 do_execsql_test utf-dredd-1.1 {
    PRAGMA encoding = 'UTF16le'                 ;
                                    VALUES (x'2dd83744');
-} {𛐷 }
+} {𛐷}
 
 finish_test

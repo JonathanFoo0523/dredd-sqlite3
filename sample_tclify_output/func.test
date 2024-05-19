@@ -1,3 +1,13 @@
 set testdir [file dirname $argv0]
 source $testdir/tester.tcl
 
+# kill mutants ['2234']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-1.1 {
+   CREATE TABLE a (b , c , d );
+                          ALTER TABLE a ADD e ;
+                          INSERT INTO a VALUES (NULL, x'15a1', NULL, '654762396');
+                           SELECT SUBSTR(c, 0 )FROM a;
+} {u0015uffffffa1}
+

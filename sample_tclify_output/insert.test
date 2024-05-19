@@ -74,7 +74,7 @@ do_execsql_test insert-dredd-8.1 {
   REPLACE INTO a VALUES(7.959774410024423E18, 0.5346447959813333,
                         0.5420831416276481);
   PRAGMA cache_spill;
-} {1765 }
+} {1765}
 
 # kill mutants ['14586']
 reset_db

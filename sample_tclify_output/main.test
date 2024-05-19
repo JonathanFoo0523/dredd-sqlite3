@@ -23,13 +23,13 @@ do_execsql_test main-dredd-2.1 {
   INSERT OR REPLACE INTO t1(c98) VALUES('');
   SELECT DISTINCT UPPER(c98)
   FROM t1;
-} { 0.123409280349798 }
+} {{} 0.123409280349798}
 
 # kill mutants ['7360']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test main-dredd-3.1 {
   PRAGMA temp.journal_mode;
-} {delete }
+} {delete}
 
 finish_test

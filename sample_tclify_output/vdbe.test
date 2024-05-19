@@ -18,7 +18,7 @@ do_execsql_test vdbe-dredd-2.1 {
   INSERT INTO a VALUES('', NULL);
   ALTER TABLE a ADD d b;
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['10274', '10278']
 reset_db
@@ -28,7 +28,7 @@ do_execsql_test vdbe-dredd-3.1 {
   INSERT INTO a VALUES('|yL	A');
   ALTER TABLE a ADD c d;
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['10248', '10254']
 reset_db
@@ -37,21 +37,21 @@ do_execsql_test vdbe-dredd-4.1 {
   CREATE TABLE a(b c);
   INSERT INTO a VALUES('|yL	A');
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['29474', '29475', '29476', '29478', '29480', '29481', '29485']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test vdbe-dredd-5.1 {
   PRAGMA journal_mode = WAL;
-} {wal }
+} {wal}
 
 # kill mutants ['1238']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test vdbe-dredd-6.1 {
   SELECT - '546837440';
-} {-546837440 }
+} {-546837440}
 
 # kill mutants ['8228', '8236', '8243', '8244', '8245']
 reset_db
@@ -82,7 +82,7 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test vdbe-dredd-9.1 {
   SELECT COUNT() OVER() WHERE(json('1016734361'));
-} {1 }
+} {1}
 
 # kill mutants ['10245', '10246']
 reset_db
@@ -92,7 +92,7 @@ do_execsql_test vdbe-dredd-10.1 {
   INSERT INTO a VALUES('');
   ALTER TABLE a ADD c d;
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['8227']
 reset_db
@@ -112,7 +112,7 @@ do_execsql_test vdbe-dredd-12.1 {
   INSERT INTO a VALUES('', NULL);
   ALTER TABLE a ADD e b;
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['10276']
 reset_db
@@ -122,6 +122,6 @@ do_execsql_test vdbe-dredd-13.1 {
   INSERT INTO a VALUES('|yL	A');
   ALTER TABLE a ADD d e;
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 finish_test

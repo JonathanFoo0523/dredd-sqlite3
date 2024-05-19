@@ -66,7 +66,7 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test resolve-dredd-9.1 {
   SELECT LIKELIHOOD(NULL, 0.7253765557722026);
-} {{} }
+} {{}}
 
 # kill mutants ['4075']
 reset_db

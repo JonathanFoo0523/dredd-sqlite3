@@ -14,14 +14,14 @@ sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-2.1 {
   PRAGMA temp.mmap_size = 3;
   PRAGMA mmap_size;
-} {0 }
+} {0}
 
 # kill mutants ['3989', '3992']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-3.1 {
   PRAGMA mmap_size = -8072280758490843421;
-} {0 }
+} {0}
 
 # kill mutants ['13009', '13012', '13015', '13041', '13044', '13047']
 reset_db
@@ -36,10 +36,10 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-5.1 {
   PRAGMA mmap_size = 1;
-} {1 }
+} {1}
 do_execsql_test pragma-dredd-5.2 {
   PRAGMA mmap_size = -8560260514224173509;
-} {0 }
+} {0}
 
 # kill mutants ['12917']
 reset_db
@@ -53,21 +53,21 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-7.1 {
   PRAGMA mmap_size = 1;
-} {1 }
+} {1}
 
 # kill mutants ['4098', '4119', '4130', '4148', '4151']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-8.1 {
   PRAGMA main.mmap_size = 8;
-} {8 }
+} {8}
 
 # kill mutants ['4254', '4255', '4257', '4258', '4259', '4260']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-9.1 {
   PRAGMA mmap_size;
-} {0 }
+} {0}
 
 # kill mutants ['3912', '3914', '3915', '3944', '3946', '3947']
 reset_db
@@ -102,7 +102,7 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-13.1 {
   PRAGMA mmap_size = -325572059141867052;
-} {0 }
+} {0}
 
 # kill mutants ['10640', '10641', '10672', '10673']
 reset_db
@@ -118,17 +118,17 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-15.1 {
   PRAGMA busy_timeout = 10000;
-} {10000 }
+} {10000}
 do_execsql_test pragma-dredd-15.2 {
   PRAGMA secure_delete = a;
-} {0 }
+} {0}
 
 # kill mutants ['12839']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-16.1 {
   PRAGMA wal_checkpoint;
-} {0 -1 -1 }
+} {0 -1 -1}
 
 # kill mutants ['12885']
 reset_db
@@ -142,7 +142,7 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-18.1 {
   PRAGMA busy_timeout = 10000;
-} {10000 }
+} {10000}
 
 # kill mutants ['3931']
 reset_db
@@ -164,13 +164,13 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-21.1 {
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 do_execsql_test pragma-dredd-21.2 {
   PRAGMA secure_delete = true;
-} {1 }
+} {1}
 do_execsql_test pragma-dredd-21.3 {
   PRAGMA temp.secure_delete;
-} {1 }
+} {1}
 
 # kill mutants ['12952', '12984']
 reset_db
@@ -197,7 +197,7 @@ sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-24.1 {
   PRAGMA default_cache_size = 8;
   PRAGMA cache_spill;
-} {8 }
+} {8}
 
 # kill mutants ['4871']
 reset_db

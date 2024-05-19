@@ -14,7 +14,7 @@ do_catchsql_test where-dredd-1.2 {
 } {1 {no such column: go}}
 do_execsql_test where-dredd-1.3 {
                    SELECT DENSE_RANK() OVER()  ;
-} {1 }
+} {1}
 
 # kill mutants ['2440', '2441', '2446', '2449', '2450', '2458', '2459', '2472', '2477', '2478', '2481', '2483', '2487', '2491']
 reset_db
@@ -24,7 +24,7 @@ do_execsql_test where-dredd-2.1 {
   ALTER TABLE a RENAME TO c;
   INSERT INTO c VALUES('15f2'), ('1750636613');
   SELECT DISTINCT 0 FROM c;
-} {0 }
+} {0}
 
 # kill mutants ['2445']
 reset_db
@@ -35,7 +35,7 @@ do_execsql_test where-dredd-3.1 {
   INSERT OR REPLACE INTO t0(c22, c0) VALUES('', x'');
   INSERT OR IGNORE INTO t0(c0) VALUES('');
   SELECT DISTINCT 0 FROM t0;
-} {0 }
+} {0}
 
 # kill mutants ['18064']
 reset_db
@@ -45,7 +45,7 @@ do_execsql_test where-dredd-4.1 {
   INSERT INTO a VALUES(2.013850463E9), ('a259');
   CREATE INDEX c ON a(0 | b);
   SELECT LEAD(b) OVER() FROM a;
-} {a259 {} }
+} {a259 {}}
 
 # kill mutants ['15324', '15325', '15356', '15357']
 reset_db
@@ -63,7 +63,7 @@ do_execsql_test where-dredd-5.1 {
   CREATE INDEX g ON c(0 BETWEEN(b) AND 0);
   SELECT DISTINCT TRIM(e)
   FROM c WHERE(UNLIKELY('49483776'));
-} {823047848 {} }
+} {823047848 {}}
 
 # kill mutants ['15448', '15480']
 reset_db
@@ -74,7 +74,7 @@ do_execsql_test where-dredd-6.1 {
   CREATE INDEX d ON a(0) WHERE 0;
   UPDATE a SET c = 5;
   PRAGMA cache_spill;
-} {1765 }
+} {1765}
 
 # kill mutants ['15447', '15479']
 reset_db
@@ -99,7 +99,7 @@ do_execsql_test where-dredd-8.1 {
   PRAGMA reverse_unordered_selects = true;
   ALTER TABLE c RENAME TO d;
   SELECT b FROM d;
-} {0.440260560526301 {} }
+} {0.44026056052630147 {}}
 
 # kill mutants ['31073']
 reset_db

@@ -6,7 +6,7 @@ reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test os_unix-dredd-1.1 {
   PRAGMA mmap_size = 8347715345;
-} {2147418112 }
+} {2147418112}
 
 # kill mutants ['15367', '15368', '15370', '15371', '15372', '15376', '15379', '15380', '15381', '15382', '15384', '15390', '15391', '15392', '15393', '15394']
 reset_db

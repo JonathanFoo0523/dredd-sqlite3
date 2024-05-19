@@ -4,6 +4,7 @@ import re
 import subprocess
 import asyncio
 import tempfile
+import json
 
 class TCLifyWorker:
     def __init__(self, mutation_dir, reduction_dir, output_dir):
@@ -25,7 +26,8 @@ class TCLifyWorker:
             return None
 
 
-    def sanitise_stderr_msg(self, err_msg):
+    def parse_stderr(self, err_msg):
+        err_msg = err_msg.replace(' (19)', '')
         match = re.search(r'(.*) error near line (\d+): (.*)', err_msg)
         try:
             res = match.group(3)
@@ -33,9 +35,25 @@ class TCLifyWorker:
             res = err_msg
         return res
 
+    def parse_stdout(self, json_str):
+        json_str = json_str.replace('\n', '')
+        json_obj = json.loads(json_str)
+
+        res = []
+        for row in json_obj:
+            for col in row:
+                if row[col] is None or row[col] == '':
+                    res.append(str('{}'))
+                elif type(row[col]) is str and ' ' in row[col]:
+                    res.append('{' + str(row[col]) + '}')
+                else:
+                    res.append(str(row[col]))
+
+        return ' '.join(res)
+
     async def group_sql(self, file, source):
         with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-tcl-test', suffix='.db') as tempdbfile:
-            proc = await asyncio.create_subprocess_exec(os.path.join(self.mutation_dir, f'sqlite3_{source}_mutation'), tempdbfile.name, '-separator', " ", '-nullvalue', '{}', '-newline', ' ', stdin=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+            proc = await asyncio.create_subprocess_exec(os.path.join(self.mutation_dir, f'sqlite3_{source}_mutation'), tempdbfile.name, '-json', stdin=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
             res = []
             with open(file, 'r') as f2:
                 sql_buffer = []
@@ -47,12 +65,10 @@ class TCLifyWorker:
                     stderr = await self.readline(proc.stderr, timeout=0.01)
 
                     if stdout:
-                        stdout = stdout.decode().replace('  ', ' {} ')
+                        stdout = self.parse_stdout(stdout.decode())
+                        # stdout = stdout.decode()
                     if stderr:
-                        stderr = stderr.decode().replace(' (19)', '')
-
-                    if stderr is not None:
-                        stderr = self.sanitise_stderr_msg(stderr)
+                        stderr = self.parse_stderr(stderr.decode())
 
                     sql_buffer.append(sql)
                     if stdout is not None or stderr is not None:

@@ -10,7 +10,7 @@ do_execsql_test select-dredd-1.1 {
   AS SELECT 0 IN() FROM a;
   INSERT INTO a VALUES(NULL);
   SELECT d FROM c;
-} {0 }
+} {0}
 
 # kill mutants ['19580', '19585', '19586', '19587', '19588', '19590', '19591', '19592', '19593', '19594', '19595', '19596']
 reset_db
@@ -21,7 +21,7 @@ do_execsql_test select-dredd-2.1 {
   CREATE VIEW c(d)
   AS SELECT 0 IN() FROM a;
   SELECT(d) FROM c;
-} {0 }
+} {0}
 
 # kill mutants ['19584']
 reset_db
@@ -32,7 +32,7 @@ do_execsql_test select-dredd-3.1 {
   CREATE VIEW c(b)
   AS SELECT 0 IN() FROM a;
   SELECT(b) FROM c;
-} {0 }
+} {0}
 
 # kill mutants ['24736']
 reset_db
@@ -66,7 +66,7 @@ do_execsql_test select-dredd-7.1 {
   INSERT INTO a VALUES('', 0.637115727900995, '', 2),
       (NULL, NULL, 0.2472717265424098, '');
   SELECT d AND(SUM(2)) AND(AVG(4)) FROM a;
-} {0 }
+} {0}
 
 # kill mutants ['19574', '19578']
 reset_db
@@ -77,7 +77,7 @@ do_execsql_test select-dredd-8.1 {
   CREATE VIEW c(d)
   AS SELECT 0 IN() FROM a;
   SELECT(d) FROM c;
-} {0 }
+} {0}
 
 # kill mutants ['24702']
 reset_db
@@ -86,7 +86,7 @@ do_execsql_test select-dredd-9.1 {
   CREATE TABLE a(b);
   ALTER TABLE a RENAME TO c;
   SELECT MIN(0) FROM c;
-} {{} }
+} {{}}
 
 # kill mutants ['24526']
 reset_db
@@ -95,6 +95,6 @@ do_execsql_test select-dredd-10.1 {
   CREATE TABLE a(b);
   CREATE INDEX c ON a(CASE WHEN CASE WHEN 0 THEN 0 END THEN 0 END) WHERE 0;
   SELECT COUNT() FROM a INDEXED BY c;
-} {0 }
+} {0}
 
 finish_test

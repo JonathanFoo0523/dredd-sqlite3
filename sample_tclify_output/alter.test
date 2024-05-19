@@ -23,7 +23,7 @@ do_execsql_test alter-dredd-2.1 {
       (0.7716346881230244, '', '');
   CREATE INDEX f ON d(e DESC);
   SELECT(CAST(e AS)) FROM d;
-} {0 {} }
+} {0 {}}
 
 # kill mutants ['5249', '5256', '5258', '5259']
 reset_db

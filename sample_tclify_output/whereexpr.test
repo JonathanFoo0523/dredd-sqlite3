@@ -12,7 +12,7 @@ do_execsql_test whereexpr-dredd-1.1 {
   REPLACE INTO c VALUES(NULL, NULL);
   ALTER TABLE c RENAME TO a;
   SELECT 0 FROM a WHERE((0)OR '1203868068') NOTNULL;
-} {0 }
+} {0}
 
 # kill mutants ['5396']
 reset_db
@@ -25,6 +25,6 @@ do_execsql_test whereexpr-dredd-2.1 {
   INSERT INTO d VALUES('2106504304');
   SELECT 0.578365916309834 FROM d,
       a WHERE(0 NOTNULL == (0.8925304372663835 AND '0.0989635064717087'));
-} {0.578365916309834 }
+} {0.578365916309834}
 
 finish_test

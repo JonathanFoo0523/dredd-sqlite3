@@ -32,7 +32,7 @@ do_execsql_test analyze-dredd-3.1 {
   UPDATE t0 SET(c, c, c0) = ('', '', 4);
   INSERT OR IGNORE INTO t0(c0) VALUES('');
   SELECT c0 FROM t0, a;
-} {4 {} 4 {} }
+} {4 {} 4 {}}
 
 # kill mutants ['3212', '4329']
 reset_db
@@ -51,7 +51,7 @@ do_execsql_test analyze-dredd-4.1 {
   CREATE INDEX l ON g(3);
   ANALYZE i;
   SELECT DISTINCT 0, b FROM g;
-} {0 {} 0 0 }
+} {0 {} 0 0}
 
 # kill mutants ['3211']
 reset_db
@@ -77,7 +77,7 @@ do_execsql_test analyze-dredd-6.1 {
   INSERT INTO b VALUES(NULL, 'C');
   ANALYZE sqlite_master;
   SELECT b.a FROM b, t0;
-} {fb5e {} fb5e {} }
+} {fb5e {} fb5e {}}
 
 # kill mutants ['208', '240']
 reset_db
@@ -109,7 +109,7 @@ do_catchsql_test analyze-dredd-9.2 {
 } {1 {no such table: c}}
 do_execsql_test analyze-dredd-9.3 {
   PRAGMA temp.cache_size;
-} {0 }
+} {0}
 
 # kill mutants ['3398']
 reset_db

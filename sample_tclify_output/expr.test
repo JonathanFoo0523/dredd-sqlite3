@@ -20,7 +20,7 @@ do_execsql_test expr-dredd-2.1 {
   ALTER TABLE a RENAME TO e;
   INSERT INTO e VALUES(1);
   SELECT '' FROM e;
-} { }
+} {{}}
 
 # kill mutants ['14402']
 reset_db
@@ -52,7 +52,7 @@ do_execsql_test expr-dredd-5.1 {
   INSERT INTO t0(c0) VALUES(4), (''), (NULL);
   UPDATE t0 SET c0 ='' WHERE(0 BETWEEN(a) AND 0) IS FALSE;
   SELECT c0 FROM t0;
-} {4 {} {} }
+} {4 {} {}}
 
 # kill mutants ['24706', '24708']
 reset_db

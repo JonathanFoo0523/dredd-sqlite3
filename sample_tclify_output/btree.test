@@ -46,7 +46,7 @@ do_execsql_test btree-dredd-4.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES(NULL);
   PRAGMA journal_mode = WAL;
-} {wal }
+} {wal}
 do_execsql_test btree-dredd-4.2 {
   PRAGMA cell_size_check = true;
   VACUUM;
@@ -117,7 +117,7 @@ sqlite3_db_config db DEFENSIVE 1
 do_execsql_test btree-dredd-11.1 {
   CREATE TABLE a(b);
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['10974']
 reset_db
@@ -358,7 +358,7 @@ sqlite3_db_config db DEFENSIVE 1
 do_execsql_test btree-dredd-32.1 {
   CREATE TABLE b(a);
   PRAGMA integrity_check;
-} {ok }
+} {ok}
 
 # kill mutants ['11212', '11213']
 reset_db
@@ -434,7 +434,7 @@ do_execsql_test btree-dredd-38.1 {
                            CREATE VIEW v0(c0, c1, c2) AS SELECT ALL ((((0)OR(LIKELIHOOD(t0.c4, 0.6809867764325728))))OR(t0.c2)), NTILE(CASE x'0a34890c' COLLATE NOCASE  WHEN x'' THEN CAST0 WHEN rt1.c2 COLLATE BINARY THEN ((t0.c2) IS TRUE) WHEN (~ (rt1.c2)) THEN (((rt1.c1, rt1.c2, t0.c0, t0.c3, x''))>((x'', t0.c2, 0.15518641091872531, rt1.c2, t0.c3))) END) OVER (), CASE AVG(rt1.c0)  WHEN t0.c3 THEN CAST(t0.c3 AS TEXT) ELSE t0.c3 END FROM rt1, t0;
                            ANALYZE ;
                            PRAGMA secure_delete = FAST;
-} {2 }
+} {2}
 do_execsql_test btree-dredd-38.2 {
                            DROP VIEW v0;
 } {}
