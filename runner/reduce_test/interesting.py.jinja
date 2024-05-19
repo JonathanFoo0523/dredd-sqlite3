@@ -10,6 +10,9 @@ env_copy = os.environ.copy()
 
 with open('{{ testcase_to_check }}', 'rb') as f:
     statements = f.read()
+    # This ensure creduce produced test case alwats end with ';'
+    while statements[-1] != 59:
+        statements = statements[:-1]
 
 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-reduction-db', suffix='.db') as temp_db:
     start_time = time.time()
