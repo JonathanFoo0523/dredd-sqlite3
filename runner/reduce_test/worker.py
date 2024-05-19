@@ -9,16 +9,17 @@ import tempfile
 import stat
 import shutil
 import subprocess
+from tqdm import tqdm
 
 class TestReductionWorker:
-    def __init__(self, mutation_binary, generation_directory, output_dir, max_parallel_tasks=1):
+    def __init__(self, mutation_binary, generation_directory, output_dir, max_parallel_tasks=32):
         self.mutation_binary = os.path.abspath(mutation_binary)
         self.generation_directory = os.path.abspath(generation_directory)
         self.output_dir = output_dir
         self.max_parallel_tasks = max_parallel_tasks
 
 
-    async def reduction_queue_consumer(self, queue: asyncio.Queue):
+    async def reduction_queue_consumer(self, queue: asyncio.Queue, pbar=None):
         while True:
             source, mutant, testcase = await queue.get()
 
@@ -47,11 +48,16 @@ class TestReductionWorker:
                 shutil.copy(statements_path, os.path.join(tempdir, f'database_{testcase}.log'))
 
                 # Execute 
-                proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir)
+                proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
                 if proc[2] != 0:
                     raise Exception(f'creduce failed, Mutant {mutant}, Testcase {testcase}')
 
                 shutil.copy(os.path.join(tempdir, f'database_{testcase}.log'), os.path.join(self.output_dir, source, f'testcase_{mutant}.log'))
+
+            queue.task_done()
+            if pbar:
+                pbar.update(1)
+                pbar.set_postfix({'Killed': len(new_kill)})
 
 
     async def runner(self):
@@ -75,10 +81,14 @@ class TestReductionWorker:
             for (mutant, testcase) in kill_dict.items():
                 queue.put_nowait((source, mutant, testcase))
 
-        consumers = [asyncio.create_task(self.reduction_queue_consumer(queue)) for _ in range(self.max_parallel_tasks)]
+        consumer_pbar = tqdm(total=queue.qsize(), desc='Reducing')
+        consumers = [asyncio.create_task(self.reduction_queue_consumer(queue, consumer_pbar)) for _ in range(self.max_parallel_tasks)]
         await queue.join()
+        consumer_pbar.close()
 
         for task in consumers:
             task.cancel()
+
+        await asyncio.gather(*consumers, return_exceptions=True)
 
         # print(generation_result)
