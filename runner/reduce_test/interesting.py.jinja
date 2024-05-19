@@ -26,7 +26,7 @@ if 'syntax error' in proc_ref.stderr.decode():
 env_copy["DREDD_ENABLED_MUTATION"] = str({{ mutation_id }})
 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-reduction-db', suffix='.db') as temp_db:
     try:
-        proc_mut = subprocess.run(['{{ sqlite3_mutation_binary }}', temp_db.name], input=statements, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env_copy, timeout=base_time * {{ timeout_multiplier }})
+        proc_mut = subprocess.run(['{{ sqlite3_mutation_binary }}', temp_db.name], input=statements, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env_copy, timeout=max({{ min_timeout }}, base_time * {{ timeout_multiplier }}))
     except subprocess.TimeoutExpired:
         exit(2)
 

@@ -1,5 +1,5 @@
 from runner.common.async_utils import subprocess_run, TIMEOUT_RETCODE
-from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST
+from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST, MINIMUM_DIFFERENTIAL_TEST_TIMEOUT_SECONDS
 
 import os
 import pickle
@@ -36,6 +36,7 @@ class TestReductionWorker:
                     mutation_id = mutant,
                     testcase_to_check = f'database_{testcase}.log',
                     timeout_multiplier = TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST,
+                    min_timeout = MINIMUM_DIFFERENTIAL_TEST_TIMEOUT_SECONDS
                 ))
 
                 # shutil.copy(os.path.join(tempdir, 'interesting.py'), os.path.join(self.output_dir, source, f'interesting_{mutant}.py'))
@@ -50,7 +51,7 @@ class TestReductionWorker:
                 # Execute 
                 proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
                 if proc[2] != 0:
-                    raise Exception(f'creduce failed, Mutant {mutant}, Testcase {testcase}')
+                    raise Exception(f'creduce failed, Source: {source}, Mutant {mutant}, Testcase {testcase}')
 
                 shutil.copy(os.path.join(tempdir, f'database_{testcase}.log'), os.path.join(self.output_dir, source, f'testcase_{mutant}.log'))
 
