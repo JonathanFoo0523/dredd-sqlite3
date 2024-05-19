@@ -25,10 +25,12 @@ do_catchsql_test printf-dredd-3.1 {
 # kill mutants ['10181']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test printf-dredd-4.1 {
-  SELECT ALL 0 COLLATE RTRIM,     PERCENT_RANKOVER rt0         WHERE(CASE NULL WHEN '' THEN  1169908770 END,                         (0.25236051034849916 IN())) ORDER BY         '787197425;
-  
-} {}
+do_catchsql_test printf-dredd-4.1 {
+  UPDATE OR IGNORE rt0 SET c2 =
+      0.9602397116849096 WHERE CASE((((rt0c0)AND(rt0c2)))OR(rt0c2))
+          WHEN((rt0.c0)NOT BETWEEN(rt0c2) AND(rt0.c2)) THEN
+          LOWER(DISTINCT rt0c1) ELSE(rt0.c2 IN()) END;
+} {1 {no such table: rt0}}
 
 # kill mutants ['10177']
 reset_db
