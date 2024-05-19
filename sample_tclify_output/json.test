@@ -18,7 +18,7 @@ do_execsql_test json-dredd-2.1 {
     INSERT INTO t0 VALUES(040);
     ALTER TABLE t0 RENAME TO t1;
     SELECT 00, (TIME()),     (''BETWEEN(json_array_length(70)) AND 0) FROM t1;
-} {0 20:18:50 0 }
+} {0 20:29:32 0 }
 
 # kill mutants ['24890', '24891', '24892', '24893', '28180', '28185', '28186', '28212', '28216', '28217', '28218', '28219', '28220', '28221', '28222', '28223', '28224', '28256']
 reset_db
