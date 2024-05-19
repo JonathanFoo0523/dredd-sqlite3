@@ -1,0 +1,2 @@
+             SELECT 0 WHERE (json_insert(x'f42e'));
+

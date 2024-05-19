@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS a (b );
+                 ALTER TABLE a RENAME b TO c;
+                 ALTER TABLE a RENAME TO t1;
+                 SELECT AVG(t1.c)FROM t1  ;

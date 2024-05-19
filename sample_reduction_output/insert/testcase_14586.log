@@ -1,0 +1,4 @@
+ CREATE TABLE t1 (c0 a );
+        ALTER TABLE t1 RENAME TO t0;
+        CREATE INDEX i73 ON t0(NOT 0) ;
+        VACUUM;
