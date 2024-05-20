@@ -8,41 +8,23 @@ pq = PriorityQueue()
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("sqlite_src", help="Directory that contains sqlite test/ directory and ext/ directory")
-    parser.add_argument("testfixture_output", help="Output path of testfixture run with --verbose=0")
+    parser.add_argument("testrunner_output", help="Output path of testrunner.tcl")
     parser.add_argument("output_path", help="Output path of list of test")
     parser.add_argument("sort", help="Wheter to sort by alphabet or by duration", default='duration')
     args = parser.parse_args()
 
     assert args.sort == 'duration' or args.sort == 'alphabet' 
 
-    with open(args.testfixture_output, 'r') as f:
+    with open(args.testrunner_output, 'r') as f:
         for line in f.readlines():
-            if "Time:" not in line:
-                continue
-            
-            match = re.search(r'Time: (.*) (\d+) ms', line.rstrip('\n'))
-            file, time = (match.group(1), match.group(2))
-
-            if os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'rtree', file)):
-                filepath = os.path.join('ext', 'rtree', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'fts5', 'test', file)):
-                filepath = os.path.join('ext', 'fts5', 'test', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'expert', file)):
-                filepath = os.path.join('ext', 'expert', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'lsm1', 'test', file)):
-                filepath = os.path.join('ext', 'lsm1', 'test', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'recover', file)):
-                filepath = os.path.join('ext', 'recover', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'rbu', file)):
-                filepath = os.path.join('ext', 'rbu', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'ext', 'session', file)):
-                filepath = os.path.join('ext', 'session', file)
-            elif os.path.isfile(os.path.join(args.sqlite_src, 'test', file)):
-                filepath = filepath = os.path.join('test', file)
-            else:
-                print(file)
-                raise "Unknown directory"
+            if '###' not in line:
+                    continue
+            match = re.search(r'###( config=.*)? (.*) (\d+)ms \(done\)', line.rstrip('\n'))
+            try:
+                filepath, time = (match.group(2), match.group(3))
+            except Exception as err:
+                print(line, match.group(0))
+                raise err
 
             pq.put((int(time), filepath))
 

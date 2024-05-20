@@ -3,15 +3,20 @@
 ### Example Usage
 ```SHELL
 export TEST_SUBSET=veryquick
-$SQLITE_SRC_CHECKOUT/testfixture $SQLITE_SRC_CHECKOUT/test/$TEST_SUBSET.test --verbose=0 > "$TEST_SUBSET"_output.txt 
-python3 extract_test.py $SQLITE_SRC_CHECKOUT "$TEST_SUBSET"_output.txt "$TEST_SUBSET"_duration_sorted.txt duration
+$SQLITE_SRC_CHECKOUT/testfixture $SQLITE_SRC_CHECKOUT/test/testrunner.tcl $TEST_SUBSET
+python3 extract_test.py testrunner.log "$TEST_SUBSET"_testlist.txt duration
+
+# cleanup
+rm -r testdir*
+rm testrunner.log testrunner.db
 ```
 
-### Checked test subset (Provided in the same directory)
+### Available testsubset
 ```
-extraquick.test
-veryquick.test
-quick.test
+extraquick
+veryquick
+quick
+full
 ```
 
 
