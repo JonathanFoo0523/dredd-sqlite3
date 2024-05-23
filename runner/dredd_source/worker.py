@@ -24,7 +24,7 @@ class DreddAndCompileWorker:
 
     def mutate_and_compile(self, file_abs_path: str, src_dir: str, dredd_type: DreddType, target: str):
         file_wo_extension = file_abs_path.split('/')[-1].split('.')[0]
-        mutation_info_path = f'{self.res_dir}/{file_wo_extension}_{target}_info.json'
+        mutation_info_path = os.path.abspath(f'{self.res_dir}/{file_wo_extension}_{target}_info.json')
 
         # Apply mutation to source file
         if dredd_type == DreddType.coverage:
@@ -35,17 +35,17 @@ class DreddAndCompileWorker:
         # check that dredd success
         if proc.returncode != 0:
             print(proc.stderr)
-            raise Exception(f"Dredd fail with code {proc.returncode}")
+            raise Exception(f"Dredd  {file_wo_extension} fail with code {proc.returncode}")
 
         # Compose sqlite3.c file
         proc = subprocess.run(['tclsh', 'tool/mksqlite3c.tcl'], cwd=src_dir)
         if proc.returncode != 0:
-            raise Exception(f"Compose sqlite3 with failed code {proc.returncode}")
+            raise Exception(f"Compose sqlite3 {file_wo_extension} with failed code {proc.returncode}")
 
         # Compile testfixture mutation/coverage
         proc = subprocess.run(['make', target], stdout=subprocess.DEVNULL, cwd=src_dir, stderr=subprocess.PIPE)
         if proc.returncode != 0:
-            raise Exception(f"Compile mutated sqlite3 failed with code {proc.returncode}")
+            raise Exception(f"Compile mutated sqlite3 {file_wo_extension} failed with code {proc.returncode}")
 
         # Save the target binary in result directory
         shutil.copy(f'{src_dir}/{target}', f'{self.res_dir}/{target}_{file_wo_extension}_{dredd_type.name}')
