@@ -48,13 +48,15 @@ export SQLITE_SRC_CHECKOUT=/path/to/sqlite-src
 Configure and Make
 ```shell
 cd sqlite-src
-CC=${DREDD_CHECKOUT}/third_party/clang+llvm/bin/clang CFLAGS='-MJ cd.json -Wno-everything' ./configure
+
+# Configure to enable fts, rtree, update limit
+CC=${DREDD_CHECKOUT}/third_party/clang+llvm/bin/clang CFLAGS='-MJ cd.json -Wno-everything' ./configure --enable-fts3 --enable-fts4 --enable-fts5 --enable-rtree --enable-update-limit
 make .target_source # This create directory containing all source files for sqlite3.c
 ```
 
 Modify Makefile so `sqlite` and `testfixture` share the same compilation flag. Add this to last moditication of `SHELL_OPT`.
 ```
-SHELL_OPT = -DSQLITE_NO_SYNC=1 $(TEMP_STORE) $(TESTFIXTURE_FLAGS)
+SHELL_OPT = -DSQLITE_NO_SYNC=1 $(TEMP_STORE) $(TESTFIXTURE_FLAGS) $(LIBTCL) ext/fts3/fts3_term.c
 ```
 
 ### Install SQLancer
