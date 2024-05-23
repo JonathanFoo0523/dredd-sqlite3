@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2334']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-28.1 {
+  SELECT ROUND(~0);
+} {-1.0}
+
+finish_test

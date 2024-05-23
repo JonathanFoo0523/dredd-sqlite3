@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-1.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(0.1444187409454054);
+  ALTER TABLE a ADD d;
+  UPDATE a SET d = '264521275', c = d;
+} {1 {NOT NULL constraint failed: a.c}}
+
+finish_test

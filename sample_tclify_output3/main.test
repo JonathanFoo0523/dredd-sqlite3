@@ -1,0 +1,35 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3023']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-1.1 {
+  PRAGMA encoding = 'UTF16be';
+  CREATE TABLE t0(a, c1, b);
+  CREATE INDEX c ON t0(0 > CAST(a AS TEXT), c1);
+  INSERT INTO t0(a, b) VALUES(x'', x'');
+  UPDATE OR IGNORE t0 SET c1 = x'';
+} {}
+
+# kill mutants ['3010']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-2.1 {
+  CREATE TABLE t0(a);
+  ALTER TABLE t0 ADD c98;
+  INSERT INTO t0(c98) VALUES(''), (0.12340928034979792);
+  ALTER TABLE t0 RENAME TO t1;
+  INSERT OR REPLACE INTO t1(c98) VALUES('');
+  SELECT DISTINCT UPPER(c98)
+  FROM t1;
+} {{} 0.123409280349798}
+
+# kill mutants ['7360']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-3.1 {
+  PRAGMA temp.journal_mode;
+} {delete}
+
+finish_test

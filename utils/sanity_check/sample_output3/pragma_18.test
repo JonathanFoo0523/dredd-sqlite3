@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4878']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-19.1 {
+  PRAGMA temp.defer_foreign_keys = false;
+  
+} {}
+
+finish_test

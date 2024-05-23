@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['385', '417']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test complete-dredd-2.1 {
+  VALUES('bm2510.0 5.0');
+} {{bm2510.0 5.0}}
+do_catchsql_test complete-dredd-2.2 {
+  INSERT INTO a VALUES('rebuild');
+} {1 {no such table: a}}
+
+finish_test

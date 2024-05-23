@@ -1,0 +1,50 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-1.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(0.1444187409454054);
+  ALTER TABLE a ADD d;
+  UPDATE a SET d = '264521275', c = d;
+} {1 {NOT NULL constraint failed: a.c}}
+
+# kill mutants ['14574']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-2.1 {
+  CREATE TABLE a(b);
+    ALTER TABLE a RENAME TO c;
+    CREATE INDEX d ON c(9 ) ;
+    VACUUM;
+} {}
+
+# kill mutants ['11660', '11692']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-3.1 {
+  CREATE TABLE a(b, c PRIMARY KEY, d)
+  WITHOUT ROWID;
+  REPLACE INTO a VALUES(7.959774410024423E18, 0.5346447959813333,
+                        0.5420831416276481);
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['14597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-4.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME d TO e;
+  PRAGMA reverse_unordered_selects = true;
+  CREATE INDEX f ON a(e);
+  REPLACE INTO a VALUES(0.8693181798085129, '', 9);
+  INSERT INTO a(c) VALUES(6);
+  VACUUM;
+  UPDATE a SET(e) = 0;
+} {}
+
+finish_test

@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-8.1 {
+  PRAGMA cell_size_check;
+} {0}
+
+finish_test

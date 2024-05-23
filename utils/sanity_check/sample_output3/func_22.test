@@ -1,0 +1,17 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8944']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-23.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  UPDATE a SET b = load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+do_execsql_test func-dredd-23.2 {
+  PRAGMA cache_spill;
+} {1765}
+
+finish_test

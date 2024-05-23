@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1238']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-6.1 {
+  SELECT - '546837440';
+} {-546837440}
+
+finish_test

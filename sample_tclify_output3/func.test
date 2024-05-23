@@ -1,0 +1,373 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2234']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-1.1 {
+   CREATE TABLE a (b , c , d );
+                          ALTER TABLE a ADD e ;
+                          INSERT INTO a VALUES (NULL, x'15a1', NULL, '654762396');
+                           SELECT SUBSTR(c, 0 )FROM a;
+} {u0015uffffffa1}
+
+# kill mutants ['9059']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-2.1 {
+  CREATE TABLE t0(c0, c1, c2);
+  INSERT INTO t0(c0, c2) VALUES(0.6614149936274412, '3982');
+  INSERT INTO t0(c2) VALUES(0.5616258931165699), (0.987284501062377), ('');
+  INSERT OR FAIL INTO t0(c2, c1) VALUES(0.8145773225209475, 0.06337740041948436),
+      (x'', x''), (CAST(0 AS INTEGER), NULL);
+  INSERT OR IGNORE INTO t0 VALUES(x'', 0.07305203361194446, x'');
+  INSERT OR IGNORE INTO t0(c0) VALUES(0.9795695777765214);
+  ALTER TABLE t0 ADD COLUMN c76 INTEGER;
+  INSERT OR IGNORE INTO t0(c0, c1) VALUES(x'', '');
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  INSERT OR FAIL INTO t0 VALUES(NULL, '', NULL, 4.0996288E7);
+  INSERT OR ROLLBACK INTO t0(c2) VALUES(NULL);
+  INSERT OR IGNORE INTO t0 VALUES(1.338057989E9, 0.8039272659156715, '', '');
+  INSERT OR REPLACE INTO t0(c1, c0, c2) VALUES('', '', 0.7208146725216952);
+  INSERT OR IGNORE INTO t0(c0, c1, c76) VALUES('', '', 9.77169169E8);
+  INSERT OR IGNORE INTO t0(c0) VALUES(''), (NULL), (NULL);
+  INSERT OR FAIL INTO t0 VALUES(0.9514478696444262, 3, x'', '');
+  INSERT OR REPLACE INTO t0(c0) VALUES(1.154590921E9), (''), (2);
+  INSERT OR REPLACE INTO t0(c1) VALUES(''), (0.9549679602837778), ('');
+  INSERT OR IGNORE INTO t0(c2) VALUES(0.5842676004042502), (0.7354409135934129),
+      (3);
+  INSERT OR IGNORE INTO t0(c1) VALUES('');
+  INSERT OR ABORT INTO t0(c1, c0, c76) VALUES(NULL, 1.731363546E9, x''),
+      (x'', 5, 0), (NULL, 0.0552901883011927, 0.27586409040034143);
+  INSERT OR FAIL INTO t0(c1, c0, c76) VALUES(1.675105642E9, x'', NULL);
+  INSERT OR ABORT INTO t0 VALUES(0.057677074347189494, 1.578454821E9, '',
+                                 0.4819484341827467),
+      (NULL, x'', 9, 1), (x'', '', NULL, '');
+  SELECT TOTAL(0.5220392171609598)
+      OVER(GROUPS UNBOUNDED PRECEDING EXCLUDE CURRENT ROW) FROM t0;
+} {18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946 18.7934118177946}
+
+# kill mutants ['8987', '8988', '8991']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-3.1 {
+  CREATE TABLE a(b, c);
+  INSERT INTO a VALUES('', x'');
+  SELECT AVG(b)
+  FROM a;
+} {0.0}
+
+# kill mutants ['2224', '2225', '2226', '2228', '2230', '2232']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-4.1 {
+  CREATE TABLE a(b);
+  SELECT ROUND(TOTAL(1), b)
+  FROM a;
+} {{}}
+
+# kill mutants ['9113', '9117', '9145', '9152', '9184']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-5.1 {
+  CREATE TABLE a(b, c, d, e, f);
+  INSERT INTO a(f, e, b, c) VALUES(0.8355537035355731, 0.21746304429773045,
+                                   -926646034, 0.8855308132481797),
+      ('U蜬kD_y&t', '5]h7Og', 0.020184888567150838, 0.9189464038694158);
+  ALTER TABLE a RENAME b TO g;
+  ALTER TABLE a RENAME e TO h;
+  INSERT INTO a(g, h) VALUES(-1.953347304E9, ']');
+  ALTER TABLE a ADD i;
+  ALTER TABLE a RENAME TO j;
+  INSERT INTO j VALUES(0.039860052271768476, '1132958900', 0.8626543216871897,
+                       0.20538886824387914, NULL, 'd9c6');
+  ALTER TABLE j RENAME TO a;
+  SELECT TOTAL(g)
+  FROM a;
+} {-2879993337.93996}
+
+# kill mutants ['4725', '4726']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test func-dredd-6.1 {
+   CREATE TABLE t0 (c0 , a , b );
+                                  INSERT INTO t0 VALUES ('', 0.07305203361194446, x'');
+                                  INSERT OR IGNORE INTO t0(c0) VALUES (0.9795695777765214);
+                                  CREATE UNIQUE INDEX i39 ON t0(0 ASC,(0)GLOB(0) ASC,CAST(6 COLLATE NOCASE AS BLOB) COLLATE NOCASEc1 COLLATE RTRIM) WHERE 0<>'';
+} {1 {UNIQUE constraint failed: index 'i39'}}
+
+# kill mutants ['10116', '10121', '10122', '10148', '10153', '10154']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-7.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(0.9838824977931739);
+  SELECT TOTAL(c)
+  FROM a;
+} {0.983882497793174}
+
+# kill mutants ['9389']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-8.1 {
+  SELECT SUM(0.7255671203060262);
+} {0.725567120306026}
+
+# kill mutants ['9222', '9223', '9224', '9225', '9227', '9242', '9253', '9254', '9255', '9256', '9257', '9259', '9274', '9298', '9330', '9347', '9350', '9379', '9382', '9392', '9394', '9395', '9409', '9411', '9415', '9441', '9443', '9447', '9704', '9705']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-9.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL), ('');
+  SELECT TOTAL(-9223372036854775808) FROM a;
+} {-1.84467440737096e+19}
+
+# kill mutants ['9029', '9061']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-10.1 {
+  CREATE TABLE t0(c0, c1, c2);
+  INSERT INTO t0(c0, c2) VALUES(0.6614149936274412, '3982');
+  INSERT INTO t0(c2) VALUES(0.5616258931165699), (0.987284501062377), ('');
+  INSERT OR FAIL INTO t0(c2, c1) VALUES(0.8145773225209475, 0.06337740041948436),
+      (x'', x''), (CAST(0 AS INTEGER), NULL);
+  INSERT OR IGNORE INTO t0 VALUES(x'', 0.07305203361194446, x'');
+  INSERT OR IGNORE INTO t0(c0) VALUES(0.9795695777765214);
+  ALTER TABLE t0 ADD COLUMN c76 INTEGER;
+  INSERT OR IGNORE INTO t0(c0, c1) VALUES(x'', '');
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  INSERT OR FAIL INTO t0 VALUES(NULL, '', NULL, 4.0996288E7);
+  INSERT OR ROLLBACK INTO t0(c2) VALUES(NULL);
+  INSERT OR IGNORE INTO t0 VALUES(1.338057989E9, 0.8039272659156715, '', '');
+  INSERT OR REPLACE INTO t0(c1, c0, c2) VALUES('', '', 0.7208146725216952);
+  INSERT OR IGNORE INTO t0(c0, c1, c76) VALUES('', '', 9.77169169E8);
+  INSERT OR IGNORE INTO t0(c0) VALUES(''), (NULL), (NULL);
+  INSERT OR FAIL INTO t0 VALUES(0.9514478696444262, 3, x'', '');
+  INSERT OR REPLACE INTO t0(c0) VALUES(1.154590921E9), (''), (2);
+  INSERT OR FAIL INTO t0(c1, c0, c76) VALUES(1.675105642E9, x'', NULL);
+  INSERT OR ABORT INTO t0 VALUES(0.057677074347189494, 1.578454821E9, '',
+                                 0.4819484341827467),
+      (NULL, x'', 9, 1), (x'', '', NULL, '');
+  SELECT TOTAL(0.5220392171609598)
+      OVER(GROUPS UNBOUNDED PRECEDING EXCLUDE CURRENT ROW) FROM t0;
+} {13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185 13.573019646185}
+
+# kill mutants ['8945', '8946', '8947', '8948', '8950', '8951', '8956', '8958', '8962', '8965', '8966', '8979', '8980', '8981', '8982', '8983', '8994', '8998', '9011', '9012', '9013', '9014', '9015']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-11.1 {
+  SELECT load_extension(2);
+} {1 {2.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['10123', '10128', '10155', '10160', '9030', '9034', '9035', '9045', '9049', '9052', '9053', '9055', '9060', '9062', '9077', '9081', '9084', '9087', '9153', '9185']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-12.1 {
+  CREATE TABLE t0(c0, c1, c2);
+  INSERT INTO t0(c0) VALUES(0.9795695777765214);
+  ALTER TABLE t0 ADD c76;
+  INSERT INTO t0(c0, c1) VALUES('', '');
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  INSERT OR FAIL INTO t0 VALUES(NULL, '', NULL, 4.0996288E7);
+  INSERT OR ROLLBACK INTO t0(c2) VALUES(NULL);
+  INSERT OR IGNORE INTO t0 VALUES(1.338057989E9, 0.8039272659156715, '', '');
+  INSERT OR REPLACE INTO t0(c1, c0, c2) VALUES('', '', 0.7208146725216952);
+  INSERT OR IGNORE INTO t0(c0, c1, c76) VALUES('', '', 9.77169169E8);
+  INSERT OR IGNORE INTO t0(c0) VALUES(''), (NULL), (NULL);
+  INSERT OR FAIL INTO t0 VALUES(0.9514478696444262, 3, x'', '');
+  INSERT OR REPLACE INTO t0(c0) VALUES(1.154590921E9), (''), (2);
+  INSERT OR ABORT INTO t0 VALUES(0.057677074347189494, 1.578454821E9, '',
+                                 0.4819484341827467),
+      (NULL, x'', 9, 1), (x'', '', NULL, '');
+  SELECT TOTAL(0.52203921716095980) FROM t0;
+} {9.39670590889728}
+
+# kill mutants ['2321', '2323', '2324', '2326', '2330']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-13.1 {
+  SELECT ROUND(0);
+} {0.0}
+
+# kill mutants ['5608', '5623']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-14.1 {
+  CREATE TABLE t0(c0, c1);
+  INSERT INTO t0 VALUES('', '');
+  SELECT CHAR(0 NOT BETWEEN(t0.c1) AND 0) FROM t0 ORDER BY(0)
+      OR(LIKE(NULL, t0.c0, 'a'));
+} {u0001}
+
+# kill mutants ['8974', '8977', '8978', '9006', '9009', '9010']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-15.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(NULL);
+  ALTER TABLE a RENAME TO d;
+  SELECT load_extension(c)
+  FROM d;
+} {{}}
+
+# kill mutants ['5570', '5577', '5602', '5609', '5611', '5612', '5613', '5614', '5621', '5622', '5625', '5626']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-16.1 {
+  CREATE TABLE t0(c0, a);
+  INSERT INTO t0 VALUES('', '');
+  SELECT CHAR(0) FROM t0 ORDER BY(0) OR(LIKE(NULL, t0.c0, 'b'));
+} {{}}
+
+# kill mutants ['5624']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-17.1 {
+  CREATE TABLE a(b, c, d);
+  INSERT INTO a(b, d) VALUES(NULL, 'eJ7D');
+  UPDATE a SET c = '3481';
+  SELECT CHAR(c)
+  FROM a;
+} {඙}
+
+# kill mutants ['9025', '9036', '9068']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-18.1 {
+  CREATE TABLE t0(c0, c1, c2);
+  INSERT INTO t0(c0, c2) VALUES(0.6614149936274412, '3982');
+  INSERT INTO t0(c2) VALUES(0.5616258931165699), (0.987284501062377), ('');
+  INSERT OR FAIL INTO t0(c2, c1) VALUES(0.8145773225209475, 0.06337740041948436),
+      (x'', x''), (CAST(0 AS INTEGER), NULL);
+  INSERT OR IGNORE INTO t0(c0) VALUES(0.9795695777765214);
+  ALTER TABLE t0 ADD COLUMN c76 INTEGER;
+  INSERT OR IGNORE INTO t0(c0, c1) VALUES(x'', '');
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  INSERT OR FAIL INTO t0 VALUES(NULL, '', NULL, 4.0996288E7);
+  INSERT INTO t0(c2) VALUES(NULL);
+  SELECT TOTAL(0.52203921716095980) FROM t0;
+} {6.26447060593152}
+
+# kill mutants ['5437']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-19.1 {
+   CREATE TABLE t0 (INTEGER );
+            CREATE TABLE IF NOT EXISTS t1 (c0 );
+           SELECT COUNT(), UNICODE(CAST(t1.c0 AS a)) FROM t1, t0 WHERE 0;
+} {0 {}}
+
+# kill mutants ['2335']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-20.1 {
+  SELECT ROUND(2);
+} {2.0}
+
+# kill mutants ['9931', '9963']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-21.1 {
+  CREATE TABLE a(b);
+  REPLACE INTO a VALUES(0), (2.32209478E8), ('124456055');
+  ALTER TABLE a RENAME TO t1;
+  INSERT INTO t1 VALUES(0.7649772177776033);
+  INSERT INTO t1 VALUES('	'), (0.40317379659046515), ('');
+  INSERT OR FAIL INTO t1 VALUES(''), (''), ('');
+  SELECT SUM(0.8854773378157427) FROM t1;
+} {8.85477337815743}
+
+# kill mutants ['8989', '8990']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-22.1 {
+  CREATE TABLE a(b, c);
+  INSERT INTO a VALUES(0.8145773225209475, 0.06337740041948436), ('', x'');
+  SELECT AVG(b)
+  FROM a;
+} {0.407288661260474}
+
+# kill mutants ['8944']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-23.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  UPDATE a SET b = load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+do_execsql_test func-dredd-23.2 {
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['8997']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-24.1 {
+  SELECT load_extension('834788099');
+} {1 {834788099.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['2319', '2322', '2325']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-25.1 {
+  SELECT ROUND(NULL);
+} {{}}
+
+# kill mutants ['2331', '2333']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-26.1 {
+  SELECT ROUND('');
+} {0.0}
+
+# kill mutants ['4797']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-27.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  INSERT INTO a(b) VALUES('374737120');
+  INSERT INTO a VALUES(NULL, '346819220', NULL, 4.0996288E7);
+  SELECT e FROM a ORDER BY SQLITE_COMPILEOPTION_GET(e);
+} {40996288.0 {}}
+
+# kill mutants ['2334']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-28.1 {
+  SELECT ROUND(~0);
+} {-1.0}
+
+# kill mutants ['9664']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-29.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0.46974304581599635), (NULL), ('');
+  SELECT TOTAL(-9223372036854775808) FROM a;
+} {-2.76701161105643e+19}
+
+# kill mutants ['2328', '2329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-30.1 {
+  SELECT ROUND(0 IS FALSE);
+} {1.0}
+
+# kill mutants ['8963']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test func-dredd-31.1 {
+  
+           ;
+           SELECT DISTINCT (load_extension(0, x'd671')) GROUP BY CAST(CAST('kP67猀(' AS NUMERIC) AS ) ;
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+finish_test

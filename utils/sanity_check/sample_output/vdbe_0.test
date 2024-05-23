@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['29459', '29460', '29461', '29463', '29464', '29465', '29467', '29468', '29469', '29470', '29472', '29473', '29477', '29479', '29482', '29483', '29484', '29488', '29491', '29492']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-1.1 {
+  BEGIN;
+  PRAGMA journal_mode = WAL;
+} {1 {cannot change into wal mode from within a transaction}}
+
+finish_test

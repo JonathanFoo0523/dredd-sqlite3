@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3609', '3641']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-4.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  REPLACE INTO a VALUES('1f84', ''), (NULL, 0.31702424464621537), ('', NULL);
+  SELECT DISTINCT DENSE_RANK() OVER(), LAST_VALUE(0) OVER(PARTITION BY 0) FROM a;
+} {1 0}
+
+finish_test

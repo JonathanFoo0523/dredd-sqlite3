@@ -1,0 +1,4 @@
+CREATE TABLE    a( TEXT) ;
+    VACUUM;
+    PRAGMA cell_size_check = true;
+    DELETE FROM b WHERE(0 );

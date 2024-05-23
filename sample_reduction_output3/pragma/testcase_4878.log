@@ -1,0 +1,2 @@
+PRAGMA temp.defer_foreign_keys = false;
+

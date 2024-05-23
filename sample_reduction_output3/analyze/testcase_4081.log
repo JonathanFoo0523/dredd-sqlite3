@@ -1,0 +1,3 @@
+ANALYZE;
+INSERT INTO sqlite_stat1 VALUES('rt0', 'null', ' unordered noskipscan');
+ANALYZE sqlite_master;

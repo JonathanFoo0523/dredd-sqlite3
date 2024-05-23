@@ -1,0 +1,2 @@
+CREATE VIEW a AS SELECT 5;
+PRAGMA optimize;

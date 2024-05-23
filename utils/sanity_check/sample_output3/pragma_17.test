@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3931']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test pragma-dredd-18.1 {
+  PRAGMA cache_spill = -2851909032242852183;
+  SELECT load_extension('');
+} {1 {unable to open shared library []}}
+
+finish_test

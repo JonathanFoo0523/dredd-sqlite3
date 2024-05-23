@@ -1,0 +1,6 @@
+CREATE TABLE a(b);
+        CREATE TABLE e(c);
+        ALTER TABLE e ADD f;
+        ALTER TABLE e RENAME c TO g;
+        ALTER TABLE e RENAME TO d;
+        SELECT COUNT()     OVER(PARTITION BY CASE WHEN f THEN 2 END BETWEEN 0 AND 0 > g),     AVG(0) FROM d JOIN a ON(f) BETWEEN f > g AND 0;

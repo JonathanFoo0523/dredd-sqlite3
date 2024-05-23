@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['12839']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-16.1 {
+  PRAGMA wal_checkpoint;
+} {0 -1 -1}
+
+finish_test

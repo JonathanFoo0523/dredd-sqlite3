@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4049', '4081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-1.1 {
+  ANALYZE;
+  INSERT INTO sqlite_stat1 VALUES('rt0', 'null', ' unordered noskipscan');
+  ANALYZE sqlite_master;
+} {}
+
+finish_test

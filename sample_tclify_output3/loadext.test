@@ -1,0 +1,69 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['0', '1', '10', '104', '107', '110', '117', '119', '12', '123', '127', '128', '13', '14', '140', '148', '151', '152', '154', '160', '17', '172', '18', '180', '183', '184', '186', '2', '20', '22', '24', '27', '28', '39', '40', '41', '42', '44', '45', '46', '49', '50', '52', '54', '56', '59', '60', '63', '64', '67', '7', '72', '75', '751', '752', '753', '754', '756', '759', '760', '761', '762', '764', '767', '768', '769', '771', '772', '78', '788', '790', '791', '794', '795', '798', '799', '8', '800', '801', '803', '804', '820', '822', '823', '826', '827', '830', '831', '85', '87', '9', '91', '923', '924', '925', '926', '927', '934', '935', '939', '940', '942', '944', '945', '947', '948', '95', '954', '955', '956', '957', '958', '959', '96', '99', '998']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-1.1 {
+  SELECT(load_extension(9));
+} {1 {9.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['951', '952']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-2.1 {
+  PRAGMA automatic_index;
+} {1}
+
+# kill mutants ['933', '936', '937', '938', '941', '946']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-3.1 {
+  CREATE VIEW a AS SELECT b;
+} {}
+
+# kill mutants ['66']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-4.1 {
+  SELECT load_extension(2.50783896E8);
+} {1 {250783896.0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['98']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-5.1 {
+  CREATE TABLE a(c0 );
+       ALTER TABLE a ADD  c94 ;
+       INSERT   INTO a(c94) VALUES(load_extension(0));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['38', '6']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-6.1 {
+  CREATE TABLE t0(c0);
+  ALTER TABLE t0 ADD a;
+  REPLACE INTO t0 VALUES(0.23067731878589115, '');
+  UPDATE OR IGNORE t0 SET c0 = '' WHERE load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['950']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-7.1 {
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-8.1 {
+  PRAGMA cell_size_check;
+} {0}
+
+finish_test

@@ -1,0 +1,5 @@
+        CREATE TABLE t1 (c0  );
+            CREATE INDEX i46 ON t1(0 ASC)          ;
+            ALTER TABLE t1 RENAME c0 TO c15;
+            ALTER TABLE t1 RENAME TO t0;
+            UPDATE t0 SET c15=0;

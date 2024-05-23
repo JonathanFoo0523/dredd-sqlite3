@@ -1,0 +1,22 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['15324', '15325', '15356', '15357']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-5.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES(NULL);
+  ALTER TABLE c ADD d;
+  ALTER TABLE c ADD e;
+  ALTER TABLE c RENAME d TO f;
+  UPDATE c SET(e, e) = ('1083109894', '823047848');
+  UPDATE c SET b = '0.4111041224888268';
+  REPLACE INTO c(f) VALUES(6);
+  CREATE INDEX g ON c(0 BETWEEN(b) AND 0);
+  SELECT DISTINCT TRIM(e)
+  FROM c WHERE(UNLIKELY('49483776'));
+} {823047848 {}}
+
+finish_test

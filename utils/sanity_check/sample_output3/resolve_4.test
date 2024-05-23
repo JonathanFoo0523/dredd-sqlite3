@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8029']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-5.1 {
+  SELECT COUNT() GROUP BY 0;
+} {1 {1st GROUP BY term out of range - should be between 1 and 1}}
+
+finish_test

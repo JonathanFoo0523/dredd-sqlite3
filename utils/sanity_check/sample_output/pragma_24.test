@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4871']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pragma-dredd-25.1 {
+  PRAGMA defer_foreign_keys = a;
+  INSERT INTO b VALUES('merge=21188628858');
+} {1 {no such table: b}}
+
+finish_test

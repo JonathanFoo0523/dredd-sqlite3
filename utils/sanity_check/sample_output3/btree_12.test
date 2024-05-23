@@ -1,0 +1,16 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10897']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-13.1 {
+  PRAGMA encoding = 'UTF16';
+           CREATE TEMPORARY TABLE t0(INT c1 BLOB, c2 INT);
+           CREATE TEMPORARY TABLE t1(c0 TEXT, c1 INT,                                         c2 REAL CHECK0);
+           PRAGMA cell_size_check = true;
+           CREATE INDEX i49 ON t0(0 ASC,                        (0 * 0) COLLATE BINARY ASC,                        x'' DESC);
+           CREATE UNIQUE INDEX IF NOT EXISTS i37 ON t1(((c0)BETWEEN(c1) AND(c2))COLLATE NOCASE DESC, c0 ASC,    (c0 IN())COLLATE BINARY COLLATE RTRIM) WHERE CAST('2116719410' AS TEXT);
+} {}
+
+finish_test

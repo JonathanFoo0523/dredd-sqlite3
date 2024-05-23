@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['5608', '5623']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-14.1 {
+  CREATE TABLE t0(c0, c1);
+  INSERT INTO t0 VALUES('', '');
+  SELECT CHAR(0 NOT BETWEEN(t0.c1) AND 0) FROM t0 ORDER BY(0)
+      OR(LIKE(NULL, t0.c0, 'a'));
+} {u0001}
+
+finish_test

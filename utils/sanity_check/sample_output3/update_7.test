@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1837']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test update-dredd-8.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  UPDATE c SET d ='' WHERE e;
+} {1 {no such column: d}}
+
+finish_test

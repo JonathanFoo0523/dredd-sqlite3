@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['27175']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-10.1 {
+  CREATE TABLE t0(a);
+    SELECT  '' FROM t0 WHERE(CASE WHEN(0 NOT BETWEEN'' AND 0)                                  THEN json_array_length(x'') END);
+} {1 {malformed JSON}}
+
+finish_test

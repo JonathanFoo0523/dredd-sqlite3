@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['19574', '19578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-8.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('668165218');
+  CREATE VIEW c(d)
+  AS SELECT 0 IN() FROM a;
+  SELECT(d) FROM c;
+} {0}
+
+finish_test

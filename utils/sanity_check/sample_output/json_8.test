@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['17078']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-9.1 {
+       SELECT    (((json_insert(x'f42e', 0.9141245801084092, ''))>=LOWER(x'')));
+} {1 {malformed JSON}}
+
+finish_test

@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['15448', '15480']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-5.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  CREATE INDEX d ON a(0) WHERE 0;
+  UPDATE a SET c = 5;
+  PRAGMA cache_spill;
+} {1765}
+
+finish_test

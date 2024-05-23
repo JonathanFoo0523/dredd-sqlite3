@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11149']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-18.1 {
+  PRAGMA cell_size_check = true;
+  CREATE TABLE t0(a);
+  INSERT INTO t0 VALUES(''), (3), (NULL);
+  ALTER TABLE t0 RENAME TO t1;
+  BEGIN TRANSACTION;
+  INSERT OR IGNORE INTO t1 VALUES(x'');
+  ROLLBACK;
+  INSERT INTO t1 VALUES(NULL);
+} {}
+
+finish_test

@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3156', '3188']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-2.1 {
+  CREATE TEMPORARY TABLE a(b);
+  ANALYZE a;
+} {}
+
+finish_test

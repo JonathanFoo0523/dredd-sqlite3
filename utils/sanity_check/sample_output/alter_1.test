@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1000', '1010', '1011', '1014', '899', '910', '931', '942', '968', '978', '979', '982']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-2.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO d;
+  ALTER TABLE d ADD e;
+  ALTER TABLE d ADD c;
+  INSERT INTO d VALUES('', NULL, 0.25571066417654464),
+      (0.7716346881230244, '', '');
+  CREATE INDEX f ON d(e DESC);
+  SELECT(CAST(e AS)) FROM d;
+} {0 {}}
+
+finish_test

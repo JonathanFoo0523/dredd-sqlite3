@@ -1,0 +1,17 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2340']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-21.1 {
+  PRAGMA integrity_check;
+} {ok}
+do_execsql_test pragma-dredd-21.2 {
+  PRAGMA secure_delete = true;
+} {1}
+do_execsql_test pragma-dredd-21.3 {
+  PRAGMA temp.secure_delete;
+} {1}
+
+finish_test

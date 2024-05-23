@@ -1,0 +1,8 @@
+CREATE TABLE a(b, c, d);
+ALTER TABLE a RENAME d TO e;
+PRAGMA reverse_unordered_selects = true;
+CREATE INDEX f ON a(e);
+REPLACE INTO a VALUES(0.8693181798085129, '', 9);
+INSERT INTO a(c) VALUES(6);
+VACUUM;
+UPDATE a SET(e) = 0;

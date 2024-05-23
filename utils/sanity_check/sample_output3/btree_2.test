@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10898']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-3.1 {
+  PRAGMA cell_size_check = true;
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0.9594641972313799), (0.9594641972313799);
+  CREATE UNIQUE INDEX c ON a(0);
+} {1 {UNIQUE constraint failed: index 'c'}}
+do_execsql_test btree-dredd-3.2 {
+  CREATE INDEX d ON a(0);
+  ALTER TABLE a RENAME TO e;
+} {}
+
+finish_test

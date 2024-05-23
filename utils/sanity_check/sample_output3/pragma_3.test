@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['13009', '13012', '13015', '13041', '13044', '13047']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-4.1 {
+  CREATE VIEW a AS SELECT 5;
+  PRAGMA optimize;
+} {}
+
+finish_test

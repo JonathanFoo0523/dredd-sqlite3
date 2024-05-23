@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4624', '4656']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-2.1 {
+  PRAGMA case_sensitive_like = ON;
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a((1)LIKE(1));
+} {1 {non-deterministic functions prohibited in index expressions}}
+
+finish_test

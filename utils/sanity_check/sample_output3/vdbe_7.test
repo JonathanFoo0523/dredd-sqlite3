@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['28697', '28698', '28710']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-8.1 {
+  SELECT NTILE(0) OVER();
+} {1 {argument of ntile must be a positive integer}}
+
+finish_test

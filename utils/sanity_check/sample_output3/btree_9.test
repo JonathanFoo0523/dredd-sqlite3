@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10899', '10901', '10905', '10910', '10911', '10930', '10948', '10950', '10968', '10979', '10985', '10992', '10996', '10997', '11062', '11063', '11067', '11078', '11079', '11100', '11102', '11103', '11107', '11108', '11132', '11133', '11135', '11136', '11138', '11139', '11174', '11175', '11180', '11184', '11236', '11237', '11238']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-10.1 {
+  PRAGMA encoding = 'UTF16';
+           CREATE TEMPORARY VIEW v00 AS SELECT ALL0 FROM vt1, t1,     vt0 WHERE0 GROUP     BY((CAST0)ISNULL) HAVING((((vt1.c0)ISNULL))NOT BETWEEN(         CASE vt0.c2 WHEN vt0.c2 THEN t1.c66 ELSE NULL END)                                                 AND((NOT(vt0.c1)))) ORDER     BY(((((-(t1.c66)))AND(CAST('-1132263021' AS REAL))))OR(LIKELY(vt0.c1))) ASC,     t1.c34 LIMIT - 138073592;
+           PRAGMA cell_size_check = true;
+           ANALYZE temp;
+} {}
+
+finish_test

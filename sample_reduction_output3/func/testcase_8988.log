@@ -1,0 +1,4 @@
+CREATE TABLE a(b, c);
+INSERT INTO a VALUES('', x'');
+SELECT AVG(b)
+FROM a;

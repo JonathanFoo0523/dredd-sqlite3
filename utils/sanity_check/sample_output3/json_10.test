@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['15631']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-11.1 {
+   CREATE TABLE t0 (a CHECK  ((1, 2, 0, 2, 0) NOT BETWEEN ('s%W]6T&u', 0, 0, 0, 0) AND (2  , 2  , 2  , 1 , 1 )) , b , c );
+                           ALTER TABLE t0 RENAME b TO c47;
+                           ALTER TABLE t0 ADD d;
+                           INSERT INTO t0 VALUES ('', x'e393', x'', NULL);
+                           SELECT DISTINCT 0, t0.c47, 0, 0 COLLATE RTRIM, HEX(DISTINCT json_valid(t0.c47)) FROM t0 WHERE (0)OR'816956413'  ;
+} {0 uffffffe3uffffff93 0 30}
+
+finish_test

@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2379', '2381', '2388', '2411', '2413']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-3.1 {
+  SELECT TOTAL(0 IS FALSE) OVER();
+} {1.0}
+
+finish_test

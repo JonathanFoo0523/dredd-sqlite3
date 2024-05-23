@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14482']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-4.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CASE WHEN(b IN(b)) THEN 0 END);
+  BEGIN;
+  INSERT INTO a VALUES('1348796372');
+  ROLLBACK;
+} {}
+
+finish_test

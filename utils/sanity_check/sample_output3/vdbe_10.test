@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8227']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-11.1 {
+  PRAGMA encoding = 'UTF16be';
+  CREATE TABLE a(b CHECK(CAST(0 AS TEXT) BETWEEN 0 AND(0)));
+  INSERT INTO a VALUES(0.017351825035087032);
+} {}
+
+finish_test

@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['7468']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-8.1 {
+  SELECT 0 EXCEPT SELECT 4.99654881E8 ORDER BY 9;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+finish_test

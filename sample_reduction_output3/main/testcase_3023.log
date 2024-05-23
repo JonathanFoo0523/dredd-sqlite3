@@ -1,0 +1,5 @@
+PRAGMA encoding = 'UTF16be';
+CREATE TABLE t0(a, c1, b);
+CREATE INDEX c ON t0(0 > CAST(a AS TEXT), c1);
+INSERT INTO t0(a, b) VALUES(x'', x'');
+UPDATE OR IGNORE t0 SET c1 = x'';

@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['28160']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-15.1 {
+  
+                SELECT     ((json_array_length(0.451523045564149, NULL))  )  ;
+} {{}}
+
+finish_test

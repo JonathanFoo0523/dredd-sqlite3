@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1883']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vacuum-dredd-2.1 {
+  VACUUM;
+  ROLLBACK;
+} {1 {cannot rollback - no transaction is active}}
+
+finish_test

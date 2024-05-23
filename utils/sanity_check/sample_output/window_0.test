@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['259', '260', '261', '262', '263']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-1.1 {
+  SELECT NTH_VALUE('', 0) OVER(RANGE CURRENT ROW EXCLUDE NO OTHERS);
+} {1 {second argument to nth_value must be a positive integer}}
+
+finish_test

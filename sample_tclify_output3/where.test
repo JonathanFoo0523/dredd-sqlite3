@@ -1,0 +1,99 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2440', '2441', '2446', '2449', '2450', '2458', '2459', '2472', '2477', '2478', '2481', '2483', '2487', '2491']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-1.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES('15f2'), ('1750636613');
+  SELECT DISTINCT 0 FROM c;
+} {0}
+
+# kill mutants ['2445']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-2.1 {
+  CREATE TABLE t0(c0 NOT NULL UNIQUE, c1  '' c2 REAL);
+  ALTER TABLE t0 RENAME COLUMN c1 TO c22;
+  INSERT OR REPLACE INTO t0(c22, c0) VALUES('', x'');
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  SELECT DISTINCT 0 FROM t0;
+} {0}
+
+# kill mutants ['18064']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-3.1 {
+  CREATE TABLE a(b BLOB);
+  INSERT INTO a VALUES(2.013850463E9), ('a259');
+  CREATE INDEX c ON a(0 | b);
+  SELECT LEAD(b) OVER() FROM a;
+} {a259 {}}
+
+# kill mutants ['15324', '15325', '15356', '15357']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-4.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES(NULL);
+  ALTER TABLE c ADD d;
+  ALTER TABLE c ADD e;
+  ALTER TABLE c RENAME d TO f;
+  UPDATE c SET(e, e) = ('1083109894', '823047848');
+  UPDATE c SET b = '0.4111041224888268';
+  REPLACE INTO c(f) VALUES(6);
+  CREATE INDEX g ON c(0 BETWEEN(b) AND 0);
+  SELECT DISTINCT TRIM(e)
+  FROM c WHERE(UNLIKELY('49483776'));
+} {823047848 {}}
+
+# kill mutants ['15448', '15480']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-5.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  CREATE INDEX d ON a(0) WHERE 0;
+  UPDATE a SET c = 5;
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['15447', '15479']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-6.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  CREATE INDEX d ON a(CASE WHEN CASE WHEN NULL THEN 0 END THEN 0 END) WHERE 0;
+  CREATE INDEX e ON a(CAST(0 AS)) WHERE 0;
+  UPDATE a SET(c) = 0;
+  CREATE INDEX f ON a(0 DESC) WHERE 0;
+  VACUUM;
+} {}
+
+# kill mutants ['32210', '32211']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-7.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(''), (0.44026056052630147);
+  ALTER TABLE a RENAME TO c;
+  PRAGMA reverse_unordered_selects = true;
+  ALTER TABLE c RENAME TO d;
+  SELECT b FROM d;
+} {0.440260560526301 {}}
+
+# kill mutants ['31073']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-8.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  CREATE TABLE c(d);
+  SELECT DISTINCT 0 FROM a, c;
+} {}
+
+finish_test

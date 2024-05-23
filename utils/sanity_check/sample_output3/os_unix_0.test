@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6923', '6924', '6925', '6926', '6927', '6928', '6929', '6930', '6931', '6932', '6933', '6934', '6935', '6936', '6937', '6938', '6939', '6940', '6941']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-1.1 {
+  PRAGMA mmap_size = 8347715345;
+} {2147418112}
+
+finish_test

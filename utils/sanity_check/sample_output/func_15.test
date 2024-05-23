@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['5570', '5577', '5602', '5609', '5611', '5612', '5613', '5614', '5621', '5622', '5625', '5626']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-16.1 {
+  CREATE TABLE t0(c0, a);
+  INSERT INTO t0 VALUES('', '');
+  SELECT CHAR(0) FROM t0 ORDER BY(0) OR(LIKE(NULL, t0.c0, 'b'));
+} {{}}
+
+finish_test

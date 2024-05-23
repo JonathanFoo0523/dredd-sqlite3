@@ -1,0 +1,16 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['12888', '12892', '12920', '12924']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pragma-dredd-10.1 {
+  BEGIN;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+do_catchsql_test pragma-dredd-10.2 {
+  PRAGMA main.optimize;
+  INSERT INTO a VALUES('263b');
+} {1 {no such table: a}}
+
+finish_test

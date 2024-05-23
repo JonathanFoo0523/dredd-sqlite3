@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-39.1 {
+  CREATE TABLE a(b);
+      ALTER TABLE a RENAME TO c;
+      INSERT INTO c VALUES(0.7649772177776033);
+      SELECT DISTINCT(SQLITE_COMPILEOPTION_USED(0Xfffffffd1c934f6)) FROM c;
+} {0}
+do_catchsql_test func-dredd-39.2 {
+      SELECT DISTINCT load_extension(0.7140799392846234) FROM c;
+} {1 {0.714079939284623.so: cannot open shared object file: No such file or directory}}
+
+finish_test

@@ -1,0 +1,126 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4049', '4081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-1.1 {
+  ANALYZE;
+  INSERT INTO sqlite_stat1 VALUES('rt0', 'null', ' unordered noskipscan');
+  ANALYZE sqlite_master;
+} {}
+
+# kill mutants ['3156', '3188']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-2.1 {
+  CREATE TEMPORARY TABLE a(b);
+  ANALYZE a;
+} {}
+
+# kill mutants ['3157']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-3.1 {
+  CREATE TABLE t0(c0);
+  CREATE TEMPORARY TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  ANALYZE a;
+  INSERT INTO a VALUES('b76f');
+  INSERT INTO t0 VALUES(NULL);
+  ALTER TABLE t0 ADD c;
+  UPDATE t0 SET(c, c, c0) = ('', '', 4);
+  INSERT OR IGNORE INTO t0(c0) VALUES('');
+  SELECT c0 FROM t0, a;
+} {4 {} 4 {}}
+
+# kill mutants ['3212', '4329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-4.1 {
+  CREATE TEMP TABLE a(b, c, d, e);
+  ALTER TABLE a ADD f;
+  ALTER TABLE a RENAME TO g;
+  ALTER TABLE g ADD h;
+  CREATE INDEX i ON g((e, 2, 3)BETWEEN(0, 0, 2) AND(0, 1, 0), 0);
+  INSERT INTO g(b, e) VALUES(0, 'xi');
+  ALTER TABLE g ADD j;
+  ALTER TABLE g RENAME h TO k;
+  INSERT INTO g(f, j, k, c, d)
+      VALUES(NULL, '1e500', '7969ec6a', 2, '0.5874298399132062');
+  CREATE INDEX l ON g(3);
+  ANALYZE i;
+  SELECT DISTINCT 0, b FROM g;
+} {0 {} 0 0}
+
+# kill mutants ['3211']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-5.1 {
+  CREATE TEMP TABLE c(a);
+  CREATE INDEX b ON c(0);
+  ANALYZE b;
+} {}
+
+# kill mutants ['4080']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-6.1 {
+  CREATE TABLE t0(a);
+  CREATE TABLE b(a);
+  ALTER TABLE b ADD c;
+  ANALYZE;
+  ALTER TABLE t0 ADD d;
+  INSERT INTO b VALUES('fb5e', 0.4754227482868011);
+  INSERT INTO sqlite_stat1 VALUES('t0', 'null', ' noskipscan');
+  INSERT INTO t0 VALUES(NULL, 8), (NULL, 0.69590607505168);
+  INSERT INTO b VALUES(NULL, 'C');
+  ANALYZE sqlite_master;
+  SELECT b.a FROM b, t0;
+} {fb5e {} fb5e {}}
+
+# kill mutants ['208', '240']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-7.1 {
+  ANALYZE temp;
+  ANALYZE temp;
+} {}
+
+# kill mutants ['1597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-8.1 {
+  CREATE TEMP TABLE a(b, c, d, e, f);
+  CREATE INDEX g ON a(0, 0, 0, CASE WHEN 1 THEN 0 END, 0);
+  REPLACE INTO a VALUES(NULL, 0.816174347201423, '06?翩R', '', x'');
+  ANALYZE temp;
+} {}
+
+# kill mutants ['2960', '2992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test analyze-dredd-9.1 {
+  ANALYZE;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+do_execsql_test analyze-dredd-9.2 {
+  REINDEX;
+  PRAGMA temp.cache_size;
+} {0}
+
+# kill mutants ['3131']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-10.1 {
+   ANALYZE temp;
+} {}
+
+# kill mutants ['3398']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-11.1 {
+  ANALYZE temp;
+} {}
+
+finish_test

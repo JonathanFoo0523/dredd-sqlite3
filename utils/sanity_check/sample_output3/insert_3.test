@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-4.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME d TO e;
+  PRAGMA reverse_unordered_selects = true;
+  CREATE INDEX f ON a(e);
+  REPLACE INTO a VALUES(0.8693181798085129, '', 9);
+  INSERT INTO a(c) VALUES(6);
+  VACUUM;
+  UPDATE a SET(e) = 0;
+} {}
+
+finish_test

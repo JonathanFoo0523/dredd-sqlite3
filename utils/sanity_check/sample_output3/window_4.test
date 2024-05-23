@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['7561', '7593']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-5.1 {
+  SELECT PERCENT_RANK() OVER(), LAG(0, CAST(CASE WHEN 0 THEN 6 END AS), 0) OVER();
+} {0.0 0}
+
+finish_test

@@ -1,0 +1,17 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['9931', '9963']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-21.1 {
+  CREATE TABLE a(b);
+  REPLACE INTO a VALUES(0), (2.32209478E8), ('124456055');
+  ALTER TABLE a RENAME TO t1;
+  INSERT INTO t1 VALUES(0.7649772177776033);
+  INSERT INTO t1 VALUES('	'), (0.40317379659046515), ('');
+  INSERT OR FAIL INTO t1 VALUES(''), (''), ('');
+  SELECT SUM(0.8854773378157427) FROM t1;
+} {8.85477337815743}
+
+finish_test

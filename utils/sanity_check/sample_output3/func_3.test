@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2224', '2225', '2226', '2228', '2230', '2232']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-4.1 {
+  CREATE TABLE a(b);
+  SELECT ROUND(TOTAL(1), b)
+  FROM a;
+} {{}}
+
+finish_test

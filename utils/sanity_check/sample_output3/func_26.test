@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4797']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-27.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  INSERT INTO a(b) VALUES('374737120');
+  INSERT INTO a VALUES(NULL, '346819220', NULL, 4.0996288E7);
+  SELECT e FROM a ORDER BY SQLITE_COMPILEOPTION_GET(e);
+} {40996288.0 {}}
+
+finish_test

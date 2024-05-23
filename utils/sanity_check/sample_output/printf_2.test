@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10178']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-3.1 {
+  SELECT (((0BETWEEN0 AND0)) (CAST(rt0.c0 AS NUMERIC))),     CAST((((((0OR(rt0.c1)))AND(0.5223613115028624)))AND0))AND(rt0.c1))              AS REAL),     MIN(((rt0.c1) & (rt0.c2))) FROM rt0;
+} {1 {unrecognized token: "0BETWEEN0"}}
+
+finish_test

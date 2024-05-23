@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6786', '6789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-6.1 {
+  SELECT a() BETWEEN 0 AND(b);
+} {1 {no such function: a}}
+
+finish_test

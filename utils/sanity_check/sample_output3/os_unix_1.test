@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['15367', '15368', '15370', '15371', '15372', '15376', '15379', '15380', '15381', '15382', '15384', '15390', '15391', '15392', '15393', '15394']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test os_unix-dredd-2.1 {
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+finish_test

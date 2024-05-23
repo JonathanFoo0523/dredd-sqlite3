@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['651']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-3.1 {
+  CREATE TEMP TABLE a(b);
+  CREATE VIRTUAL TABLE c USING d;
+} {1 {no such module: d}}
+
+finish_test

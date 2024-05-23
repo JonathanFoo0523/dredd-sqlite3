@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['224']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-11.1 {
+  ANALYZE temp;
+  CREATE TEMP VIEW a AS SELECT b;
+  ANALYZE a;
+} {}
+
+finish_test

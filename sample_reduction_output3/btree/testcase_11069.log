@@ -1,0 +1,7 @@
+PRAGMA cell_size_check = true;
+CREATE TABLE a(b);
+ANALYZE;
+PRAGMA shrink_memory;
+BEGIN;
+CREATE VIRTUAL TABLE c USING d;
+ALTER TABLE a RENAME TO e;

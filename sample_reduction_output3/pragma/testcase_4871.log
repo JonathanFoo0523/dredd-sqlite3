@@ -1,0 +1,2 @@
+PRAGMA defer_foreign_keys = a;
+ALTER TABLE b RENAME TO c;

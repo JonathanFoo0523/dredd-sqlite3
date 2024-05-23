@@ -1,0 +1,123 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['29459', '29460', '29461', '29463', '29464', '29465', '29467', '29468', '29469', '29470', '29472', '29473', '29477', '29479', '29482', '29483', '29484', '29488', '29491', '29492']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-1.1 {
+  BEGIN;
+  PRAGMA journal_mode = WAL;
+} {1 {cannot change into wal mode from within a transaction}}
+
+# kill mutants ['10240', '10242', '10247', '10249', '10250', '10251']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-2.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  INSERT INTO a VALUES('', NULL);
+  ALTER TABLE a ADD d b;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['10274', '10278']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('|yL	A');
+  ALTER TABLE a ADD c d;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['10248', '10254']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-4.1 {
+  CREATE TABLE a(b c);
+  INSERT INTO a VALUES('|yL	A');
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['29474', '29475', '29476', '29478', '29480', '29481', '29485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-5.1 {
+  PRAGMA journal_mode = WAL;
+} {wal}
+
+# kill mutants ['1238']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-6.1 {
+  SELECT - '546837440';
+} {-546837440}
+
+# kill mutants ['8228', '8236', '8243', '8244', '8245']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-7.1 {
+  CREATE TABLE    t0 (c0  , REAL , a TEXT );
+  ALTER TABLE t0 RENAME a TO c73; ALTER TABLE t0 ADD b ;  
+  INSERT INTO t0 VALUES (2.0354636E7, '', x'', ''), ('342280005', '', '', NULL); -- 0ms
+  CREATE UNIQUE INDEX IF NOT EXISTS i43 ON t0(CAST(0 AS NUMERIC) COLLATE BINARY,CAST(56 COLLATE RTRIM AS REAL) COLLATE RTRIM,0 BETWEEN CASE WHEN c73 THEN 2 END AND 0 COLLATE RTRIM ASC,CASE WHEN 0 THEN 0 ELSE '' END ASC) WHERE c0; -- 0ms
+  ALTER TABLE t0 RENAME TO t1; -- 0ms
+  CREATE INDEX IF NOT EXISTS i91 ON t1(0 ASC,0 COLLATE NOCASE DESC,0 IN ('' NOT BETWEEN 0 AND c73) DESC,CAST(0.7265009826817279 AS REAL)) WHERE 0 BETWEEN 0 AND 0; -- 0ms
+  UPDATE t1 SET c73=x'' ;
+} {}
+
+# kill mutants ['28697', '28698', '28710']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-8.1 {
+  SELECT NTILE(0) OVER();
+} {1 {argument of ntile must be a positive integer}}
+
+# kill mutants ['18628']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-9.1 {
+  SELECT COUNT() OVER() WHERE(json('1016734361'));
+} {1}
+
+# kill mutants ['10245', '10246']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-10.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  ALTER TABLE a ADD c d;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['8227']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-11.1 {
+  PRAGMA encoding = 'UTF16be';
+  CREATE TABLE a(b CHECK(CAST(0 AS TEXT) BETWEEN 0 AND(0)));
+  INSERT INTO a VALUES(0.017351825035087032);
+} {}
+
+# kill mutants ['10244', '10253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-12.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c d;
+  INSERT INTO a VALUES('', NULL);
+  ALTER TABLE a ADD e b;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['10276']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-13.1 {
+  CREATE TABLE a(b c);
+  INSERT INTO a VALUES('|yL	A');
+  ALTER TABLE a ADD d e;
+  PRAGMA integrity_check;
+} {ok}
+
+finish_test

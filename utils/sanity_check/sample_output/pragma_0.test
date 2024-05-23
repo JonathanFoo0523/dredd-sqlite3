@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4224', '4229', '4232', '4243', '4244', '4245', '4246', '4247', '4248', '4249', '4250', '4251', '4252', '4253', '4256']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-1.1 {
+  PRAGMA temp.mmap_size;
+} {}
+
+finish_test

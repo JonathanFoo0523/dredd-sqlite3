@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['173']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-3.1 {
+  CREATE TABLE d(a );
+     ALTER TABLE d RENAME a TO b;
+     ALTER TABLE d RENAME TO t0;
+     CREATE     INDEX c ON t0((((b, b, NULL, b, b))BETWEEN(         0, b, (b), json_insert(), 0)                                               AND(5, 0, b, 0, 0)));
+     UPDATE t0 SET b = (00.5062308122805136);
+} {}
+
+finish_test

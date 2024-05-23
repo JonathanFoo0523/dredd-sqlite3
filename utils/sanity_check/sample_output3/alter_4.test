@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2574', '2576', '2584', '2606', '2608', '2616']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-5.1 {
+  CREATE TABLE a(b CHECK(CASE WHEN 3 THEN(c) WHEN 1 THEN TRUE END), c);
+  INSERT INTO a(b) VALUES('');
+  ALTER TABLE a RENAME c TO d;
+  ALTER TABLE a RENAME b TO e;
+  UPDATE a SET(d) = 0;
+} {1 {CHECK constraint failed: CASE WHEN 3 THEN(d) WHEN 1 THEN TRUE END}}
+
+finish_test

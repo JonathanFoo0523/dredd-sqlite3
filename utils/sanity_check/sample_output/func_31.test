@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11475']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-32.1 {
+  SELECT COUNT() WHERE(TOTAL_CHANGES());
+} {0}
+
+finish_test

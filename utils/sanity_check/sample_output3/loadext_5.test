@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['38', '6']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-6.1 {
+  CREATE TABLE t0(c0);
+  ALTER TABLE t0 ADD a;
+  REPLACE INTO t0 VALUES(0.23067731878589115, '');
+  UPDATE OR IGNORE t0 SET c0 = '' WHERE load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+finish_test

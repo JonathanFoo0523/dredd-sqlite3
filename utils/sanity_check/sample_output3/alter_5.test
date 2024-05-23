@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2438', '2470']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-6.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c AS SELECT DISTINCT b FROM a;
+  ALTER TABLE a RENAME b TO d;
+} {}
+
+finish_test

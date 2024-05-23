@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2440', '2441', '2446', '2449', '2450', '2458', '2459', '2472', '2477', '2478', '2481', '2483', '2487', '2491']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-1.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES('15f2'), ('1750636613');
+  SELECT DISTINCT 0 FROM c;
+} {0}
+
+finish_test

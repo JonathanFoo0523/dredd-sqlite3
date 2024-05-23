@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3023']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-1.1 {
+  PRAGMA encoding = 'UTF16be';
+   CREATE TABLE a(b, c, d);
+   CREATE INDEX e ON a((0 > CAST(b AS TEXT)), c);
+   INSERT INTO a(b, d) VALUES(x'', x'');
+   UPDATE a SET c = 7;
+} {}
+
+finish_test

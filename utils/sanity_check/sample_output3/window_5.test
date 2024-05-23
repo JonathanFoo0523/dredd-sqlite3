@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11983', '12015']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-6.1 {
+  SELECT LAST_VALUE(NULL)
+      OVER(ORDER BY(0, CASE WHEN 8 THEN 6 END, 0) >
+           (0, 0, CASE WHEN 3 THEN 'k|l)d' END)GROUPS(a) PRECEDING);
+} {1 {frame starting offset must be a non-negative integer}}
+
+finish_test

@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['5437']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-19.1 {
+   CREATE TABLE t0 (INTEGER );
+            CREATE TABLE IF NOT EXISTS t1 (c0 );
+           SELECT COUNT(), UNICODE(CAST(t1.c0 AS a)) FROM t1, t0 WHERE 0;
+} {0 {}}
+
+finish_test

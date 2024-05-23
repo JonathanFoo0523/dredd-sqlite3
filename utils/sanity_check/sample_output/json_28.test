@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['28958']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-29.1 {
+  CREATE TABLE t0(a, b, c2);
+  INSERT INTO t0 VALUES('869828524', '', 0.6043611537616679);
+  SELECT CAST(t0.c2 COLLATE NOCASE AS REAL) FROM t0 WHERE(NOT((0)OR'')) ORDER BY
+      json_extract(t0.c2 COLLATE RTRIM, 0, x'');
+} {1 {bad JSON path: '0'}}
+
+finish_test

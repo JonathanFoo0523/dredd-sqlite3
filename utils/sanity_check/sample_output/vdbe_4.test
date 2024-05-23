@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['29474', '29475', '29476', '29478', '29480', '29481', '29485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-5.1 {
+  PRAGMA journal_mode = WAL;
+} {wal}
+
+finish_test

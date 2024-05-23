@@ -1,0 +1,210 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11030', '11031', '11032', '11033', '11034', '11061', '11065']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-1.1 {
+  PRAGMA encoding = 'UTF16';
+                          CREATE TABLE t0 (c0 TEXT );
+                          ALTER TABLE t0 ADD c3 INT;
+                          CREATE INDEX i72 ON t0(c0 ASC,((0)AND(0)) COLLATE NOCASE DESC);
+                          PRAGMA cell_size_check = true;
+                          CREATE INDEX i56 ON t0(((((((((((((((c0)IS(c0)))AND(((c0) BETWEEN (c0) AND (2058017123)))))AND((+ (c0)))))AND((c0 IN ()))))AND(MAX(1.67485134E8, c0, c0, c0))))AND(CASE c3  WHEN c0 THEN c0 END)))OR(((((((((c3)OR(c3)))OR(x'6c7c')))OR(c0)))OR(c0)))) COLLATE RTRIM,((json_remove(c0, c0, c0, c3)) ISNULL) DESC) WHERE x'';
+} {}
+
+# kill mutants ['10884', '10903', '10907', '10916', '10931', '10935', '10937', '10939', '10942', '10943', '10944', '10945', '10946', '10947', '10949', '10951', '10953', '10954', '10955', '10958', '10959', '10960', '10961', '10963', '10964', '10965', '10966', '10969', '10970', '10971', '10973', '10976', '10977', '10978', '10980', '10981', '10982', '10983', '10986', '10987', '10990', '10991', '10993', '10995', '10998', '10999', '11000', '11001', '11002', '11003', '11005', '11009', '11041', '11064', '11075', '11080', '11086', '11089', '11090', '11091', '11093', '11095', '11098', '11099', '11101', '11112', '11118', '11121', '11122', '11123', '11125', '11127', '11130', '11131', '11134', '11137', '11142', '11146', '11147', '11148', '11149', '11151', '11152', '11162', '11163', '11168', '11169', '11170', '11171', '11179', '11183', '11186', '11194', '11195']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-2.1 {
+  PRAGMA cell_size_check = true;
+  CREATE TABLE t0(a);
+  INSERT INTO t0 VALUES(''), (5), (NULL);
+  ALTER TABLE t0 RENAME TO t1;
+  BEGIN TRANSACTION;
+  INSERT OR IGNORE INTO t1 VALUES(1), ('');
+  ROLLBACK;
+  INSERT INTO t1 VALUES(0.18514760508456096);
+} {}
+
+# kill mutants ['10898']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-3.1 {
+  PRAGMA cell_size_check = true;
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0.9594641972313799), (0.9594641972313799);
+  CREATE UNIQUE INDEX c ON a(0);
+} {1 {UNIQUE constraint failed: index 'c'}}
+do_execsql_test btree-dredd-3.2 {
+  CREATE INDEX d ON a(0);
+  ALTER TABLE a RENAME TO e;
+} {}
+
+# kill mutants ['11021', '11022', '11023', '11053', '11054', '11055', '11056', '11140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-4.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  PRAGMA journal_mode = WAL;
+} {wal}
+do_execsql_test btree-dredd-4.2 {
+  PRAGMA cell_size_check = true;
+  VACUUM;
+} {}
+
+# kill mutants ['10967', '11143', '11485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-5.1 {
+  ANALYZE;
+  PRAGMA cell_size_check = true;
+  PRAGMA cache_size = 8335956023;
+  CREATE VIEW a AS SELECT 5;
+} {}
+
+# kill mutants ['11208', '11209', '11210', '11211', '11214', '11215', '11217', '11218', '11219', '11220', '11221', '11222', '11223', '11224', '11225', '11226']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-6.1 {
+  CREATE TABLE a(b);
+} {}
+
+# kill mutants ['11126']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-7.1 {
+  CREATE TABLE t1(REAL);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  VACUUM;
+} {}
+
+# kill mutants ['10909', '10929', '10941', '11028', '11066', '11073', '11076', '11105', '11110', '11111', '11204', '11205', '11206', '11480', '11481', '11484']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-8.1 {
+  PRAGMA cell_size_check = true;
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  BEGIN;
+  INSERT INTO c VALUES(0.9594641972313799);
+  ROLLBACK;
+  INSERT INTO c VALUES(0.18514760508456096);
+} {}
+
+# kill mutants ['11045']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-9.1 {
+   PRAGMA cell_size_check = true           ;
+                VACUUM;
+                VACUUM;
+} {}
+
+# kill mutants ['10899', '10901', '10905', '10910', '10911', '10930', '10948', '10950', '10968', '10979', '10985', '10992', '10996', '10997', '11062', '11063', '11067', '11078', '11079', '11100', '11102', '11103', '11107', '11108', '11132', '11133', '11135', '11136', '11138', '11139', '11174', '11175', '11180', '11184', '11236', '11237', '11238']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-10.1 {
+  PRAGMA encoding = 'UTF16';
+           CREATE TEMPORARY VIEW v00 AS SELECT ALL0 FROM vt1, t1,     vt0 WHERE0 GROUP     BY((CAST0)ISNULL) HAVING((((vt1.c0)ISNULL))NOT BETWEEN(         CASE vt0.c2 WHEN vt0.c2 THEN t1.c66 ELSE NULL END)                                                 AND((NOT(vt0.c1)))) ORDER     BY(((((-(t1.c66)))AND(CAST('-1132263021' AS REAL))))OR(LIKELY(vt0.c1))) ASC,     t1.c34 LIMIT - 138073592;
+           PRAGMA cell_size_check = true;
+           ANALYZE temp;
+} {}
+
+# kill mutants ['10913', '10914', '10915']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-11.1 {
+  CREATE TABLE a(b);
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['11014', '11097']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-12.1 {
+  CREATE TABLE a(b);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  VACUUM;
+} {}
+
+# kill mutants ['10897']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-13.1 {
+  PRAGMA encoding = 'UTF16';
+           CREATE TEMPORARY TABLE t0(INT c1 BLOB, c2 INT);
+           CREATE TEMPORARY TABLE t1(c0 TEXT, c1 INT,                                         c2 REAL CHECK0);
+           PRAGMA cell_size_check = true;
+           CREATE INDEX i49 ON t0(0 ASC,                        (0 * 0) COLLATE BINARY ASC,                        x'' DESC);
+           CREATE UNIQUE INDEX IF NOT EXISTS i37 ON t1(((c0)BETWEEN(c1) AND(c2))COLLATE NOCASE DESC, c0 ASC,    (c0 IN())COLLATE BINARY COLLATE RTRIM) WHERE CAST('2116719410' AS TEXT);
+} {}
+
+# kill mutants ['10912']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-14.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+} {}
+
+# kill mutants ['11068']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-15.1 {
+  PRAGMA cell_size_check = true;
+  BEGIN;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+do_catchsql_test btree-dredd-15.2 {
+  INSERT INTO c VALUES(8);
+} {1 {no such table: c}}
+
+# kill mutants ['11092']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-16.1 {
+  CREATE TABLE    a( TEXT) ;
+      VACUUM;
+      PRAGMA cell_size_check = true;
+      DELETE FROM b WHERE(0 );
+} {1 {no such table: b}}
+
+# kill mutants ['10940']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-17.1 {
+  PRAGMA temp_store = MEMORY;
+  PRAGMA cell_size_check = true;
+  CREATE TEMPORARY TABLE a(b);
+  INSERT INTO a VALUES(7), ('0.9594641972313799');
+  BEGIN;
+  CREATE UNIQUE INDEX c ON a(0);
+} {1 {UNIQUE constraint failed: index 'c'}}
+do_execsql_test btree-dredd-17.2 {
+  CREATE INDEX d ON a(0);
+} {}
+
+# kill mutants ['10900', '10932', '10933']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-18.1 {
+  PRAGMA cell_size_check = true;
+  ANALYZE;
+  PRAGMA shrink_memory;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+
+# kill mutants ['11060']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-19.1 {
+  PRAGMA encoding = 'UTF16';
+           CREATE TEMPORARY VIEW v00 AS SELECT ALL0 FROM vt1t1,     vt0 WHERE0 GROUP     BY((CAST(vt0.c2 AS TEXT))ISNULL) HAVING((((vt1.c0)ISNULL))NOT BETWEEN(         CASE vt0.c2 WHEN vt0.c2 THEN t1.c66 ELSE NULL END)                                                 AND(0)) ORDER     BY(((((-(t1.c66)))AND(CAST('-1132263021' AS REAL))))OR(LIKELY(vt0.c1))) ASC,     t1.c34 LIMIT - 138073592;
+           PRAGMA cell_size_check = true;
+           ANALYZE temp;
+} {}
+

@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11092']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-16.1 {
+  CREATE TABLE    a( TEXT) ;
+      VACUUM;
+      PRAGMA cell_size_check = true;
+      DELETE FROM b WHERE(0 );
+} {1 {no such table: b}}
+
+finish_test

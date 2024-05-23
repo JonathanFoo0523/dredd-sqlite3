@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('6ddffdff');
+SELECT LEAD(load_extension(b)) OVER() FROM a;

@@ -1,0 +1,3 @@
+CREATE TABLE a(c0 );
+     ALTER TABLE a ADD  c94 ;
+     INSERT   INTO a(c94) VALUES(load_extension(0));

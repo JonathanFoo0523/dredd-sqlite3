@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['951', '952']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-2.1 {
+  PRAGMA automatic_index;
+} {1}
+
+finish_test

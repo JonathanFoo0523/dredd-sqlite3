@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['9222', '9223', '9224', '9225', '9227', '9242', '9253', '9254', '9255', '9256', '9257', '9259', '9274', '9298', '9330', '9347', '9350', '9379', '9382', '9392', '9394', '9395', '9409', '9411', '9415', '9441', '9443', '9447', '9704', '9705']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-9.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL), ('');
+  SELECT TOTAL(-9223372036854775808) FROM a;
+} {-1.84467440737096e+19}
+
+finish_test

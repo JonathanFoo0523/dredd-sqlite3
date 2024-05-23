@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['31073']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-9.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  CREATE TABLE c(d);
+  SELECT DISTINCT 0 FROM a, c;
+} {}
+
+finish_test

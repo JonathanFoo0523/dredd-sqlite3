@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['41324']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-38.1 {
+   PRAGMA encoding = 'UTF16be';
+                           CREATE TABLE t0 (REAL INT  c2 TEXT , c3 TEXT , c4 INTEGER );
+                           CREATE VIEW v0(c0, c1, c2) AS SELECT ALL ((((0)OR(LIKELIHOOD(t0.c4, 0.6809867764325728))))OR(t0.c2)), NTILE(CASE x'0a34890c' COLLATE NOCASE  WHEN x'' THEN CAST0 WHEN rt1.c2 COLLATE BINARY THEN ((t0.c2) IS TRUE) WHEN (~ (rt1.c2)) THEN (((rt1.c1, rt1.c2, t0.c0, t0.c3, x''))>((x'', t0.c2, 0.15518641091872531, rt1.c2, t0.c3))) END) OVER (), CASE AVG(rt1.c0)  WHEN t0.c3 THEN CAST(t0.c3 AS TEXT) ELSE t0.c3 END FROM rt1, t0;
+                           ANALYZE ;
+                           PRAGMA secure_delete = FAST;
+} {2}
+do_execsql_test btree-dredd-38.2 {
+                           DROP VIEW v0;
+} {}
+
+finish_test

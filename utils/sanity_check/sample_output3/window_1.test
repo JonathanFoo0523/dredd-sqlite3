@@ -1,0 +1,21 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10942']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-2.1 {
+  CREATE TABLE t0 (c0 BLOB );
+  CREATE TEMP TABLE    t1 (c0 INTEGER , c1 CHECK ( 0) , c2 REAL );
+  ALTER TABLE t0 RENAME c0 TO a; ALTER TABLE t1 ADD c43 
+  b;
+  ALTER TABLE t0 RENAME a TO c;
+  ALTER TABLE t0 RENAME c TO e
+  ;
+  ALTER TABLE t1 RENAME c0 TO c60;
+  BEGIN   ;
+  ALTER TABLE t1 RENAME TO t2; --  GROUP_CONCAT FROM 0 COLLATE NOCASE 0  HAVING  -- ;SELECT CAST00ms;
+  SELECT COUNT() OVER ( PARTITION BY CASE c2  WHEN c43 THEN c2 END BETWEEN c1=c43 AND t2.c43>t2.c60, 0 ROWS BETWEEN 0 FOLLOWING AND d FOLLOWING), AVG(0)FROM t2 RIGHT JOIN t0 ON 3   BETWEEN c43>c60 AND 0;
+} {1 {frame ending offset must be a non-negative integer}}
+
+finish_test

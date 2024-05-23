@@ -1,0 +1,4 @@
+ CREATE TABLE a (b );
+                   INSERT INTO a VALUES ('668165218');
+                   CREATE VIEW c(b) AS SELECT (0 IN ()) FROM a;
+                   SELECT (0 BETWEEN b AND 0)FROM c;

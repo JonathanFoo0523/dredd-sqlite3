@@ -1,0 +1,23 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3212', '4329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-4.1 {
+  CREATE TEMP TABLE a(b, c, d, e);
+  ALTER TABLE a ADD f;
+  ALTER TABLE a RENAME TO g;
+  ALTER TABLE g ADD h;
+  CREATE INDEX i ON g((e, 2, 3)BETWEEN(0, 0, 2) AND(0, 1, 0), 0);
+  INSERT INTO g(b, e) VALUES(0, 'xi');
+  ALTER TABLE g ADD j;
+  ALTER TABLE g RENAME h TO k;
+  INSERT INTO g(f, j, k, c, d)
+      VALUES(NULL, '1e500', '7969ec6a', 2, '0.5874298399132062');
+  CREATE INDEX l ON g(3);
+  ANALYZE i;
+  SELECT DISTINCT 0, b FROM g;
+} {0 {} 0 0}
+
+finish_test

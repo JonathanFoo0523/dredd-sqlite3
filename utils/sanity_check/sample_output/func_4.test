@@ -1,0 +1,24 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['9113', '9117', '9145', '9152', '9184']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-5.1 {
+  CREATE TABLE a(b, c, d, e, f);
+  INSERT INTO a(f, e, b, c) VALUES(0.8355537035355731, 0.21746304429773045,
+                                   -926646034, 0.8855308132481797),
+      ('U蜬kD_y&t', '5]h7Og', 0.020184888567150838, 0.9189464038694158);
+  ALTER TABLE a RENAME b TO g;
+  ALTER TABLE a RENAME e TO h;
+  INSERT INTO a(g, h) VALUES(-1.953347304E9, ']');
+  ALTER TABLE a ADD i;
+  ALTER TABLE a RENAME TO j;
+  INSERT INTO j VALUES(0.039860052271768476, '1132958900', 0.8626543216871897,
+                       0.20538886824387914, NULL, 'd9c6');
+  ALTER TABLE j RENAME TO a;
+  SELECT TOTAL(g)
+  FROM a;
+} {-2879993337.93996}
+
+finish_test

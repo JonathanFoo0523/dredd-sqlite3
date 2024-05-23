@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6512', '6528', '6530', '6536', '6539', '6540', '6542', '6560', '6562', '6568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-4.1 {
+  SELECT(a) IS(b.c);
+} {1 {no such column: a}}
+
+finish_test

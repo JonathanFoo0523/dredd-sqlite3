@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['39749', '39767', '39781', '39811', '39843']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-7.1 {
+  CREATE TABLE a(b, c, d, e);
+  INSERT INTO a VALUES('', 0.637115727900995, '', 2),
+      (NULL, NULL, 0.2472717265424098, '');
+  SELECT d AND(SUM(2)) AND(AVG(4)) FROM a;
+} {0}
+
+finish_test

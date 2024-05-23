@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['11145']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-31.1 {
+  PRAGMA encoding = 'UTF16';
+              ANALYZE;
+              PRAGMA cell_size_check = true;
+              CREATE VIEW  v00 AS SELECT GROUP_CONCAT(((((((((t2.c0)AND(t2.c0)))OR(t1.c9)))OR(vt0.c0)))OR(t1.c9))), (0 NOT NULL), LEAD(((((t2.c1) BETWEEN (t2.c0) AND (t2.c2)))IS(((t2.c0)OR(t2.c2)))), ((t2.c0)OR(CASE WHEN t2.c1 THEN t2.c42 ELSE t2.c2 END)), ((((t2.c42) BETWEEN 0 AND (t2.c1)))<>(((t2.c0) NOTNULL)))) OVER () FROM t2 WHERE ((((NULL IN ())) IS FALSE)) LIMIT -1059100375;
+} {}
+
+finish_test

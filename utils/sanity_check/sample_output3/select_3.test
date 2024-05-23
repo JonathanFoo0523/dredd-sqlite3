@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['24736']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-4.1 {
+  CREATE TABLE a(b);
+  SELECT 0 FROM a INDEXED BY c;
+} {1 {no such index: c}}
+
+finish_test

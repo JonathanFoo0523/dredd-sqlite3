@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+UPDATE a SET(b, c) = ('', x'');

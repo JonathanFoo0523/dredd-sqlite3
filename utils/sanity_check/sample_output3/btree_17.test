@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10900', '10932', '10933']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-18.1 {
+  PRAGMA cell_size_check = true;
+  ANALYZE;
+  PRAGMA shrink_memory;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+
+finish_test

@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1325']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-9.1 {
+  SELECT LAG(a) OVER(RANGE b PRECEDING);
+} {1 {RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression}}
+
+finish_test

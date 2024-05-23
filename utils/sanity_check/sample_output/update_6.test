@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4645']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test update-dredd-7.1 {
+  CREATE TABLE a(b TEXT, PRIMARY KEY(b)) WITHOUT ROWID;
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES('94399978'), (0.8967735730738071);
+  UPDATE OR REPLACE a SET c = NULL WHERE CASE(c) OR(c) AND(c)
+      WHEN CASE c WHEN c THEN 7 END THEN 0 ELSE c BETWEEN c AND c END;
+} {1 {NOT NULL constraint failed: a.c}}
+
+finish_test

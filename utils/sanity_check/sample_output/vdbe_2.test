@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10274', '10278']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('|yL	A');
+  ALTER TABLE a ADD c d;
+  PRAGMA integrity_check;
+} {ok}
+
+finish_test

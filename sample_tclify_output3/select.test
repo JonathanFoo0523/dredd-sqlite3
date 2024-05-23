@@ -1,0 +1,99 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['19537', '19541', '19568', '19569', '19572', '19573']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-1.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c(d)
+  AS SELECT 0 IN() FROM a;
+  INSERT INTO a VALUES(NULL);
+  SELECT d FROM c;
+} {0}
+
+# kill mutants ['19580', '19585', '19586', '19587', '19588', '19590', '19591', '19592', '19593', '19594', '19595', '19596']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-2.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  CREATE VIEW c(d)
+  AS SELECT 0 IN() FROM a;
+  SELECT(d) FROM c;
+} {0}
+
+# kill mutants ['19574', '19584']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('668165218');
+  CREATE VIEW c(b)
+  AS SELECT 0 IN() FROM a;
+  SELECT b FROM c;
+} {0}
+
+# kill mutants ['24736']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-4.1 {
+  CREATE TABLE a(b);
+  SELECT 0 FROM a INDEXED BY c;
+} {1 {no such index: c}}
+
+# kill mutants ['26687', '26704']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-5.1 {
+  CREATE VIEW a AS SELECT 0;
+  SELECT b FROM a INDEXED BY c, d;
+} {1 {no such index: c}}
+
+# kill mutants ['24719', '24721']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-6.1 {
+  CREATE TABLE a(b);
+  SELECT c FROM a INDEXED BY d, e;
+} {1 {no such index: d}}
+
+# kill mutants ['39749', '39767', '39781', '39811', '39843']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-7.1 {
+  CREATE TABLE a(b, c, d, e);
+  INSERT INTO a VALUES('', 0.637115727900995, '', 2),
+      (NULL, NULL, 0.2472717265424098, '');
+  SELECT d AND(SUM(2)) AND(AVG(4)) FROM a;
+} {0}
+
+# kill mutants ['19578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-8.1 {
+   CREATE TABLE a (b );
+                     INSERT INTO a VALUES ('668165218');
+                     CREATE VIEW c(b) AS SELECT (0 IN ()) FROM a;
+                     SELECT (0 BETWEEN b AND 0)FROM c;
+} {1}
+
+# kill mutants ['24702']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-9.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  SELECT MIN(0) FROM c;
+} {{}}
+
+# kill mutants ['24526']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-10.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CASE WHEN CASE WHEN 0 THEN 0 END THEN 0 END) WHERE 0;
+  SELECT COUNT() FROM a INDEXED BY c;
+} {0}
+
+finish_test

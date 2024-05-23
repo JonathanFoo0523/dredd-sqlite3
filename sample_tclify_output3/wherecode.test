@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['16089', '16121']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-1.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d, e);
+  INSERT INTO c VALUES(0.9267633010019147, 0.13493350774129298);
+  SELECT '' AND(b) FROM a RIGHT JOIN c ON(0);
+} {0}
+
+finish_test

@@ -1,0 +1,18 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2960', '2992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test analyze-dredd-9.1 {
+  ANALYZE;
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+do_catchsql_test analyze-dredd-9.2 {
+  INSERT INTO c VALUES('optimize');
+} {1 {no such table: c}}
+do_execsql_test analyze-dredd-9.3 {
+  PRAGMA temp.cache_size;
+} {0}
+
+finish_test

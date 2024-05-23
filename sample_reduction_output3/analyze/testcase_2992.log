@@ -1,0 +1,4 @@
+ANALYZE;
+CREATE VIRTUAL TABLE a USING b;
+REINDEX;
+PRAGMA temp.cache_size;

@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10041']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-29.1 {
+  CREATE TABLE IF NOT EXISTS a (b );
+                   ALTER TABLE a RENAME b TO c;
+                   ALTER TABLE a RENAME TO t1;
+                   SELECT AVG(t1.c)FROM t1  ;
+} {{}}
+
+finish_test

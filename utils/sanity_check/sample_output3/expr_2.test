@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14402']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-3.1 {
+  CREATE TABLE a(b PRIMARY KEY);
+  INSERT INTO a VALUES(1), (0);
+  UPDATE a SET b = CASE WHEN '338787490' THEN b IN(b) END;
+} {1 {UNIQUE constraint failed: a.b}}
+
+finish_test

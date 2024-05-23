@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test complete-dredd-5.1 {
+  VALUES('optimize'); -- 
+} {optimize}
+do_catchsql_test complete-dredd-5.2 {
+  0a;
+} {1 {unrecognized token: "0a"}}
+
+finish_test

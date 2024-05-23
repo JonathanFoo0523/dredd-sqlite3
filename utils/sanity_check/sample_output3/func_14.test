@@ -1,0 +1,17 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8974', '8977', '8978', '9006', '9009', '9010']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_execsql_test func-dredd-15.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(NULL);
+  ALTER TABLE a RENAME TO d;
+  SELECT load_extension(c)
+  FROM d;
+} {{}}
+
+finish_test

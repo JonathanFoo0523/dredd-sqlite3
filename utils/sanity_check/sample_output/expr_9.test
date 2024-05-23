@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['24711']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-10.1 {
+  SELECT TOTAL(0) OVER() WHERE(NOT(7));
+} {}
+
+finish_test

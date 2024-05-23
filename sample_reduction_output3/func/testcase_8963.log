@@ -1,0 +1,3 @@
+
+         ;
+         SELECT DISTINCT (load_extension(0, x'd671')) GROUP BY CAST(CAST('kP67猀(' AS NUMERIC) AS ) ;

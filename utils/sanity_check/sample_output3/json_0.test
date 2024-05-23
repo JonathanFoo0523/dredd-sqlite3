@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['16086', '16090', '16093', '16094', '16095', '16111', '16114', '16115', '16118', '16122', '16125', '16126', '16127', '16129']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-1.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('5R86 ');
+  SELECT FIRST_VALUE(json_remove(CASE WHEN b THEN b END)) OVER() FROM a;
+} {1 {malformed JSON}}
+
+finish_test

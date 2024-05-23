@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8925', '8957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-2.1 {
+  SELECT a();
+} {1 {no such function: a}}
+
+finish_test

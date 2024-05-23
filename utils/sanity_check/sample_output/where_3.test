@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['18064']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-4.1 {
+  CREATE TABLE a(b BLOB);
+  INSERT INTO a VALUES(2.013850463E9), ('a259');
+  CREATE INDEX c ON a(0 | b);
+  SELECT LEAD(b) OVER() FROM a;
+} {a259 {}}
+
+finish_test
