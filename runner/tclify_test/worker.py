@@ -15,8 +15,11 @@ class TCLifyWorker:
     def get_file_hash(self, file):
         md5 = hashlib.md5()
         with open(file, 'r') as f:
-            for line in f.readlines():
-                md5.update(line.rstrip('\n').encode())
+            try:
+                for line in f.readlines():
+                    md5.update(line.rstrip('\n').encode())
+            except:
+                print(file)
         return md5.hexdigest()
 
     async def readline(self, stream: asyncio.StreamReader, timeout: float):
@@ -60,6 +63,8 @@ class TCLifyWorker:
             with open(file, 'r') as f2:
                 sql_buffer = []
                 for sql in f2.readlines():
+                    if sql[-1] != '\n':
+                        sql += '\n'
                     proc.stdin.write(sql.encode())
                     await proc.stdin.drain()
 
@@ -126,7 +131,6 @@ class TCLifyWorker:
                         f.write('  ')
                         f.write('  '.join(sqls))
                         f.write('} {' + (stdout if stdout else "") + '}\n')
-
 
                 f.write('\n')
             f.write('finish_test\n')
