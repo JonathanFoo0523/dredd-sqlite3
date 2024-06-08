@@ -2,7 +2,7 @@ from runner.common.types import MutantID
 from runner.generate_test.worker import TestGenerationWorker
 
 import time
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 import os
 import pickle
@@ -85,7 +85,7 @@ def main():
 
         coverage_bin = os.path.join(args.mutation_binary_path, f'sqlite3_{file}_coverage')
         mutation_bin = os.path.join(args.mutation_binary_path, f'sqlite3_{file}_mutation')
-        async_worker = TestGenerationWorker(args.sqlancer_jar_path, file, killed, coverage_bin ,mutation_bin, args.output_directory, max_parallel_tasks=32, total_gen=8)
+        async_worker = TestGenerationWorker(args.sqlancer_jar_path, file, killed, coverage_bin ,mutation_bin, args.output_directory, max_parallel_tasks=cpu_count(), total_gen=8)
         asyncio.run(async_worker.slice_runner())
 
 
