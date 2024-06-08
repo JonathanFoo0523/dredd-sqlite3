@@ -1,0 +1,35 @@
+-- Time: 2024/06/06 01:07:25
+-- Database: database45
+-- Database version: 3.40.0
+-- seed value: 2878653845
+PRAGMA cache_size = 50000; -- 0ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+CREATE TEMP TABLE t0 (c0 INTEGER ); -- 0ms;
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, c3, c4, +c5 INT , +c6 INTEGER ); -- 0ms;
+ANALYZE t0; -- 1ms;
+VACUUM main; -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+INSERT OR FAIL INTO t0(c0) VALUES (0x79fcfbbe); -- 0ms;
+PRAGMA main.busy_timeout = 5495511080801093958; -- 0ms;
+INSERT OR FAIL INTO t0 VALUES (NULL); -- 0ms;
+VACUUM temp; -- 0ms;
+END; -- 0ms;
+INSERT OR IGNORE INTO t0 VALUES (x''); -- 0ms;
+PRAGMA incremental_vacuum; -- 0ms;
+COMMIT; -- 0ms;
+ANALYZE; -- 1ms;
+ALTER TABLE t0 RENAME TO t1; -- 0ms;
+BEGIN IMMEDIATE TRANSACTION; -- 0ms;
+UPDATE OR IGNORE rt1 SET (c5, c4)=('뺂.U', 'ףD'); -- 0ms;
+COMMIT; -- 0ms;
+UPDATE OR IGNORE t1 SET c0='XC颓kB#' WHERE t1.c0; -- 0ms;
+END; -- 0ms;
+BEGIN EXCLUSIVE TRANSACTION; -- 0ms;
+REINDEX; -- 0ms;
+PRAGMA temp.shrink_memory; -- 0ms;
+UPDATE OR ABORT rt1 SET c3=x''; -- 0ms;
+BEGIN IMMEDIATE TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('t1', 'null', ''); -- 0ms;
+BEGIN IMMEDIATE TRANSACTION; -- 0ms;
+CREATE VIEW  IF NOT EXISTS v0(c0, c1, c2) AS SELECT DISTINCT CASE x'' COLLATE NOCASE  WHEN (((rt1.c1)) BETWEEN ((rt1.c1)) AND ((rt1.c2))) THEN LTRIM(rt1.c4) ELSE COUNT(*) END, rt1.c4, DENSE_RANK() OVER ( ORDER BY ((CAST(rt1.c3 AS REAL)) NOTNULL) ASC) FROM t1 WHERE ((('-1174237622') NOT BETWEEN (((x'')*(x''))) AND ('J辸'))); -- 9ms;

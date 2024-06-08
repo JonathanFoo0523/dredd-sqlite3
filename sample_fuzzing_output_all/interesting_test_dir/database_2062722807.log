@@ -1,0 +1,44 @@
+-- Time: 2024/06/06 15:34:20
+-- Database: database7
+-- Database version: 3.40.0
+-- seed value: 2062722807
+PRAGMA cache_size = 50000; -- 6ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts5(c0 UNINDEXED, detail=column, , columnsize=1); -- 4ms;
+CREATE VIRTUAL TABLE vt1 USING fts5(c0); -- 0ms;
+UPDATE OR IGNORE vt1 SET (c0, c0)=('weekday+W', '294721075'); -- 1ms;
+INSERT INTO vt0(vt0) VALUES('automerge=9'); -- 1ms;
+INSERT INTO vt1(vt1) VALUES('optimize'); -- 0ms;
+INSERT OR IGNORE INTO vt1(c0) VALUES (NULL); -- 0ms;
+PRAGMA cell_size_check; -- 0ms;
+INSERT OR IGNORE INTO vt1(c0) VALUES (NULL); -- 0ms;
+REINDEX; -- 0ms;
+VACUUM; -- 1ms;
+INSERT INTO vt1(vt1, rank) VALUES('pgsz', '32071'); -- 1ms;
+INSERT OR IGNORE INTO vt1(c0) VALUES (23355690); -- 0ms;
+INSERT OR ROLLBACK INTO vt0 VALUES ('23355690'); -- 1ms;
+INSERT INTO vt1(vt1, rank) VALUES('rank', 'bm25(10.0, 5.0)'); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0)=(0X11911633); -- 0ms;
+END TRANSACTION; -- 0ms;
+ANALYZE vt1; -- 1ms;
+DELETE FROM sqlite_stat1; -- 0ms;
+INSERT OR IGNORE INTO vt0 VALUES ('294721075'); -- 0ms;
+REINDEX NOCASE; -- 0ms;
+INSERT OR IGNORE INTO vt0 VALUES (0.8478556603718396); -- 0ms;
+INSERT INTO vt1(vt1) VALUES('integrity-check'); -- 0ms;
+BEGIN DEFERRED TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO vt1(c0) VALUES (x''); -- 0ms;
+ROLLBACK TRANSACTION; -- 1ms;
+INSERT OR ROLLBACK INTO vt1(c0) VALUES ('0.8478556603718396'); -- 0ms;
+INSERT OR ABORT INTO vt1 VALUES (0.4990500780947812); -- 0ms;
+INSERT OR IGNORE INTO vt1 VALUES (NULL), ('0.4990500780947812'), (NULL); -- 0ms;
+BEGIN EXCLUSIVE TRANSACTION; -- 0ms;
+INSERT INTO vt1(vt1, rank) VALUES('crisismerge', 19653480); -- 0ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES (23355690), ('WDPAᘳI0蓗'), (0.8040134475757996); -- 0ms;
+INSERT INTO vt1(vt1, rank) VALUES('rank', 'bm25(10.0, 5.0)'); -- 0ms;
+VACUUM; -- 0ms;
+VACUUM; -- 0ms;
+VACUUM temp; -- 0ms;
+CREATE TEMP VIEW v0(c0) AS SELECT MIN(CAST(vt0.c0 AS REAL)) COLLATE RTRIM FROM vt1 WHERE ((('-1466121390') NOT BETWEEN (NULL) AND (NULL)) COLLATE NOCASE) GROUP BY (+ ((((vt1.c0, vt0.c0, vt0.c0))<(('Vk.', vt1.c0, vt0.c0))))) HAVING vt1.c0 COLLATE NOCASE; -- 0ms;
