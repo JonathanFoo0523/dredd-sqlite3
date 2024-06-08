@@ -1,6 +1,7 @@
 import tempfile
 import subprocess
 import os
+import signal
 import re
 from queue import PriorityQueue
 from runner.common.constants import TIMEOUT_FOR_TEST_EXTRACTION_SECONDS
@@ -17,14 +18,14 @@ class TestExtractor:
         with tempfile.TemporaryDirectory(prefix='dredd-sqlite3-dredd-test-extractor') as tempdir:
             testrunner_path = os.path.join(self.sqlite_src, 'test', 'testrunner.tcl')
             try:
-                proc = subprocess.run([self.testfixture_path, testrunner_path, self.subset, '--jobs', str(self.max_parallel_tasks)], stdout=subprocess.DEVNULL, cwd=tempdir, timeout=TIMEOUT_FOR_TEST_EXTRACTION_SECONDS)
+                proc = subprocess.Popen([self.testfixture_path, testrunner_path, self.subset, '--jobs', str(self.max_parallel_tasks)], stdout=subprocess.DEVNULL, cwd=tempdir, start_new_session=True)
+                proc.communicate(timeout=TIMEOUT_FOR_TEST_EXTRACTION_SECONDS)
             except subprocess.TimeoutExpired:
-                if proc:
-                    proc.terminate()
+                os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
                 # pass
-            else:
-                if proc.returncode != 0:
-                    raise Exception(f"TestExtractor: testrunner failed with excitcode: {proc.returncode}")
+
+            # if proc.returncode != 0:
+            #     raise Exception(f"TestExtractor: testrunner failed with excitcode: {proc.returncode}")
 
             pq = PriorityQueue()
     
