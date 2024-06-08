@@ -19,7 +19,7 @@ from tqdm import tqdm
 # SQLANCER_JAR_PATH = '/home/ubuntu/sqlancer/target/sqlancer-2.0.0.jar'
 
 class TestGenerationWorker:
-    def __init__(self, sqlancer_jar_path: str, source_name: str, killed: set[MutantID], tracking_binary: str, mutation_binary: str, output_dir: str, max_parallel_tasks: int = 4, total_gen: int = 8):
+    def __init__(self, sqlancer_jar_path: str, source_name: str, killed: set[MutantID], tracking_binary: str, mutation_binary: str, output_dir: str, max_parallel_tasks: int = 4, total_gen: int = 8, oracle="FUZZER", enable_qpg=False):
         assert(os.path.isfile(tracking_binary))
         assert(os.path.isfile(mutation_binary))
         assert(os.path.isdir(output_dir))
@@ -32,6 +32,8 @@ class TestGenerationWorker:
         self.output_dir = output_dir
         self.max_parallel_tasks = max_parallel_tasks
         self.killed = killed
+        self.oracle = oracle
+        self.enable_qpg = enable_qpg
 
         # self.fuzzing_checkpoint = os.path.join(output_dir, source_name, 'fuzzing_checkpoint.pkl')
         # self.diffential_checkpoint = os.path.join(output_dir, source_name, 'differential_checkpoint.pkl')
@@ -74,7 +76,7 @@ class TestGenerationWorker:
 
 
     # Note that this generate 100 database at a time, with seeds [random_seed, random_seed+100)
-    def generate_random_testcases(self, random_seed: int, temp_dir: str, num_queries: int = 500, oracle: str= 'FUZZER') -> None:
+    def generate_random_testcases(self, random_seed: int, temp_dir: str, num_queries: int = 500) -> None:
         try:
             proc = subprocess.run([
                         'java',
@@ -88,9 +90,11 @@ class TestGenerationWorker:
                         '1',
                         '--num-threads',
                         str(self.max_parallel_tasks),
+                        '--qpg-enable',
+                        str(self.enable_qpg),
                         'sqlite3',
                         '--oracle',
-                        oracle
+                        self.oracle
                     ], cwd=temp_dir, stdout=subprocess.DEVNULL, timeout=RANDOM_SQLS_GENERATION_TIMEOUT_SECONDS)
         except subprocess.TimeoutExpired as timeout_err:
             raise timeout_err
