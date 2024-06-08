@@ -64,7 +64,7 @@ At suitable directory, run the following command. Refer to installation instruct
 ```shell
 sudo apt install maven # (Optional) Required Package
 
-git clone https://github.com/sqlancer/sqlancer.git
+git clone https://github.com/JonathanFoo0523/sqlancer.git
 cd sqlancer
 mvn package -DskipTests
 ```

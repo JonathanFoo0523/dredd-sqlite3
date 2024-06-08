@@ -1,7 +1,7 @@
 from runner.common.types import MutantID, TestStatus
 from runner.common.constants import TIMEOUT_MULTIPLIER_FOR_DIFFERENTIAL_TEST, RANDOM_SQLS_GENERATION_TIMEOUT_SECONDS
 from runner.common.counter import Stats
-from runner.common.async_utils import subprocess_run, TIMEOUT_RETCODE
+from runner.common.async_utils import subprocess_run, TIMEOUT_RETCODE, subprocess_run_safe
 from subprocess import CompletedProcess
 
 import os
@@ -58,7 +58,10 @@ class TestGenerationWorker:
             env_copy["DREDD_MUTANT_TRACKING_FILE"] = temp_coverage_file.name
             try:
                 with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-test-generation-db', suffix='.db') as temp_db:
-                    proc_result = await subprocess_run([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+                    proc_result = await subprocess_run_safe([self.tracking_binary, temp_db.name], input=statements, env=env_copy, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, timeout=RANDOM_SQLS_GENERATION_TIMEOUT_SECONDS)
+            except asyncio.TimeoutError:
+                print("Finding coverage took too long")
+                return set(), None
             except Exception as err:
                 print(err)
                 return set(), None
@@ -83,6 +86,8 @@ class TestGenerationWorker:
                         str(num_queries),
                         '--max-generated-databases',
                         '1',
+                        '--num-threads',
+                        str(self.max_parallel_tasks),
                         'sqlite3',
                         '--oracle',
                         oracle
@@ -91,6 +96,7 @@ class TestGenerationWorker:
             raise timeout_err
         except Exception as err:
             print(err)
+
 
     # return True if results is probably deterministics and mutated sqlite give different result compared to unmutated
     # Consider timeout on mutated version as different

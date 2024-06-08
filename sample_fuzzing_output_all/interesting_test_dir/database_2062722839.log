@@ -1,0 +1,27 @@
+-- Time: 2024/06/06 15:34:20
+-- Database: database39
+-- Database version: 3.40.0
+-- seed value: 2062722839
+PRAGMA cache_size = 50000; -- 0ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+CREATE TEMPORARY TABLE t0 (c0 INTEGER ); -- 0ms;
+END TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES ('()'); -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES (NULL); -- 0ms;
+PRAGMA busy_timeout; -- 0ms;
+UPDATE OR IGNORE t0 SET (c0)=(x''); -- 0ms;
+UPDATE OR IGNORE t0 SET (c0)=('') WHERE ('2000392583' IN (t0.c0 COLLATE BINARY)); -- 0ms;
+PRAGMA temp.secure_delete = false; -- 0ms;
+REINDEX RTRIM; -- 0ms;
+ALTER TABLE t0 RENAME COLUMN c0 TO c51; -- 1ms;
+PRAGMA temp.cache_size; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+END TRANSACTION; -- 0ms;
+CREATE UNIQUE INDEX IF NOT EXISTS i61 ON t0(((c0)/((c0 IN ()))) DESC) WHERE ((CAST(c0 AS BLOB)) IS TRUE); -- 0ms;
+CREATE INDEX i51 ON t0(((((c0)+(c0)))&(CAST(c0 AS INTEGER)))); -- 0ms;
+END; -- 0ms;
+UPDATE t0 SET c0=x'2afd', c0='()', c0=0.16967292169520387; -- 0ms;
+INSERT OR REPLACE INTO t0(c0) VALUES (2000392583); -- 0ms;
+CREATE VIEW v0(c0, c1, c2) AS SELECT ALL ((CAST(0Xffffffffad5f666b AS TEXT)) BETWEEN (t0.c0 COLLATE BINARY) AND ((- (t0.c0)))), ((CASE t0.c0  WHEN t0.c0 THEN t0.c0 WHEN t0.c0 THEN t0.c0 WHEN t0.c0 THEN t0.c0 END) NOT BETWEEN (CASE WHEN 362551941 THEN t0.c0 WHEN t0.c0 THEN NULL WHEN t0.c0 THEN t0.c0 ELSE t0.c0 END) AND ((t0.c0 IN (t0.c0)))), (NOT (t0.c0 COLLATE BINARY)) FROM t0 WHERE (((UPPER(DISTINCT x''))|(((0.8691302530731101) NOT NULL)))); -- 1ms;
