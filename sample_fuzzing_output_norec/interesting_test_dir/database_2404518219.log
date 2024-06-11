@@ -1,0 +1,55 @@
+-- Time: 2024/06/09 20:20:44
+-- Database: database19
+-- Database version: 3.40.0
+-- seed value: 2404518219
+PRAGMA cache_size = 50000; -- 3ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+PRAGMA encoding = 'UTF-16le'; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts5(c0, , columnsize=1); -- 1ms;
+PRAGMA main.defer_foreign_keys; -- 0ms;
+INSERT OR FAIL INTO vt0 VALUES (''); -- 0ms;
+VACUUM temp; -- 0ms;
+INSERT OR ROLLBACK INTO vt0 VALUES (0.7704804346667267), ('i氦XpSE'), (0.14558252077000078), (0.48671983126223806), ('-1303548890'); -- 4ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES ('-1856347485'); -- 1ms;
+INSERT OR REPLACE INTO vt0(c0) VALUES ('JoD.3KpOo'); -- 0ms;
+COMMIT TRANSACTION; -- 0ms;
+PRAGMA legacy_file_format = false; -- 0ms;
+INSERT OR REPLACE INTO vt0 VALUES ('-1856347485'); -- 0ms;
+PRAGMA main.optimize; -- 0ms;
+REINDEX; -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+UPDATE vt0 SET (c0)=(0.4446606498628731); -- 0ms;
+UPDATE OR IGNORE vt0 SET c0=0xffffffff981f497d; -- 1ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES (-1.856347485E9); -- 0ms;
+INSERT OR FAIL INTO vt0 VALUES (''); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0)=(0.28021503475671916) WHERE ((((((((((((vt0.c0)AND(vt0.c0)))OR(0.5286862194521756)))AND(vt0.c0)))AND(LOWER(DISTINCT vt0.c0))))OR((vt0.c0 IN ()))))AND(((vt0.c0)+(vt0.c0)))); -- 0ms;
+UPDATE OR IGNORE vt0 SET c0='-1742780035' WHERE (('楕nInH') NOTNULL); -- 0ms;
+UPDATE OR IGNORE vt0 SET c0=-1.856347485E9; -- 0ms;
+INSERT OR REPLACE INTO vt0(c0) VALUES (0X6504627b); -- 0ms;
+PRAGMA cache_spill; -- 0ms;
+ANALYZE; -- 0ms;
+ANALYZE; -- 0ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES (NULL); -- 0ms;
+ANALYZE; -- 1ms;
+CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0)=(0.4977585750371435); -- 0ms;
+COMMIT TRANSACTION; -- 0ms;
+INSERT OR FAIL INTO rt0 VALUES (x'd56e', NULL, '-\Aeo猔'); -- 3ms;
+PRAGMA optimize; -- 0ms;
+PRAGMA main.auto_vacuum = FULL; -- 1ms;
+INSERT OR IGNORE INTO vt0 VALUES (x''), (''), (1.694786171E9); -- 0ms;
+COMMIT TRANSACTION; -- 1ms;
+INSERT OR REPLACE INTO rt0(c0, c1) VALUES (x'', '-709138091'); -- 0ms;
+REINDEX; -- 0ms;
+INSERT OR IGNORE INTO vt0 VALUES (''), (0.14558252077000078), (x''); -- 0ms;
+PRAGMA ignore_check_constraints; -- 0ms;
+INSERT OR ABORT INTO vt0 VALUES (0.8651256519618632); -- 1ms;
+REINDEX  vt0; -- 0ms;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('vt0', 'vt0', '-1856347485 unordered'); -- 0ms;
+INSERT OR IGNORE INTO rt0(c0, c1) VALUES (0Xffffffffb24d6c26, x'42b9'); -- 0ms;
+UPDATE OR ROLLBACK vt0 SET c0=1599114422, c0='VP', c0=x'', c0=0X79b30799, c0=1.694786171E9 WHERE ((LOWER(DISTINCT vt0.c0))<>(UPPER(x'a1e6'))); -- 1ms;
+BEGIN DEFERRED TRANSACTION; -- 0ms;
+CREATE VIEW v0(c0) AS SELECT ALL (+ (rt0.c0)) FROM vt0, rt0; -- 0ms;
+DROP TABLE IF EXISTS rt0; -- 0ms;

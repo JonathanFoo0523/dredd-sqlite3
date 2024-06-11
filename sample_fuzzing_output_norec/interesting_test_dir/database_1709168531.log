@@ -1,0 +1,16 @@
+-- Time: 2024/06/09 15:27:01
+-- Database: database31
+-- Database version: 3.40.0
+-- seed value: 1709168531
+PRAGMA cache_size = 50000; -- 6ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 1ms;
+PRAGMA encoding = 'UTF-8'; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts5(c0 UNINDEXED, c1, c2 UNINDEXED); -- 2ms;
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('integrity-check'); -- 1ms;
+ROLLBACK TRANSACTION; -- 0ms;
+UPDATE OR IGNORE vt0 SET c1=x'' WHERE ((((vt0.c0) IS FALSE))>=(((vt0.c0) BETWEEN (vt0.c1) AND (vt0.c1)))); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('usermerge', 3); -- 1ms;
+SELECT rtreecheck('rt1'); -- 0ms;
+CREATE VIEW v0(c0) AS SELECT DISTINCT CAST(vt0.c2 AS NUMERIC) COLLATE BINARY FROM rt1; -- 1ms;
