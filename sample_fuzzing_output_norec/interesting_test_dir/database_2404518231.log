@@ -1,0 +1,50 @@
+-- Time: 2024/06/09 20:20:44
+-- Database: database31
+-- Database version: 3.40.0
+-- seed value: 2404518231
+PRAGMA cache_size = 50000; -- 8ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts4(c0 UNINDEXED); -- 0ms;
+CREATE TABLE IF NOT EXISTS t1 (c0 INT ); -- 0ms;
+ANALYZE sqlite_master; -- 0ms;
+INSERT OR IGNORE INTO t1 VALUES (0.17453143137789717); -- 1ms;
+INSERT INTO vt0(vt0) VALUES('merge=109006151,4');\n; -- 0ms;
+CREATE INDEX i54 ON t1(((((((c0) BETWEEN (c0) AND (c0)))OR(MIN(c0, c0))))AND('-279211934'))) WHERE CAST(CAST(2016613645 AS INTEGER) AS INTEGER); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('pgsz', '7526'); -- 1ms;
+INSERT INTO vt0(vt0, rank) VALUES('pgsz', '64544'); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('integrity-check'); -- 0ms;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('t1', 'vt0', '0 unordered'); -- 1ms;
+INSERT INTO vt0(vt0) VALUES('rebuild'); -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+PRAGMA legacy_file_format = true; -- 4ms;
+INSERT INTO vt0(vt0, rank) VALUES('usermerge', 15); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('usermerge', 12); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('merge', 1552883709);\n; -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('usermerge', 12); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('merge', 194879584);\n; -- 1ms;
+INSERT INTO vt0(vt0, rank) VALUES('merge', 194879584);\n; -- 0ms;
+INSERT INTO vt0(vt0) VALUES('optimize'); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('rank', 'bm25(10.0, 5.0)'); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('rebuild'); -- 1ms;
+INSERT INTO vt0(vt0) VALUES('rebuild'); -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+INSERT INTO vt0(vt0) VALUES('integrity-check'); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('automerge', 10); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('pgsz', '63785'); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('optimize'); -- 0ms;
+PRAGMA temp.cache_spill = true; -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+BEGIN  TRANSACTION; -- 1ms;
+INSERT INTO vt0(vt0) VALUES('automerge=5'); -- 0ms;
+CREATE UNIQUE INDEX IF NOT EXISTS i49 ON t1((((c0 IN ())) NOTNULL) COLLATE BINARY); -- 0ms;
+PRAGMA temp.incremental_vacuum; -- 0ms;
+DROP INDEX "i49"; -- 0ms;
+PRAGMA temp.mmap_size = -7541158942832487613; -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('crisismerge', 345266194); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('rebuild'); -- 0ms;
+REINDEX NOCASE; -- 0ms;
+PRAGMA main.mmap_size; -- 0ms;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('t1', 'sqlite_autoindex_vt0_segdir_1', ' sz=794057067 unordered'); -- 0ms;
+ANALYZE; -- 0ms;
+CREATE TEMPORARY VIEW  IF NOT EXISTS v0(c0, c1, c2) AS SELECT DISTINCT vt0.c0, (((((((x'')) BETWEEN ((t1.c0)) AND ((vt0.c0))))AND(((t1.c0) NOT BETWEEN (t1.c0) AND (vt0.c0)))))AND(vt0.c0 COLLATE NOCASE)), (((vt0.c0) IS TRUE) IN ()) FROM t1; -- 1ms;

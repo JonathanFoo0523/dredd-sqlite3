@@ -1,0 +1,21 @@
+-- Time: 2024/06/09 13:18:01
+-- Database: database88
+-- Database version: 3.40.0
+-- seed value: 3388810788
+PRAGMA cache_size = 50000; -- 0ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+PRAGMA encoding = 'UTF-16be'; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts5(c0 UNINDEXED); -- 1ms;
+CREATE VIRTUAL TABLE vt1 USING fts4(c0); -- 1ms;
+INSERT INTO vt1(vt1) VALUES('automerge=1'); -- 1ms;
+INSERT OR REPLACE INTO vt0(c0) VALUES (389505137), (x''), (NULL); -- 0ms;
+INSERT INTO vt1(vt1, rank) VALUES('pgsz', '59560'); -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('pgsz', '12685'); -- 0ms;
+UPDATE OR IGNORE vt1 SET (c0, c0)=(x'329b', '') WHERE x''; -- 0ms;
+INSERT INTO vt0(vt0, rank) VALUES('crisismerge', 1545933628); -- 0ms;
+UPDATE vt1 SET c0=x'e7eb'; -- 0ms;
+UPDATE OR FAIL vt0 SET (c0, c0)=('', 0Xffffffff9f64c656) WHERE (((vt0.c0)==(vt0.c0)) IN ()); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0, c0, c0)=('1454955877', '1623267570', x'1dcf'); -- 1ms;
+CREATE TEMPORARY VIEW  IF NOT EXISTS v0(c0) AS SELECT CASE vt1.c0 COLLATE RTRIM  WHEN MAX(vt0.c0) THEN ((vt1.c0) BETWEEN (vt1.c0) AND (vt1.c0)) ELSE '-79452191' END FROM vt1 WHERE (((((CASE 914263088  WHEN x'0dfa' THEN '' WHEN 0X7946b09 THEN '' WHEN NULL THEN '' ELSE '2130276848' END)OR(((0.681562472522793)<>(x'6121')))))AND(('-1698298131' IN ())))); -- 1ms;
