@@ -1,0 +1,39 @@
+-- Time: 2024/06/11 08:09:38
+-- Database: database29
+-- Database version: 3.40.0
+-- seed value: 1371640629
+PRAGMA cache_size = 50000; -- 13ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2); -- 1ms;
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2, c3, c4, c5, c6); -- 1ms;
+BEGIN EXCLUSIVE TRANSACTION; -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+REINDEX; -- 0ms;
+ANALYZE; -- 0ms;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('rt1', 'rt0', ' sz=-1257083579 unordered noskipscan'); -- 0ms;
+PRAGMA stats; -- 0ms;
+REINDEX; -- 0ms;
+BEGIN EXCLUSIVE TRANSACTION; -- 0ms;
+VACUUM main; -- 0ms;
+VACUUM; -- 0ms;
+VACUUM; -- 0ms;
+VACUUM main; -- 1ms;
+VACUUM; -- 0ms;
+VACUUM main; -- 0ms;
+VACUUM; -- 0ms;
+VACUUM temp; -- 0ms;
+CREATE TABLE t0 (c0 INT  CHECK ( c0)); -- 0ms;
+REINDEX; -- 0ms;
+BEGIN DEFERRED TRANSACTION; -- 0ms;
+PRAGMA shrink_memory; -- 0ms;
+INSERT OR REPLACE INTO rt0(c1, c0, c2) VALUES (0.5331082893199628, CASE (((0.08784554313541515))<=((0.5331082893199628)))  WHEN ((')碔^b i(') NOTNULL) THEN ('899381396' IN ()) ELSE UNLIKELY(DISTINCT NULL) END, x'2ffd'); -- 0ms;
+ALTER TABLE t0 ADD COLUMN c94 INTEGER; -- 1ms;
+BEGIN  TRANSACTION; -- 1ms;
+PRAGMA secure_delete; -- 0ms;
+UPDATE OR IGNORE rt1 SET c6=NULL; -- 0ms;
+PRAGMA locking_mode = EXCLUSIVE; -- 0ms;
+INSERT OR IGNORE INTO t0(c94) VALUES ('899381396'); -- 0ms;
+REINDEX BINARY; -- 0ms;
+CREATE VIEW v0(c0) AS SELECT ALL (((- (rt1.c5))) BETWEEN (((rt1.c5) NOT BETWEEN (x'') AND (t0.c0))) AND (((rt1.c6) BETWEEN (rt1.c4) AND (t0.c94)))) FROM rt0, t0 WHERE ((+ ((('') NOTNULL)))) GROUP BY rt1.c5, (rt1.c2 COLLATE RTRIM IN ()), ((((rt1.c4)OR(rt1.c3)))<(((rt1.c5) BETWEEN (rt1.c2) AND (rt1.c0)))), (((((rt1.c5))!=((rt1.c4))))GLOB(((rt1.c5)||(rt0.c2)))), COALESCE(CASE WHEN NULL THEN rt1.c0 END, ((rt1.c6) NOT BETWEEN (rt1.c1) AND (rt1.c6)), ((((t0.c0)OR('-175718570')))AND(t0.c94)), '-1257083579', ((((rt1.c2)OR(rt1.c1)))AND(rt1.c5)), x''), (((rt0.c0))<=((rt1.c5 COLLATE BINARY))), CASE WHEN (NOT (t0.c0)) THEN LIKELY(DISTINCT t0.c0) END HAVING t0.c94 ORDER BY t0.c0 DESC  NULLS FIRST; -- 1ms;
