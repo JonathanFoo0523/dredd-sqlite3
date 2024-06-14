@@ -1,0 +1,38 @@
+-- Time: 2024/06/10 04:30:21
+-- Database: database19
+-- Database version: 3.40.0
+-- seed value: 2388658519
+PRAGMA cache_size = 50000; -- 12ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+CREATE TEMPORARY TABLE IF NOT EXISTS t0 (c0 BLOB  CHECK ( (((((c0, c0, c0))==((c0, c0, c0)))) BETWEEN (json_object(c0, c0, c0, c0, c0, c0)) AND (((c0)/(c0)))))); -- 1ms;
+COMMIT TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES (-1857434663), (NULL), ('yJ0쯙fou!t'); -- 1ms;
+INSERT OR FAIL INTO t0 VALUES ('-319145656'); -- 0ms;
+INSERT OR REPLACE INTO t0(c0) VALUES (x''); -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES (NULL), ('-2013052836'), (x''), ('-2013052836'), ('YJ0쯙FOU!T'); -- 0ms;
+INSERT OR ROLLBACK INTO t0 VALUES (-1857434663), (-1235753061), (0.7570970204022665); -- 1ms;
+INSERT OR ABORT INTO t0 VALUES (677780803); -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES ('') ON CONFLICT DO NOTHING; -- 0ms;
+UPDATE OR FAIL t0 SET c0=NULL, c0=''; -- 0ms;
+ANALYZE sqlite_master; -- 1ms;
+BEGIN  TRANSACTION; -- 0ms;
+UPDATE t0 SET (c0)=('^DDQ&\n') WHERE ((MAX(t0.c0, t0.c0))==((t0.c0 IN ()))); -- 0ms;
+UPDATE OR IGNORE t0 SET c0=x'9b9a', c0=x'' WHERE CAST(NULL AS INTEGER); -- 1ms;
+ANALYZE; -- 0ms;
+DELETE FROM t0; -- 0ms;
+ANALYZE; -- 1ms;
+BEGIN  TRANSACTION; -- 0ms;
+BEGIN  TRANSACTION; -- 0ms;
+UPDATE OR FAIL t0 SET c0='-224631845'; -- 0ms;
+ANALYZE; -- 0ms;
+UPDATE OR IGNORE t0 SET c0=x'2368'; -- 0ms;
+CREATE UNIQUE INDEX IF NOT EXISTS i88 ON t0(((CASE WHEN c0 THEN c0 ELSE c0 END) NOT BETWEEN (c0 COLLATE BINARY) AND (((((((((c0)OR(c0)))AND(c0)))AND(c0)))AND(c0)))) COLLATE BINARY ASC); -- 0ms;
+INSERT OR IGNORE INTO t0 VALUES (0.16991844849870386); -- 0ms;
+INSERT OR REPLACE INTO t0(c0) VALUES (NULL); -- 0ms;
+INSERT OR IGNORE INTO t0(c0) VALUES ('羿U饈}Cm'), ('R~ᣱt'), ('-728164033'); -- 0ms;
+PRAGMA threads; -- 0ms;
+PRAGMA temp.locking_mode; -- 0ms;
+REINDEX; -- 0ms;
+CREATE VIEW v0(c0) AS SELECT DISTINCT t0.c0 FROM t0 WHERE (((((('') ISNULL)))>=((((x'ff34')GLOB(0Xffffffffffdf8721)))))); -- 0ms;

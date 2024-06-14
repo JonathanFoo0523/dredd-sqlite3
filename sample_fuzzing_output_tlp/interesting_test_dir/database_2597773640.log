@@ -1,0 +1,46 @@
+-- Time: 2024/06/09 02:50:43
+-- Database: database40
+-- Database version: 3.40.0
+-- seed value: 2597773640
+PRAGMA cache_size = 50000; -- 0ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+CREATE TEMP TABLE t0 (c0 INT ); -- 0ms;
+CREATE VIRTUAL TABLE vt1 USING fts4(c0 UNINDEXED, notindexed=c0, notindexed=c0); -- 5ms;
+ANALYZE sqlite_master; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO t0 VALUES ('Q*'); -- 0ms;
+PRAGMA main.shrink_memory; -- 0ms;
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2); -- 1ms;
+PRAGMA checkpoint_fullfsync = false; -- 0ms;
+INSERT OR IGNORE INTO rt0(c2) VALUES (NULL); -- 0ms;
+PRAGMA default_cache_size; -- 0ms;
+UPDATE rt0 SET (c2, c0, c2, c0)=('', NULL, NULL, 0.6559818039085173); -- 0ms;
+ALTER TABLE t0 ADD COLUMN c61 TEXT; -- 1ms;
+BEGIN  TRANSACTION; -- 0ms;
+ALTER TABLE t0 RENAME TO t1; -- 0ms;
+PRAGMA temp.legacy_file_format; -- 0ms;
+PRAGMA cell_size_check = true; -- 0ms;
+DROP TABLE IF EXISTS t1; -- 0ms;
+INSERT OR IGNORE INTO rt0 VALUES (0.909318402134692, NULL, 0.909318402134692); -- 0ms;
+ANALYZE; -- 0ms;
+INSERT OR IGNORE INTO rt0(c1) VALUES (-1274242863), (0.6559818039085173), (x''); -- 0ms;
+PRAGMA auto_vacuum; -- 0ms;
+REINDEX BINARY; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO rt0(c0, c2) VALUES ('-1274242863', NULL), (NULL, 0.10262484496805224), (0.4680872759092629, x''); -- 0ms;
+INSERT OR FAIL INTO vt1(c0) VALUES (NULL), (NULL), (NULL), (-1.274242863E9), (-1759577230); -- 0ms;
+PRAGMA temp.short_column_names = false; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+SELECT rtreecheck('rt0'); -- 0ms;
+INSERT OR IGNORE INTO t0(c61) VALUES (x''), ('#g'), (NULL); -- 0ms;
+PRAGMA locking_mode; -- 0ms;
+INSERT OR IGNORE INTO rt0(c0, c2, c1) VALUES (x'', x'4678', '-2038458898'), (x'', 'B', 0.46118392024660304), (x'517d', NULL, ''); -- 0ms;
+PRAGMA cell_size_check; -- 0ms;
+ANALYZE; -- 0ms;
+END; -- 0ms;
+UPDATE OR IGNORE rt0 SET c2=0Xffffffff867f95ee WHERE CASE (+ (rt0.c1))  WHEN ((rt0.c0)>=(rt0.c0)) THEN '' END; -- 0ms;
+CREATE INDEX IF NOT EXISTS i72 ON t0(((((c61)*(c0))) NOTNULL) DESC,'-2038458898' COLLATE BINARY DESC); -- 0ms;
+CREATE INDEX i17 ON t0(((((((c0)OR(0.909318402134692)))OR(c0)))&(TYPEOF(c0))),CAST(((c0)%(c61)) AS TEXT) COLLATE NOCASE DESC) WHERE CASE WHEN CAST(c0 AS NUMERIC) THEN CAST(c61 AS NUMERIC) WHEN x'' THEN (c61 IN ()) WHEN CAST(c61 AS INTEGER) THEN -1.75957723E9 ELSE c61 END; -- 1ms;
+CREATE VIEW  IF NOT EXISTS v0(c0, c1, c2) AS SELECT ALL AVG(0.4205847115477461) OVER (), 0.6602196940582125 COLLATE RTRIM, ((NULL)<=(((NULL)%(t0.c0)))) FROM rt0, vt1 WHERE (CASE WHEN CASE WHEN 0.6477269317719746 THEN '' END THEN 0.0219704882421341 COLLATE RTRIM END); -- 0ms;
