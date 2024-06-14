@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt0 USING e(   0;
+  CREATE VIRTUAL TABLE a USING fts4(b );
+  INSERT   INTO a VALUES(0.8524980249232552);
+  SELECT  *FROM rt0 WHERE(CASE((rt0.f)NOT BETWEEN(rt0.f) AND(rt0.c))                                WHEN(rt0.g) THEN rt0.f END) ORDER     BY(d( - 0) < ((rt0.b)IS 0)) ;
+  SELECT *FROM a WHERE(load_extension(b)BETWEEN(NOT 0)                             AND(0  AND(0))LIKE(0 < 0));

@@ -1,0 +1,7 @@
+ CREATE TABLE t0 (c0 , a , c2 );
+                                         REPLACE INTO t0 VALUES ('', '', x''), ('',0,0);
+                                         ALTER TABLE t0 RENAME TO t1;
+                                         CREATE INDEX IF NOT EXISTS i69 ON t1(CASE WHEN 0 THEN CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN 0 THEN 0 END END COLLATE BINARY,CASE 0  WHEN 1 THEN 0 WHEN 1 THEN 0 WHEN CAST(0 AS BLOB) THEN 0 ELSE (c2, c0, c0)<>(c0, c2, c0) END DESC) WHERE ((1)AND(1)) NOT NULL;
+                                         UPDATE OR IGNORE t1 SET c0=x'';
+                                         ALTER TABLE t1 RENAME TO t0;
+                                         SELECT * FROM t0 WHERE 0<=(0 IN (a));

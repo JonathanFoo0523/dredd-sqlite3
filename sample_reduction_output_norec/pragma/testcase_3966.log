@@ -1,0 +1,2 @@
+PRAGMA cache_spill = 1;
+PRAGMA short_column_names;

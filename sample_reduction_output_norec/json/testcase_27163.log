@@ -1,0 +1,1 @@
+                                           SELECT json_array_length(x'1fc1'   );

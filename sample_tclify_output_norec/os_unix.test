@@ -1,0 +1,109 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6923', '6924', '6925', '6926', '6927', '6928', '6929', '6930', '6931', '6932', '6933', '6934', '6935', '6936', '6937', '6938', '6939', '6940', '6941']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-1.1 {
+  PRAGMA mmap_size = 6782509491;
+} {2147418112}
+
+# kill mutants ['15367', '15368', '15370', '15371', '15372', '15379', '15382', '15384', '15387', '15392', '15393', '15394']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test os_unix-dredd-2.1 {
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['10983']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-3.1 {
+  CREATE VIRTUAL TABLE b USING rtree(c, d, e);
+  PRAGMA mmap_size = 87624166836637926;
+} {2147418112}
+do_execsql_test os_unix-dredd-3.2 {
+  CREATE TABLE a(e);
+} {}
+
+# kill mutants ['10945']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c1, c3);
+  PRAGMA mmap_size = 7926;
+} {7926}
+do_execsql_test os_unix-dredd-4.2 {
+  CREATE TABLE rtree(c2);
+} {}
+
+# kill mutants ['15380', '15381', '15390', '15391']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test os_unix-dredd-5.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('566a');
+  UPDATE a SET b = load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['4496']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-6.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2);
+           PRAGMA main.cache_size = 0;
+           PRAGMA mmap_size = 6287624166836637926;
+} {2147418112}
+do_catchsql_test os_unix-dredd-6.2 {
+           UPDATE   rt1 SET c1=x'7c50';
+           UPDATE rt0 SET c4='110839614'  ;
+} {1 {no such table: rt0}}
+
+# kill mutants ['15388']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-7.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(a, b, c2, c3, c4, +c5);
+  INSERT INTO rt1(c3, c2, a, c4, c5, b) VALUES(0, 0, 1e500, '', '', 0);
+  INSERT OR IGNORE INTO rt1(c4, c3, c5, c2) VALUES(x'', '', 0, '');
+  SELECT *FROM rt1;
+} {9223372036854775807 0 0 0 0 {} 430949533025824050 0 0 0 0 0}
+
+# kill mutants ['10948']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-8.1 {
+  CREATE TABLE t0(a);
+  CREATE INDEX b ON t0(x'', 0);
+  PRAGMA mmap_size = 097559438551;
+} {2147418112}
+do_execsql_test os_unix-dredd-8.2 {
+  ANALYZE;
+  CREATE INDEX IF NOT EXISTS i78 ON t0(0, CASE 0 WHEN 0 THEN '' END);
+} {}
+
+# kill mutants ['10977']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-9.1 {
+  PRAGMA cache_size = 0;
+        PRAGMA mmap_size = 6287624166836637926;
+} {2147418112}
+do_execsql_test os_unix-dredd-9.2 {
+        CREATE VIRTUAL TABLE vt0 USING fts4;
+} {}
+
+# kill mutants ['10979']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-10.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, a);
+  PRAGMA mmap_size = 6287624166836637926;
+} {2147418112}
+do_execsql_test os_unix-dredd-10.2 {
+  CREATE TABLE rtree(c1);
+} {}
+
+finish_test

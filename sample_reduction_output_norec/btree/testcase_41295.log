@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5( 0      );
+  PRAGMA secure_delete = FAST;
+  CREATE VIRTUAL TABLE vt1 USING fts5;

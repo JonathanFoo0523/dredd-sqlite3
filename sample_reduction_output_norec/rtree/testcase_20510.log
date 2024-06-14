@@ -1,0 +1,5 @@
+CREATE TABLE a(d, c, c2);
+ALTER TABLE a ADD c72 REAL;
+ALTER TABLE a ADD b;
+INSERT INTO a VALUES('', 0, '', 0, 0);
+SELECT *FROM a WHERE(rtreenode(2, c72));

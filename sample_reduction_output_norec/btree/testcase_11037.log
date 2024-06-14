@@ -1,0 +1,3 @@
+VACUUM;
+PRAGMA cell_size_check = 1;
+UPDATE a SET(b) = 0;

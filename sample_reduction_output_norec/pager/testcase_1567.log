@@ -1,0 +1,4 @@
+PRAGMA locking_mode = EXCLUSIVE;
+PRAGMA journal_size_limit = 40114539576898;
+BEGIN IMMEDIATE;
+COMMIT;

@@ -1,0 +1,70 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4657', '4658', '4659', '4660']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-1.1 {
+  PRAGMA case_sensitive_like = 0;
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(0) WHERE(0) LIKE(0);
+} {1 {non-deterministic functions prohibited in partial index WHERE clauses}}
+
+# kill mutants ['6512', '6528', '6530', '6536', '6539', '6540', '6542', '6560', '6562', '6568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-2.1 {
+  CREATE TABLE t0(c1);
+  CREATE TRIGGER a UPDATE ON t0 WHEN(b)
+  IS t0.c1 BEGIN UPDATE t0 SET c1 ='' WHERE 0;
+  END;
+  UPDATE t0 SET c1 = x'' ;
+} {1 {no such column: b}}
+
+# kill mutants ['4590']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-3.1 {
+  CREATE TABLE a(c1, c2);
+           ALTER TABLE a RENAME TO t1;
+       CREATE  TABLE rt0  (c2  c4);
+       ALTER TABLE t1 ADD c12;
+       CREATE INDEX i84 ON t1(0);
+       INSERT INTO t1 VALUES('', 0, '');
+       SELECT  COUNT() FROM rt0  NATURAL JOIN t1     ;
+} {0}
+
+# kill mutants ['8265']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-4.1 {
+  SELECT 0 ORDER BY 0, 0;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['4075']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-5.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(d);
+} {1 {no such column: d}}
+
+# kill mutants ['4849']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-6.1 {
+  CREATE TABLE a(c0);
+   CREATE TABLE rt0(c2);
+   CREATE TABLE t0(c0 );
+   ALTER TABLE t0 RENAME TO b;
+   SELECT(SELECT(((((((((c2)AND(1)AND b.c0)))OR(a.c0)))COLLATE RTRIM))                   IS 0) FROM rt0,        a, b ORDER BY(0 NOTNULL) NOT NULL);
+} {{}}
+
+# kill mutants ['4632']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-7.1 {
+  SELECT LIKELIHOOD(0, 0.7194864272776776);
+} {0}
+
+finish_test

@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts5(c0 )   ;
+   CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c, d,  +a  , +b  )  ;
+   CREATE  VIEW  IF NOT EXISTS v0(c0) AS SELECT (((CAST(rt0.b AS e)))) FROM rt0, vt0 ORDER BY rt0.c  ;
+    SELECT (SELECT 1   FROM  rt0, v0 ORDER BY b COLLATE NOCASE  );

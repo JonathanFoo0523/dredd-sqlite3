@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES(0);
+  PRAGMA optimize;
+  DELETE FROM sqlite_stat1;

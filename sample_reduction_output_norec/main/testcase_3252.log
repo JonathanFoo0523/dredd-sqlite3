@@ -1,0 +1,2 @@
+                CREATE VIEW a(b, c, d) AS SELECT TRIM(x'0b' ), 0,0  ;
+                                SELECT 0 FROM a  WHERE b BETWEEN b COLLATE RTRIM AND (CASE WHEN 0 THEN   0 END)BETWEEN 0 AND 0  ;

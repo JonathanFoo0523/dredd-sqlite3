@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c);
+SELECT rtreecheck('rt0');

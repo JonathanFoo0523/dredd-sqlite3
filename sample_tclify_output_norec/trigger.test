@@ -1,0 +1,45 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['958', '959']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-1.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c UPDATE ON a BEGIN DELETE FROM d;
+  END;
+  VACUUM e;
+} {1 {unknown database e}}
+
+# kill mutants ['948', '949', '952', '953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c UPDATE ON a BEGIN DELETE FROM d;
+  END;
+  UPDATE a SET b = 0;
+} {1 {no such table: main.d}}
+
+# kill mutants ['960']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-3.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE TRIGGER d DELETE ON c BEGIN UPDATE e SET f = 0;
+  END;
+  ALTER TABLE c RENAME TO a;
+} {1 {error in trigger d: no such table: main.e}}
+
+# kill mutants ['957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-4.1 {
+  CREATE TABLE t1(c0 );
+  CREATE TRIGGER  AFTER DELETE ON t1 WHEN 0X4c722129 BEGIN DELETE FROM rt0 WHERE 'c';
+  END;
+  ALTER TABLE t1 RENAME TO c79;
+} {1 {error in trigger AFTER: no such table: main.rt0}}
+
+finish_test

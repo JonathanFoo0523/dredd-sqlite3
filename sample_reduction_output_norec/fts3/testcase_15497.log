@@ -1,0 +1,14 @@
+ CREATE VIRTUAL TABLE vt0 USING fts4(c0, languageid="lid");
+   INSERT INTO vt0 VALUES ('');
+   INSERT OR IGNORE INTO vt0(lid) VALUES (x''), (NULL), (x'');
+   INSERT OR IGNORE INTO vt0(lid) VALUES (x'');
+   INSERT OR IGNORE INTO vt0(lid) VALUES (x'');
+   INSERT OR ABORT INTO vt0(lid, c0) VALUES (0, '');
+   INSERT INTO vt0(vt0) VALUES('automerge=2');
+   INSERT OR IGNORE INTO vt0(c0) VALUES (x'dd'), (0), ('');
+   INSERT OR ABORT INTO vt0(c0) VALUES (0);
+   INSERT OR IGNORE INTO vt0(c0) VALUES ('‚'), ('');
+   INSERT OR FAIL INTO vt0(lid) VALUES (0.5930290104114863);
+   UPDATE vt0 SET c0=0;
+   UPDATE   vt0 SET c0=0.44176753768659616;
+   UPDATE vt0 SET lid=0x121f5655;

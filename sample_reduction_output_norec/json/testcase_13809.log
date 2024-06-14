@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE b USING fts4(a);
+INSERT INTO b VALUES('179138655');
+UPDATE b SET a = '.';
+SELECT 0 FROM b(json_type(a));

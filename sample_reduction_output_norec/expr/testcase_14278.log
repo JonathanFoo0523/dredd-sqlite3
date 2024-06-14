@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+CREATE TABLE c(b);
+INSERT INTO c VALUES(0);
+SELECT *FROM a RIGHT JOIN c WHERE(0, 0, a.b IN(c.b)) < (0, 0, 1);

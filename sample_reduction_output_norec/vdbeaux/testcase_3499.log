@@ -1,0 +1,8 @@
+CREATE TEMPORARY TABLE k (a REAL , b , c  , d  , e   CHECK  ((d)IS(d)));
+                                CREATE VIRTUAL TABLE f USING g;
+                                CREATE INDEX h ON k(0  ,CASE WHEN 0 THEN 0 ELSE CASE c WHEN a THEN   '0.10039450145938544' END END  ,0 );
+                                CREATE  INDEX i ON k(CAST(a   AS ),d ) WHERE c<0 NOTNULL;
+                                ALTER TABLE k ADD j;
+                                UPDATE k SET a  =  'j㯞Z죐' WHERE CAST(d ISNULL AS );
+                                INSERT INTO k VALUES (0.2025944854290832,0, '82db',0, 'u[T<', '488789542'), ('400121251', '0.38902975025027886', 0.07127207802638802, 0.24110128820190413, 'd6c1', 0.602075718166772), ('',0, x'',0,0, x''), (x'', 0.8154063263213006, x'', x'', NULL, 0.7660530260427918);
+                                UPDATE k SET c=NULL;

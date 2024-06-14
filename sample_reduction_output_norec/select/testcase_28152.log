@@ -1,0 +1,7 @@
+CREATE  TABLE rt0  ( a  );
+                CREATE VIRTUAL TABLE b USING fts5(c0  )            ;
+                CREATE  TABLE c  (c0, d);
+                SELECT 0 FROM (SELECT 0  as count FROM rt0 ORDER BY CASE WHEN 1 THEN CASE 0  WHEN rt0.c2 THEN 0 WHEN rt0.e THEN x'' WHEN rt0.c0 THEN rt0.c2 WHEN rt0.c2 THEN rt0.c3 WHEN x'' THEN rt0.c4 END WHEN ((((((((rt0.c2)AND(rt0.c1)))AND(rt0.c1)))))OR(rt0.c4)) THEN ((rt0.c2)<=(rt0.c3)) WHEN ((rt0.c1) NOT BETWEEN (rt0.c5) AND (rt0.c5)) THEN (1 AND ((1))) ELSE (0 BETWEEN 0 AND (0)) END DESC  NULLS LAST);
+                SELECT   0 WHERE 0 ORDER BY CASE WHEN rt0.c3>=rt0.c4 THEN CASE rt0.c5  WHEN rt0.c2 THEN rt0.c2 WHEN rt0.c3 THEN x'' WHEN rt0.c0 THEN rt0.c2 WHEN rt0.c2 THEN rt0.c3 WHEN x'' THEN rt0.f END WHEN ((rt0.d)AND(rt0.h)AND(0)OR(rt0.d))OR(rt0.i.a) THEN 0 ELSE 0 END ;
+                SELECT  0 WHERE rt0.c0 BETWEEN CASE WHEN rt0.d THEN 0 END AND CASE WHEN rt0.d THEN rt0.f WHEN c.c0 THEN c.f WHEN rt0.e THEN g.h END AND rt0.c0 BETWEEN CASE WHEN rt0.d THEN rt0.f WHEN c.c0 THEN c.f WHEN rt0.e THEN rt0.e ELSE c.h END AND (rt0.f COLLATE NOCASE);
+                SELECT * FROM c JOIN rt0 FULL  JOIN b ;

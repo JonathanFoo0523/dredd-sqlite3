@@ -1,0 +1,60 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3010', '3011', '3023', '3026']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-1.1 {
+  CREATE TABLE t0(c0, c1, c2, c3, c4, c5, c6);
+  INSERT INTO t0(c3) VALUES('');
+  ALTER TABLE t0 RENAME TO t1;
+  INSERT OR IGNORE INTO t1(c5, c1, c0, c4, c6, c3) VALUES(0, 0, 0, '', x'', 0);
+  ALTER TABLE t1 ADD c41;
+  INSERT OR ROLLBACK INTO t1(c1, c4, c41, c3, c2, c5, c6)
+      VALUES('', 0, 0, 0, 0.9077438567693757, '', x'');
+  SELECT *FROM t1 ORDER BY CAST(c5 AS TEXT);
+} {{} {} {} {} {} {} {} {} {} {} 0.907743856769376 0 0 {} {} 0 0 0 {} 0 {} 0 {} {}}
+
+# kill mutants ['3383']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d, +e);
+  INSERT INTO a VALUES(1, 1, 1, 0);
+  REPLACE INTO a(b) VALUES(1007436);
+  UPDATE a SET(e) = 0 WHERE c;
+  SELECT *FROM a ORDER BY PRINTF(b)
+  COLLATE NOCASE;
+} {1 1.0 1.0 0 1007436 0.0 0.0 {}}
+
+# kill mutants ['3012']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-3.1 {
+  CREATE TABLE t0(c0, c1, c2, c3, c4, c5, c6);
+  INSERT INTO t0(c3) VALUES('');
+  ALTER TABLE t0 RENAME TO t1;
+  INSERT OR IGNORE INTO t1(c5, c1, c0, c4, c6, c3)
+      VALUES(0.8832425969355246, 0, 0, '', x'', 0);
+  ALTER TABLE t1 ADD c41;
+  INSERT OR ROLLBACK INTO t1(c1, c4, c41, c3, c2, c5, c6)
+      VALUES('', 0, 0, 0, 0.9077438567693757, '', x'');
+  SELECT *FROM t1 ORDER BY CAST(0 * c5 AS TEXT);
+} {{} {} {} {} {} {} {} {} {} {} 0.907743856769376 0 0 {} {} 0 0 0 {} 0 {} 0.883242596935525 {} {}}
+
+# kill mutants ['3220', '3252']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-4.1 {
+                  CREATE VIEW a(b, c, d) AS SELECT TRIM(x'0b' ), 0,0  ;
+                                  SELECT 0 FROM a  WHERE b BETWEEN b COLLATE RTRIM AND (CASE WHEN 0 THEN   0 END)BETWEEN 0 AND 0  ;
+} {}
+
+# kill mutants ['7360']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-5.1 {
+  PRAGMA temp.journal_mode;
+} {delete}
+
+finish_test

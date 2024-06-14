@@ -1,0 +1,4 @@
+CREATE TABLE a(b, d);
+CREATE VIEW e(c)
+AS SELECT 0;
+SELECT *FROM a RIGHT JOIN e ON((0)OR(0)) AND(0, 0, d, 0, c) = (0, '', b, 0, c);

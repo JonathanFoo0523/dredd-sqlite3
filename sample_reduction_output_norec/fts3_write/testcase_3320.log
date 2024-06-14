@@ -1,0 +1,3 @@
+ CREATE VIRTUAL TABLE a USING fts4(b, c , languageid="lid");
+                         INSERT INTO a(c, b ) VALUES (1 , '');
+                         SELECT * FROM a WHERE lid;

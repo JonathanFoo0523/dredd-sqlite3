@@ -1,0 +1,2 @@
+ PRAGMA encoding = 'UTF16';
+                                        SELECT 0  WHERE x'34f7' ;

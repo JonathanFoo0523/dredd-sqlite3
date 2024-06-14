@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+VACUUM;
+PRAGMA cell_size_check = 1;
+UPDATE b SET(c) = 0;

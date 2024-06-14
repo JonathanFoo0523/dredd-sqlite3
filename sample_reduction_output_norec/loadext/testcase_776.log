@@ -1,0 +1,6 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('xC}');
+CREATE VIRTUAL TABLE rt42 USING rtree_i32(c, d, e, +f);
+UPDATE a SET b ='';
+INSERT OR IGNORE INTO rt42 VALUES(x'', '', '', x'');
+SELECT(SELECT 0 FROM a JOIN rt42 ON CASE load_extension(b) WHEN 0 THEN 0 END);

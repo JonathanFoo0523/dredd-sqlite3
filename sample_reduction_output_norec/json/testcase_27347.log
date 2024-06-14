@@ -1,0 +1,5 @@
+ CREATE TABLE g (a , b , d , e , f );
+                                 ALTER TABLE g ADD i ;
+                                 INSERT INTO g VALUES (0,0, '',0, '', x'124c');
+                                 ALTER TABLE g RENAME TO h;
+                                 SELECT (SELECT 0   FROM h ORDER BY  json_remove(i ) );

@@ -1,0 +1,40 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6841']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts3-dredd-1.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4( languageid="lid");
+           CREATE VIRTUAL TABLE a USING rtree_i32( ;
+} {1 {incomplete input}}
+do_execsql_test fts3-dredd-1.2 {
+           SELECT  * FROM vt0  WHERE 0=lid   ORDER BY CASE WHEN CAST(0 AS ) THEN 0 END;
+} {}
+
+# kill mutants ['6824', '6826']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  CREATE TABLE b(c);
+  ALTER TABLE b RENAME TO d;
+  SELECT 0 FROM d JOIN a(c);
+} {}
+
+# kill mutants ['15442']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-3.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0 , c1 );
+                INSERT   INTO vt0 VALUES (0,0);
+                INSERT INTO vt0(vt0) VALUES('automerge=10');
+                BEGIN  TRANSACTION;
+                UPDATE OR IGNORE vt0 SET c1=vt0;
+                UPDATE   vt0 SET c0 =( 223372036854775807);
+                INSERT INTO vt0 VALUES (0, 0.6024085729590237), ('1753410739', NULL);
+                INSERT INTO vt0(vt0) VALUES('optimize');
+                INSERT   INTO vt0 VALUES ('1805', x'f6bb');
+                END;
+} {}
+

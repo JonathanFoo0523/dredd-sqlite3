@@ -1,0 +1,100 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['942']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE b(a, d, c2, e);
+  CREATE INDEX c ON b((a, 0, 0)BETWEEN(0, 0, 0) AND(0, c2, 0) DESC);
+  ALTER TABLE b RENAME TO t2;
+  INSERT INTO t2 VALUES('', 0, 0, x''), (0, '', x'', 0);
+  ALTER TABLE t2 ADD REAL;
+  UPDATE OR IGNORE t2 SET c2 = x'' ;
+} {}
+
+# kill mutants ['5258']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c AS SELECT a.b FROM a;
+  ALTER TABLE a RENAME TO d;
+} {}
+
+# kill mutants ['2574', '2576', '2584', '2606', '2608', '2616']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('8bd8');
+  ALTER TABLE a RENAME b TO c;
+  CREATE INDEX d ON a(FALSE);
+  ALTER TABLE a RENAME c TO e;
+  UPDATE a SET e = 0;
+} {}
+
+# kill mutants ['1000', '1010', '1011', '1014', '899', '931', '968', '978', '979', '982']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-4.1 {
+  CREATE TABLE t1(a);
+  ALTER TABLE t1 ADD b;
+  INSERT INTO t1 VALUES('', ''), (x'', 0);
+  CREATE INDEX i82 ON t1(0 COLLATE BINARY, x'' , b DESC);
+  SELECT *FROM t1 INDEXED BY i82;
+} {{} {} {} 0}
+
+# kill mutants ['5260']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-5.1 {
+  CREATE TEMPORARY TABLE t0 (c0    ) ;
+       CREATE TEMP VIEW     v0c0 AS SELECT  c0   FROM t0;
+       ALTER TABLE t0 RENAME  c0 TO a;
+} {1 {error in view v0c0: no such column: a}}
+
+# kill mutants ['5130', '5162']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-6.1 {
+  CREATE TABLE a(b);
+  CREATE TEMPORARY TABLE c(d);
+  ALTER TABLE a RENAME TO e;
+  CREATE TEMP TRIGGER f DELETE ON e BEGIN UPDATE c SET(g) = 0 WHERE(d);
+  END;
+  ALTER TABLE c RENAME d TO h;
+} {1 {error in trigger f: no such column: h}}
+
+# kill mutants ['1578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-7.1 {
+  CREATE TEMPORARY TABLE a(c0);
+  ALTER TABLE a RENAME c0 TO b;
+  UPDATE a SET b = 'y4V';
+} {}
+
+# kill mutants ['2438', '2470']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-8.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  CREATE VIEW d AS SELECT DISTINCT(c)
+  FROM a;
+  ALTER TABLE a RENAME c TO e;
+} {}
+
+# kill mutants ['910']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-9.1 {
+  CREATE TABLE t1(a);
+  ALTER TABLE t1 ADD b;
+  INSERT INTO t1 VALUES(0, 0), ('', x'');
+  CREATE INDEX i82 ON t1(0 COLLATE BINARY, x'' , b DESC);
+  SELECT *FROM t1 INDEXED BY i82;
+} {{} {} 0 0}
+
+finish_test

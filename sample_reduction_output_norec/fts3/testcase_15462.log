@@ -1,0 +1,10 @@
+CREATE VIRTUAL TABLE a USING fts4(b , c );
+                    INSERT   INTO a VALUES (0,0);
+                    INSERT INTO a(a) VALUES('automerge=10');
+                    BEGIN  ;
+                    UPDATE   a SET c=c ;
+                    UPDATE a SET  b= 0;
+                    INSERT INTO a VALUES (0,0), ('-1753410739',0);
+                    INSERT INTO a(a) VALUES('optimize');
+                    INSERT INTO a VALUES ('1805''1334073387',0);
+                    END;

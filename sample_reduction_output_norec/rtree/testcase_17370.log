@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, +e);
+INSERT INTO a(d, c, b, e) VALUES(0, '', 0, x''), ('', 0, 1, 0),
+    (x'', 0, x'', 0);

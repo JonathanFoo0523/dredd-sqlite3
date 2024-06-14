@@ -1,0 +1,5 @@
+PRAGMA synchronous = 0;
+CREATE TABLE a(b, c);
+REPLACE INTO a(c) VALUES('');
+PRAGMA journal_mode = PERSIST;
+UPDATE a SET(b) = 0;

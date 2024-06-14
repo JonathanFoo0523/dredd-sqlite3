@@ -1,0 +1,31 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-1.1 {
+  CREATE TABLE t0(a);
+   CREATE INDEX i82 ON t0(json_quote(0)% 0);
+   VACUUM;
+} {}
+
+# kill mutants ['8401', '8407', '8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-2.1 {
+  CREATE TABLE a(b, c NOT NULL);
+  INSERT INTO a VALUES(0, '');
+  UPDATE a SET b = 0, c = NULL;
+} {1 {NOT NULL constraint failed: a.c}}
+
+# kill mutants ['14536']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-3.1 {
+  CREATE TABLE a(b REAL);
+  CREATE INDEX c ON a(0 IN(b)) WHERE(0 % 0);
+  VACUUM;
+} {}
+
+finish_test

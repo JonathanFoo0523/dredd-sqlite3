@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+ INSERT INTO a(b) VALUES('1196618396');
+ INSERT INTO a(d) VALUES(0), ('h0'), ('');
+ SELECT(SELECT 0 FROM a ORDER BY rtreenode(b, b));

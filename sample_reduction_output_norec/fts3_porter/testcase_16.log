@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE vt1 USING fts4(orderASC, tokenize=porter);
+       INSERT INTO vt1 VALUES (NULL);
+       INSERT INTO vt1(vt1) VALUES('integrity-check');

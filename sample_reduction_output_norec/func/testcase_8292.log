@@ -1,0 +1,15 @@
+ PRAGMA temp_store=MEMORY;
+                 CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+                 CREATE TABLE    t1 (c0 INT    , c2 INT , c3 INT , a REAL UNIQUE ON CONFLICT ABORT CHECK ( (((0)) NOT BETWEEN (CAST(c3 AS TEXT)) AND (NULL))) , c5 TEXT , c6 TEXT NOT NULL );
+                 BEGIN  ;
+                 ALTER TABLE t1 RENAME  c5 TO c40;
+                ALTER TABLE t1 ADD  c75 TEXT;
+                ANALYZE ;
+                ALTER TABLE t1 RENAME  a TO b;
+                ALTER TABLE t1 RENAME TO t0;
+                INSERT   INTO vt0 VALUES ('0ohjž¬ m'), ('1985205327');
+                 INSERT   INTO t0 VALUES (1, '1949655825', 1, '3a75', '2113481774', 0, '');
+                 ALTER TABLE t0 ADD COLUMN c52 INT;
+                ALTER TABLE t0 RENAME COLUMN c2 TO c48;
+                CREATE TEMP VIEW v0 AS SELECT  (((1))>=((t0.c52))) FROM t0 WHERE ((0 NOT NULL));
+                 SELECT SUM(0) FROM (SELECT  0    FROM t0, v0 FULL OUTER JOIN vt0 ON TRIM(CASE WHEN x'' THEN 0 ELSE 1 END, 0) ORDER BY 1)    ;

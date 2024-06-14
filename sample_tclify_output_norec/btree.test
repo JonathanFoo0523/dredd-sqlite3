@@ -1,0 +1,418 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['33234', '33235', '33238', '33239', '33279', '33280', '33281', '33282', '33284', '33302', '33306', '33308', '33309', '33312', '33313', '33314', '33316', '33334']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-1.1 {
+  CREATE TABLE a(b);
+  PRAGMA secure_delete = 1;
+} {1}
+do_execsql_test btree-dredd-1.2 {
+  ALTER TABLE a RENAME TO c;
+  CREATE INDEX i55 ON c(0);
+  ALTER TABLE c RENAME TO d;
+  DROP INDEX "i55";
+  CREATE INDEX e ON d(0);
+} {}
+
+# kill mutants ['41246', '41278', '41299', '41310', '41331', '41342']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-2.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-2.2 {
+  CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['11021', '11022', '11023', '11024', '11053', '11054', '11055', '11056']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-3.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(0);
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO d VALUES(0);
+  PRAGMA cell_size_check = 1;
+  BEGIN;
+  REPLACE INTO d VALUES('28eb0918');
+  ROLLBACK;
+  REINDEX;
+} {}
+
+# kill mutants ['41352', '41356', '41359', '41360']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-4.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  CREATE VIRTUAL TABLE vt1 USING fts5(0);
+  CREATE VIRTUAL TABLE rt0 USING rtree(b, c, d);
+} {}
+
+# kill mutants ['11520', '11521', '11522', '11525', '11526', '11527', '11529', '11534', '11537', '11540', '11543', '11546', '11547']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-5.1 {
+  ANALYZE;
+} {}
+
+# kill mutants ['41347', '41348', '41354', '41355']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-6.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE vt0 USING fts5(0);
+  CREATE VIRTUAL TABLE vt1 USING fts5(0);
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c);
+  DROP TABLE vt1;
+} {}
+
+# kill mutants ['10974']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-7.1 {
+  PRAGMA temp.cell_size_check = true;
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32;
+} {1 {Too few columns for an rtree table}}
+
+# kill mutants ['9575']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-8.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2);
+           CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2c3 );
+           ANALYZE ;
+           CREATE TABLE t0(INTc1 INTEGER, c2 REAL);
+           ALTER TABLE t0 RENAME TO a;
+} {}
+
+# kill mutants ['41239', '41296', '41306']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-9.1 {
+  PRAGMA encoding = 'UTF16le';
+   CREATE VIRTUAL TABLE a USING fts5(0);
+   PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-9.2 {
+   CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['9577']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-10.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['33277']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-11.1 {
+  PRAGMA encoding = 'UTF16le';
+           CREATE  TABLE a(c0 BLOB UNIQUE CHECK(HEX(0)) CHECK(CAST(0 AS INTEGER)));
+           ALTER TABLE a ADD c25 TEXT;
+           ALTER TABLE a ADD c24 INTEGER;
+           ALTER TABLE a ADD c13 REAL;
+           PRAGMA secure_delete = 1;
+} {1}
+do_execsql_test btree-dredd-11.2 {
+           ALTER TABLE a RENAME TO t1;
+           CREATE UNIQUE INDEX i55 ON t1(((((0)AND((0 NOT BETWEEN(0)                   AND((c0, c13, c13))))))AND(((c13)IS TRUE)))ASC,    (json_insert('', c25, c13) IN()), (-0)COLLATE RTRIM DESC,    ((c13 COLLATE NOCASE)NOT BETWEEN((((c24)) <= ((c0))))         AND(CASE c24 WHEN c13 THEN c24 END)));
+           DROP INDEX "i55";
+} {}
+
+# kill mutants ['61266', '61267', '61275', '61280', '61298', '61299']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-12.1 {
+  PRAGMA secure_delete = 1;
+} {1}
+do_execsql_test btree-dredd-12.2 {
+  PRAGMA journal_mode = WAL;
+} {wal}
+do_execsql_test btree-dredd-12.3 {
+  PRAGMA secure_delete;
+} {1}
+
+# kill mutants ['11097']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-13.1 {
+  CREATE TABLE b(c);
+  ALTER TABLE b RENAME TO a;
+  BEGIN;
+  ALTER TABLE a ADD d;
+  PRAGMA cell_size_check = 1;
+} {}
+
+# kill mutants ['41248', '41249']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-14.1 {
+  PRAGMA encoding = 'UTF16le';
+           CREATE VIRTUAL TABLE vt0 USING fts5(     UNINDEXED,     "unicode61 remove_diacritics  tokenchars '' separators ''");
+           ANALYZE;
+           CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+           VACUUM;
+} {}
+
+# kill mutants ['11029', '11031', '11032', '11033']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-15.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  VACUUM;
+  PRAGMA cell_size_check = 1;
+  UPDATE b SET(c) = 0;
+} {1 {no such table: b}}
+
+# kill mutants ['11216']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-16.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(, c2, c3, c4);
+} {}
+
+# kill mutants ['41270', '41344', '41345', '41346', '41349', '41350', '41357', '41358', '41361', '41362', '41363', '41364', '41365']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-17.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['41290']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-18.1 {
+  PRAGMA encoding = 'UTF-16le';
+  CREATE VIRTUAL TABLE a USING fts5(UNINDEXED);
+  PRAGMA secure_delete = FAST;
+} {2}
+do_execsql_test btree-dredd-18.2 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, b);
+} {}
+
+# kill mutants ['41351']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-19.1 {
+  PRAGMA encoding = 'UTF16le';
+   CREATE VIRTUAL TABLE vt0 USING fts5(0);
+   CREATE VIRTUAL TABLE rt0 USING rtree(b, a, c);
+} {}
+
+# kill mutants ['11535', '11538', '11539', '11542']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-20.1 {
+  CREATE VIRTUAL TABLE a USING fts5;
+} {1 {vtable constructor failed: a}}
+
+# kill mutants ['41274']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-21.1 {
+  PRAGMA encoding = 'UTF16le';
+    CREATE VIRTUAL TABLE a USING fts5(0 );
+    PRAGMA main.secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-21.2 {
+    CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['11536']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-22.1 {
+  PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-22.2 {
+   CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+
+# kill mutants ['41279', '41282', '41283', '41314', '41315']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-23.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-23.2 {
+  CREATE VIRTUAL TABLE b USING fts5(0);
+  VACUUM;
+  UPDATE b SET c =   '';
+} {1 {no such column: c}}
+
+# kill mutants ['11030', '11034', '11035', '11036', '11037']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-24.1 {
+  VACUUM;
+  PRAGMA cell_size_check = 1;
+  UPDATE a SET(b) = 0;
+} {1 {no such table: a}}
+
+# kill mutants ['11523', '11544']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-25.1 {
+  CREATE TABLE a(b);
+} {}
+
+# kill mutants ['11524', '11545', '11548', '11549', '11550']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-26.1 {
+  ANALYZE;
+  ANALYZE;
+} {}
+
+# kill mutants ['41297']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-27.1 {
+  PRAGMA encoding = 'UTF16le';
+       CREATE VIRTUAL TABLE a USING fts5(1      );
+       PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-27.2 {
+       CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['41295']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-28.1 {
+  PRAGMA encoding = 'UTF16le';
+    CREATE VIRTUAL TABLE a USING fts5( 0      );
+    PRAGMA secure_delete = FAST;
+} {2}
+do_catchsql_test btree-dredd-28.2 {
+    CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['41298']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-29.1 {
+  PRAGMA encoding = 'UTF16le';
+   CREATE VIRTUAL TABLE vt0 USING fts5(      1  );
+   PRAGMA secure_delete = FAST;
+} {2}
+do_execsql_test btree-dredd-29.2 {
+   CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+} {}
+
+# kill mutants ['41247']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-30.1 {
+  PRAGMA encoding = 'UTF16le';
+               CREATE VIRTUAL TABLE vt0 USING fts5(c1 , "unicode61 remove_diacritics 2 tokenchars '' separators ''");
+               UPDATE vt0 SET c1=0 WHERE '2f4389ab3d94';
+               PRAGMA secure_delete (11);
+} {1}
+do_execsql_test btree-dredd-30.2 {
+               CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+               VACUUM ;
+} {}
+
+# kill mutants ['41273']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-31.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE vt0 USING
+  fts5(c0c1 );
+  PRAGMA secure_delete = FAST;
+} {2}
+do_catchsql_test btree-dredd-31.2 {
+  CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['41311']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-32.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  PRAGMA secure_delete = 1; -- , 
+} {1}
+do_catchsql_test btree-dredd-32.2 {
+  CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['41271']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-33.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING
+  fts5(1
+       );
+  PRAGMA secure_delete = FAST;
+} {2}
+do_catchsql_test btree-dredd-33.2 {
+  CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['41288']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-34.1 {
+  PRAGMA encoding = 'UTF-16le';
+  CREATE VIRTUAL TABLE vt0 USING fts5(1);
+  PRAGMA secure_delete = FAST;
+} {2}
+do_catchsql_test btree-dredd-34.2 {
+  CREATE VIRTUAL TABLE vt1 USING fts5;
+} {1 {vtable constructor failed: vt1}}
+
+# kill mutants ['41241']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-35.1 {
+  PRAGMA encoding = 'UTF-16le';
+         CREATE VIRTUAL TABLE a USING fts5("");
+         PRAGMA secure_delete = 1;
+} {1}
+do_catchsql_test btree-dredd-35.2 {
+         CREATE VIRTUAL TABLE b USING fts5;
+} {1 {vtable constructor failed: b}}
+
+# kill mutants ['11140', '11172']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-36.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts4;
+  VACUUM;
+  PRAGMA cell_size_check = 1;
+  UPDATE b SET(c) = 0;
+} {1 {no such table: b}}
+
+# kill mutants ['41330']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-37.1 {
+  PRAGMA encoding = 'UTF-16le';
+  CREATE VIRTUAL TABLE vt0 USING
+  fts5(1
+       );
+  PRAGMA secure_delete = 1;
+} {1}
+do_execsql_test btree-dredd-37.2 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+} {}
+
+finish_test

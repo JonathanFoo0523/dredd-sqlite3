@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+CREATE VIEW c AS SELECT 0 FROM a;
+SELECT *FROM c WHERE(load_extension(0));

@@ -1,0 +1,4 @@
+ CREATE  TABLE a  (c0 c1, c2);
+               CREATE  VIEW v0 AS SELECT DISTINCT c2 FROM a;
+               CREATE TABLE    t0 (  c2  )           ;
+               SELECT * FROM a RIGHT  JOIN t0 ON 0  JOIN v0 WHERE 85 ;

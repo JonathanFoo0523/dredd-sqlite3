@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE TABLE e(f);
+INSERT INTO a(d) VALUES('H1i_RG(䘃N');
+UPDATE a SET c = '900899502';
+UPDATE e SET f = '';

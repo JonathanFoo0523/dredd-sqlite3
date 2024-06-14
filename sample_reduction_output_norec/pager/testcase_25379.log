@@ -1,0 +1,3 @@
+CREATE TEMP VIEW a AS SELECT 0;
+PRAGMA journal_mode = PERSIST;
+PRAGMA wal_checkpoint;

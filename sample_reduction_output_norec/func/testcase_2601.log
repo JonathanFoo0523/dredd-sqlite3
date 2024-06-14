@@ -1,0 +1,8 @@
+         CREATE VIRTUAL TABLE b USING c;
+                     CREATE TABLE    t1 (c0     , a  , c3  , c4  , c5  , c6    );
+                     ALTER TABLE t1 RENAME  c5 TO d;
+                    ALTER TABLE t1 ADD c75 ;
+                    ALTER TABLE t1 RENAME  c4 TO e;
+                    ALTER TABLE t1 RENAME TO t0;
+                     INSERT INTO t0(d, a, e, c3, c75, c0, c6) VALUES (0, '1949655825', 0.4437508745199624, '3a75', '-2113481774',0, '');
+                     SELECT 0 FROM  t0      WHERE UPPER(e||e)     ;

@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE c USING rtree(c0, d, e);
+               CREATE  VIEW a AS SELECT  1  ;
+               CREATE TABLE    b (    e  );
+               SELECT 0 FROM c RIGHT  JOIN b    JOIN a     WHERE 0      ;

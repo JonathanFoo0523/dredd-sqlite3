@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c, +d);
+REPLACE INTO rt0(c) VALUES('0.2762755292361184');
+SELECT rtreecheck('rt0');
