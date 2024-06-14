@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, c2, +d e);
+     INSERT INTO a(c2, d, b) VALUES(NULL, NULL, '0.9310100326683893'), (NULL, 0.4640753490967283, 'l');
+     PRAGMA cell_size_check = true;
+     UPDATE a SET c =   CASE  WHEN(1) THEN 0 END;

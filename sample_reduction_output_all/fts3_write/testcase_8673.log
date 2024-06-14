@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE vt0 USING fts4(c0, a , c2  );
+       INSERT   INTO vt0(a) VALUES ('㧒s');
+       INSERT INTO vt0(a, c0) VALUES ('xkiF]#', x'c6a1'), (0.6945852907175998, x''), (x'55', '');
+       INSERT OR IGNORE INTO vt0(c0, c2) VALUES (x'', 'xkiF]');
+       INSERT INTO vt0(vt0) VALUES('automerge=9');
+       PRAGMA main.reverse_unordered_selects = true;
+       INSERT INTO vt0(vt0) VALUES('rebuild');

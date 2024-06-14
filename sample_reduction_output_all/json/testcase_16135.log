@@ -1,0 +1,5 @@
+CREATE TABLE a(b, c);
+ALTER TABLE a RENAME b TO d;
+ALTER TABLE a ADD e;
+CREATE INDEX f ON a(json_patch(c, 3));
+INSERT INTO a(c, d, e) VALUES('HqZ', 3, 0.24220429408971456);

@@ -1,0 +1,1 @@
+ SELECT DISTINCT 00, 0, TYPEOF0, CASE v0.c1  WHEN (0 NOT NULL) THEN ((v0.c2)IS NOT(rt0.c2)) END, ((((rt1.c2) NOTNULL))!=(((rt1.c0)||(x'08a9')))), TYPEOF(DISTINCT ((rt0.c1)*(v0.c0)))  v0, t1, rt0, rt1;

@@ -1,0 +1,6 @@
+ CREATE VIRTUAL TABLE vt1 USING fts4(c3, languageid="lid");
+                         REPLACE INTO vt1(lid) VALUES (''), (0.8377492112151568), (6);
+                         UPDATE OR IGNORE vt1 SET c3=0;
+                         BEGIN  TRANSACTION;
+                         UPDATE OR IGNORE vt1 SET lid=0;
+                         INSERT INTO vt1(vt1) VALUES('integrity-check');

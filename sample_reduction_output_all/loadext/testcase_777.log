@@ -1,0 +1,1 @@
+SELECT load_extension(CASE WHEN '1053010141' THEN '' END);

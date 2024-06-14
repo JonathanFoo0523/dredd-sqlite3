@@ -1,0 +1,13 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2974', '774']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbemem-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(c, d) VALUES(1.075523897E9, 1187613184);
+  SELECT CAST(UPPER(b) AS TEXT) FROM a;
+} {1}
+
+finish_test

@@ -1,0 +1,1 @@
+PRAGMA main.mmap_size = 4;

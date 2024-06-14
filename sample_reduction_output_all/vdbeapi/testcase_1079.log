@@ -1,0 +1,10 @@
+         CREATE TABLE t0 (a );
+                                ALTER TABLE t0 RENAME TO t1;
+                                ALTER TABLE t1 RENAME a TO c57;
+                                ALTER TABLE t1 ADD REAL;
+                                INSERT INTO t1 VALUES (NULL, '');
+                                ALTER TABLE t1 RENAME COLUMN c57 TO c5;
+                                ALTER TABLE t1 RENAME TO t0;
+                                ALTER TABLE t0 RENAME COLUMN c5 TO c48;
+                                CREATE TEMPORARY TABLE IF NOT EXISTS t1 (c0 INT  c1 INT , c2 TEXT );
+                                SELECT ALL x'', LAST_VALUE(0&00 BETWEEN NULL AND 0) OVER (), c48 FROM t0;

@@ -1,0 +1,85 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3010', '3011', '3023', '3026']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree(c0, c1, b);
+  INSERT INTO a(b, c1) VALUES('f886', 'de0c'), (6, NULL);
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0, c1, b);
+  INSERT INTO vt0 VALUES('', 0.847170079214117, 9);
+  INSERT OR ROLLBACK INTO vt0(c1, c0) VALUES('', x'');
+  SELECT 0 FROM a, vt0 GROUP BY c IN(), HEX(vt0.b) HAVING a.b;
+} {}
+
+# kill mutants ['3383']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+   INSERT INTO a(d) VALUES(0.7516661104248831);
+   INSERT INTO a(c) VALUES('ee32');
+   CREATE TABLE t0(b);
+   INSERT INTO t0 VALUES(''), ('');
+   ALTER TABLE t0 ADD COLUMN c92 REAL;
+   INSERT OR IGNORE INTO t0 VALUES(0.2984019048444301, '');
+   SELECT COUNT() OVER(PARTITION BY t0.b COLLATE NOCASE || 0) FROM a, t0;
+} {4 4 4 4 2 2}
+
+# kill mutants ['8271']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-3.1 {
+  PRAGMA threads = 75;
+} {8}
+
+# kill mutants ['3012']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-4.1 {
+  CREATE TABLE t0(a, b, c);
+  ALTER TABLE t0 RENAME c TO c54;
+  INSERT INTO t0(c54) VALUES(NULL);
+  ALTER TABLE t0 RENAME TO t1;
+  ALTER TABLE t1 ADD d;
+  INSERT INTO t1 VALUES('', '', 'Z9Wb', '');
+  ALTER TABLE t1 RENAME TO t0;
+  INSERT OR IGNORE INTO t0(c54) VALUES('Z');
+  SELECT c54, CUME_DIST() OVER(ORDER BY c54) FROM t0;
+} {{} 0.333333333333333 Z 0.666666666666667 Z9Wb 1.0}
+
+# # kill mutants ['8174']
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test main-dredd-5.1 {
+#   PRAGMA encoding = 'UTF16';
+#   CREATE TABLE a(b, c, d);
+#   ALTER TABLE a RENAME d TO e;
+#   REPLACE INTO a(e) VALUES('蝢}Rrs缙jv');
+#   ALTER TABLE a RENAME TO f;
+#   ALTER TABLE f ADD g;
+#   INSERT INTO f VALUES('dec3', '1088019198', 'eݶ', 8.5652656E7),
+#       ('329214757', '', NULL, NULL);
+#   ALTER TABLE f RENAME TO a;
+#   SELECT LAG(0) OVER() FROM a ORDER BY e;
+# } {0 {} 0}
+
+# kill mutants ['3220', '3252']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-6.1 {
+  CREATE TABLE a(b);
+  REPLACE INTO a VALUES('78f4');
+  CREATE INDEX c ON a(CHAR(0) COLLATE RTRIM);
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['7360']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-7.1 {
+  PRAGMA temp.journal_mode;
+} {delete}
+
+finish_test

@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, d, e);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO c VALUES('pgsz');

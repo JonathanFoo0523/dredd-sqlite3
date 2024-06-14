@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16';
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+INSERT INTO a VALUES(4, '', '', x'',                                  '');
+SELECT CASE(b) || 0 WHEN 0 THEN 0 END, HEX(b) FROM a GROUP BY(TRUE);

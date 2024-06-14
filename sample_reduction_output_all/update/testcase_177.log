@@ -1,0 +1,5 @@
+CREATE TABLE t0(c0 , c2 a);
+CREATE  INDEX i78 ON t0(0 ,
+                              CASE WHEN 0 THEN(c2 ) ELSE CAST(c2 AS )
+                                  END   );
+UPDATE t0 SET c0 ='' ;

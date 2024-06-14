@@ -1,0 +1,2 @@
+PRAGMA defer_foreign_keys = a;
+UPDATE b SET c = '';

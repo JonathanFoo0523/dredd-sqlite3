@@ -1,0 +1,4 @@
+CREATE TABLE a(c);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO b VALUES('pgsz');

@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, a, c4, c5, c7 INTEGER );
+         INSERT OR ROLLBACK INTO rt1(c7, c2, c5, c1) VALUES (0.02786687126993148, 1.955711404E9, 0 , 0.02786687126993148);
+         CREATE VIRTUAL TABLE rt43 USING rtree_i32(c0, c1, c2);
+         INSERT INTO rt43(c2, c0) VALUES (NULL, 1.96040531E9);
+         SELECT CAST(c4 AS ) END, ((json_array_length(x''))) FROM rt43, rt1;

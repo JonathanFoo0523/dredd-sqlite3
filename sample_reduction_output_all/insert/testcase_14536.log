@@ -1,0 +1,4 @@
+CREATE TABLE t0(a );
+      CREATE UNIQUE INDEX i83 ON t0((((x'')NOT BETWEEN(0.5522837020200795) AND(0))IN     ())) WHERE     CAST(((0)OR(x''))AS );
+      CREATE INDEX b ON t0(0);
+      VACUUM;

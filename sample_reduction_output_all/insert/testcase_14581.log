@@ -1,0 +1,4 @@
+              CREATE TABLE t0 (c0 CHECK ( c0 COLLATE RTRIM));
+              ALTER TABLE t0 RENAME TO t1;
+              CREATE UNIQUE INDEX    i2 ON t1(0 );
+             VACUUM;

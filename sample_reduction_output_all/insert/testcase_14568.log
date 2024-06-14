@@ -1,0 +1,4 @@
+CREATE TABLE t0 (c0 );
+      CREATE INDEX i83 ON t0(0 IN ()) WHERE CAST0;
+      CREATE INDEX a ON t0(0 ) ;
+      VACUUM;

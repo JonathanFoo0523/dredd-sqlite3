@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE vt1 USING fts4(a , languageid="lid");
+                 INSERT OR IGNORE INTO vt1 VALUES (NULL);
+                 UPDATE vt1 SET a=0x7915ff70;

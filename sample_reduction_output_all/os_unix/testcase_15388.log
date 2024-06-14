@@ -1,0 +1,9 @@
+PRAGMA encoding = 'UTF16be';
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(b, c, d);
+PRAGMA journal_mode = PERSIST;
+VACUUM;
+BEGIN;
+REPLACE INTO a(b, d) VALUES('P', '0.41801360488464556');
+ROLLBACK;
+SELECT rtreecheck('rt1');

@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16be';
+CREATE VIRTUAL TABLE a USING rtree(c0, c3, c4);
+PRAGMA secure_delete = FAST;
+CREATE VIRTUAL TABLE vt70 USING fts4;

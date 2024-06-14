@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16';
+CREATE VIRTUAL TABLE a USING rtree(b, c, d, +e);
+INSERT INTO a(c, e) VALUES('-1056589719', '860399561');
+SELECT(0 % e) FROM a;

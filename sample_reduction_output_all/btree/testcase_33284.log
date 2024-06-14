@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+PRAGMA secure_delete = true;
+DROP TABLE a;
+ANALYZE;

@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+SELECT 4 FROM a WHERE(json_extract(4, 0));

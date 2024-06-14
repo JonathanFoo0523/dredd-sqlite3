@@ -1,0 +1,5 @@
+CREATE TABLE a(b, c, d);
+ALTER TABLE a ADD e;
+CREATE INDEX f ON a(json_patch(2, 3));
+ALTER TABLE a RENAME TO g;
+INSERT INTO g VALUES('5N3䐐5D.', 'Zy彞QApY', NULL, ') (4 x');

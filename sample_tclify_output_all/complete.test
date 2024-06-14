@@ -1,0 +1,70 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['410']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-1.1 {
+  PRAGMA a;
+  BEGIN;
+  VACUUM;
+} {1 {cannot VACUUM from within a transaction}}
+
+# kill mutants ['385', '417']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test complete-dredd-2.1 {
+  BEGIN;
+  VALUES('bm2510.0 5.0');
+} {{bm2510.0 5.0}}
+do_catchsql_test complete-dredd-2.2 {
+  VACUUM;
+} {1 {cannot VACUUM from within a transaction}}
+
+# kill mutants ['651']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-3.1 {
+  CREATE TEMP TABLE a(b);
+  INSERT INTO c VALUES(0.5115280194052436);
+} {1 {no such table: c}}
+
+# kill mutants ['683']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-4.1 {
+  CREATE TEMP VIEW a AS SELECT 0;
+  UPDATE b SET c ='' ;
+} {1 {no such table: b}}
+
+# kill mutants ['240', '253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test complete-dredd-5.1 {
+  VALUES ('23355690'); -- 
+} {23355690}
+do_execsql_test complete-dredd-5.2 {
+  VALUES-- ;
+} {}
+
+# kill mutants ['221']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-6.1 {
+  SELECT rtreecheck0; -- 
+} {1 {no such column: rtreecheck0}}
+do_execsql_test complete-dredd-6.2 {
+  ;
+} {}
+
+# kill mutants ['208']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-7.1 {
+  UPDATE a SET b=0.16967292169520387; -- 
+} {1 {no such table: a}}
+do_execsql_test complete-dredd-7.2 {
+  VALUES -- ;
+} {}
+
+finish_test

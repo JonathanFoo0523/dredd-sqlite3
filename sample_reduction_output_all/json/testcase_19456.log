@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, b, c, +c3);
+INSERT INTO rt0(c3, b, c) VALUES('', x'', '');
+SELECT 0, json_array(CAST(rt0.c3 AS INTEGER) - 58560, x'' ) FROM rt0;

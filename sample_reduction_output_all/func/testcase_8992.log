@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(d, b, c);
+SELECT load_extension(CAST(0 AS)), COUNT() FROM a;

@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree(c0, d, b);
+SELECT ~CAST(c0 AS), LIKE(0, (c)NOT NULL) FROM a;

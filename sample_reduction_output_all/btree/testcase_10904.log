@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts4(notindexedc0c0, 1, c2);
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c2);
+PRAGMA cell_size_check = true;
+VACUUM;

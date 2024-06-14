@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+SELECT GROUP_CONCAT(0), json_array_length(b) FROM a;

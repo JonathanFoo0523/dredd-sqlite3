@@ -1,0 +1,5 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES(4);
+CREATE VIEW c(b, d, e, f, g)
+AS SELECT 0, h IN(), CAST('' AS), 0, 0 FROM a;
+SELECT d FROM c;

@@ -1,0 +1,17 @@
+ CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, a, c4);
+                         CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1 , languageid="lid");
+                         INSERT INTO vt1(c1, lid, c0) VALUES ('958758674', '97fe', '480698361');
+                         INSERT   INTO rt0(c4, c0) VALUES ('', NULL), (NULL, 4.80698361E8);
+                         INSERT OR ROLLBACK INTO vt1 VALUES (x'', 0.06317974027915396), ('', x''), (0.7316559180258133, '');
+                         INSERT OR ABORT INTO vt1(c1) VALUES (3), (x''), ('');
+                         INSERT OR REPLACE INTO vt1(c1) VALUES (NULL), (3), ('');
+                         INSERT OR ROLLBACK INTO rt0(c4, c2) VALUES (NULL, x'');
+                         INSERT OR IGNORE INTO vt1(c1) VALUES (''), (x''), (NULL);
+                         INSERT OR IGNORE INTO rt0(c4) VALUES (0.12689496300959469);
+                         INSERT OR IGNORE INTO rt0(c1, c4, c0) VALUES (x'', x'', x''), (NULL, NULL, '1422414237779');
+                         INSERT OR ABORT INTO rt0(c2) VALUES (NULL), (0.12689496300959469), ('');
+                         PRAGMA cell_size_check = true;
+                         INSERT OR ABORT INTO vt1(lid) VALUES (x'');
+                         INSERT OR IGNORE INTO rt0(c4) VALUES (NULL);
+                         INSERT OR FAIL INTO vt1(c1, c0, lid) VALUES (0.18931703131407318, 7, x'');
+                        SELECT COUNT() OVER () FROM vt1, rt0;

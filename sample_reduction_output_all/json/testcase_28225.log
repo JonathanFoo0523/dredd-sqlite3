@@ -1,0 +1,8 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c1, c2, c3, c4);
+INSERT INTO a(c1, b, c4) VALUES('', '', x'');
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2, +c3 INT);
+INSERT OR ABORT INTO rt0(c3, c1, c2) VALUES(x'', x'', '');
+SELECT(CASE WHEN a.c1 THEN rt0.c2 END),
+    CASE WHEN CASE WHEN rt0.c1 THEN rt0.c2 END THEN CAST(a.c2 AS) END FROM a,
+    rt0 GROUP BY(NULL)
+ORDER BY CAST(json_array_length(a.c2, a.c3) AS);

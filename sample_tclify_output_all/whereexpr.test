@@ -1,0 +1,85 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['9099']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0 );
+  SELECT '' FROM a LIMIT 886408348;
+} {}
+
+# kill mutants ['9088']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-2.1 {
+   CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2 );
+           SELECT 0.6396101148379857 FROM rt1 LIMIT 1246802015;
+} {}
+
+# kill mutants ['7112', '7113', '7114', '7117']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-3.1 {
+  CREATE TABLE a(b UNIQUE);
+  INSERT INTO a VALUES(NULL);
+  ALTER TABLE a RENAME TO c;
+  SELECT COUNT() FROM c WHERE''BETWEEN 0 AND 0 NOT NULL;
+} {1}
+
+# kill mutants ['9096']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-4.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts5(a);
+                   SELECT ''  FROM vt1 LIMIT   8;
+} {}
+
+# kill mutants ['9089', '9090']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  INSERT INTO a VALUES('');
+  SELECT ALL x'' FROM a LIMIT 4;
+} {{}}
+
+# kill mutants ['9092']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-6.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+  SELECT '' FROM vt1 LIMIT 886408348;
+} {}
+
+# kill mutants ['9102']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-7.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts5(a);
+                SELECT '080c'  FROM vt1 LIMIT 70894;
+} {}
+
+# kill mutants ['5396']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-8.1 {
+   CREATE TABLE a (b , c );
+                           ALTER TABLE a RENAME TO d;
+                           INSERT INTO d VALUES (NULL, 0.45826893906851696);
+                           CREATE TABLE a (c );
+                           INSERT INTO a VALUES (0.45826893906851696);
+                           ALTER TABLE a RENAME TO e;
+                           CREATE INDEX f ON d(x'afd7');
+                           SELECT CUME_DIST() OVER ()FROM e, d WHERE 0xffffffffe0600136LIKE'1661839040'=0 ;
+} {1.0}
+
+# kill mutants ['9105']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  SELECT '' FROM a LIMIT 1230448756 OFFSET 886408348;
+} {}
+
+finish_test

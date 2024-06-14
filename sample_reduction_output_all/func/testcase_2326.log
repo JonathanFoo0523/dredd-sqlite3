@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, a, c2, b, c5 );
+                   INSERT INTO rt1(b, c5) VALUES (NULL, NULL);
+                   SELECT ((c0, 2, c5) BETWEEN (0, 0, '99d0') AND (ROUND(c0), 0, CASE   WHEN 5 THEN c2 END)) FROM rt1;

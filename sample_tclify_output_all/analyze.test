@@ -1,0 +1,79 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4049', '4081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-1.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  REPLACE INTO c VALUES(0, NULL);
+  CREATE INDEX e ON c(0);
+  CREATE INDEX f ON c(0);
+  ALTER TABLE c RENAME TO a;
+  ANALYZE;
+  ALTER TABLE a RENAME TO c;
+  ANALYZE f;
+} {}
+
+# kill mutants ['3106', '3156']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-2.1 {
+  CREATE TEMP VIEW a AS SELECT 0;
+  ANALYZE a;
+} {}
+
+# kill mutants ['3189', '3212', '3244', '4297', '4329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-3.1 {
+  CREATE TEMP TABLE t0(c0, c1, a, c3, c4);
+  CREATE TABLE b(c0);
+  INSERT INTO t0(c3, c0, a)
+      VALUES('1352363488', 0.44364840931393745, '1753171941');
+  INSERT INTO b VALUES(8);
+  REPLACE INTO b VALUES('');
+  INSERT OR IGNORE INTO t0(c0, c1, c4, c3) VALUES('', 7, 0.6543833307953338, '');
+  ANALYZE t0;
+  SELECT b.c0 FROM b, t0;
+} {8 {} 8 {}}
+
+# kill mutants ['4230', '4262']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-4.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('VVpYn');
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  UPDATE c SET d = '1547061490';
+  CREATE INDEX e ON c(0) WHERE 0;
+  ALTER TABLE c ADD f;
+  CREATE INDEX g ON c(d);
+  ALTER TABLE c RENAME d TO h;
+  ANALYZE;
+  BEGIN;
+  CREATE INDEX i ON c(0);
+  ROLLBACK;
+  INSERT INTO c(f) VALUES('1405917889');
+  SELECT DISTINCT f, h FROM c;
+} {1405917889 {} {} 1547061490}
+
+# kill mutants ['4080']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-5.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  REPLACE INTO c VALUES(9, 0.39792820950889674), (0, NULL);
+  CREATE INDEX e ON c(0) WHERE 0;
+  ALTER TABLE c ADD f;
+  CREATE INDEX g ON c(d);
+  ALTER TABLE c RENAME d TO h;
+  ANALYZE;
+  SELECT DISTINCT(f), h FROM c;
+} {{} {} {} 0.397928209508897}
+

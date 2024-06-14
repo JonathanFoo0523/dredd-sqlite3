@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO e VALUES('62562');

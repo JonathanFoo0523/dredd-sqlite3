@@ -1,0 +1,60 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8916', '8918', '8919', '8920', '8921', '8923', '8924', '8927', '8948', '8950', '8951', '8952', '8953', '8954', '8955', '8956', '8959', '8960', '8961', '8962', '8963', '8964', '8965', '8966']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test printf-dredd-1.1 {
+  SELECT a;
+} {}
+
+# kill mutants ['10087']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-2.1 {
+  SELECT '', 0, (((0 NOT BETWEEN 0 AND t1c56))), 0, CAST0 rt0 WHERE 0;
+} {1 {no such column: t1c56}}
+do_execsql_test printf-dredd-2.2 {
+  
+} {}
+
+# kill mutants ['8925', '8957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-3.1 {
+  SELECT a.b;
+} {1 {no such column: a.b}}
+
+# kill mutants ['10178']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-4.1 {
+   SELECT DISTINCT 00, 0, TYPEOF0, CASE v0.c1  WHEN (0 NOT NULL) THEN ((v0.c2)IS NOT(rt0.c2)) END, ((((rt1.c2) NOTNULL))!=(((rt1.c0)||(x'08a9')))), TYPEOF(DISTINCT ((rt0.c1)*(v0.c0)))  v0, t1, rt0, rt1;
+} {1 {no such column: TYPEOF0}}
+
+# kill mutants ['10181']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-5.1 {
+  SELECT ALL LIKELIHOOD(DISTINCT 0.6670869691224385) FROM rt0, t0, t1, vt0, rt1 WHERE (((CASE x'36a0'  WHEN 1e500 THEN 'HI0' ELSE NULL END)GLOB(0))) UNION ALL SELECT DISTINCT CAST0 FROM rt1vt0, t1, t0;
+} {1 {no such table: rt1vt0}}
+
+# kill mutants ['10177']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-6.1 {
+  SELECT 0 ORDER BY DESC NULLS FIRST,
+      (CASE WHEN 0.10647194332803711 THEN rt0c4 WHEN
+                rt1c4 THEN '' WHEN c0 THEN rt0c0 WHEN rt1c2 THEN
+                    rt1c1 WHEN rt1c0 THEN t1c69 END) NULLS FIRST;
+} {1 {no such column: DESC}}
+
+# kill mutants ['10090']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-7.1 {
+   CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2c3 );
+               SELECT (((0))LIKE(x'')) FROM rt0 ORDER BY -273056562  NULLS LAST;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+finish_test

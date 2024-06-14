@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+                                 REPLACE INTO a VALUES (')  
+                INSERT OR ROLLBACK INTO rt0 VALUES (x');
+                                SELECT a    FROM a;

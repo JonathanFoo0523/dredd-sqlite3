@@ -1,0 +1,111 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['149', '152', '181', '184']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-1.1 {
+  CREATE TABLE t1(c0);
+  CREATE UNIQUE INDEX a ON t1(0) WHERE(c0);
+  INSERT INTO t1 VALUES('');
+  UPDATE OR IGNORE t1 SET(c0) = '485313662';
+  ALTER TABLE t1 RENAME TO b;
+  REPLACE INTO b VALUES(5);
+  REINDEX;
+} {}
+
+# kill mutants ['3978', '3980', '3982', '3983', '3986', '3987']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-2.1 {
+   PRAGMA encoding = 'UTF16';
+                                   CREATE TABLE a (c0 INT , c1 TEXT , c2 BLOB );
+                                   CREATE VIRTUAL TABLE vt0 USING fts5(c0 UNINDEXED);
+                                   ALTER TABLE a ADD b REAL;
+                                   CREATE UNIQUE INDEX c ON a(0 COLLATE BINARY ,CASE 0  WHEN c0 COLLATE RTRIM THEN c2 ELSE NULL COLLATE d END ASC,(0 NOT BETWEEN (((((b)AND(c1)))OR(c0))) AND ((0>=0))),UPPER(c1 COLLATE d) DESC) WHERE CAST(CAST(c2 AS REAL) AS e);
+                                   ALTER TABLE a RENAME TO t1;
+} {}
+
+# kill mutants ['173']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-3.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  CREATE INDEX d ON a(CASE WHEN '651d' THEN 5 END, CAST(NULL AS));
+  UPDATE a SET c = 0;
+} {}
+
+# kill mutants ['3977', '3979', '3985', '3988']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test update-dredd-4.1 {
+  CREATE TABLE a(b PRIMARY KEY);
+  ALTER TABLE a RENAME b TO c;
+  PRAGMA reverse_unordered_selects = true;
+  INSERT INTO a VALUES('ἡN*h2'), (0.63140373861871871930495158);
+  UPDATE OR IGNORE a SET(c, c, c) = ('', '', '');
+  UPDATE a SET(c) = CAST(c AS);
+} {1 {UNIQUE constraint failed: a.c}}
+
+# kill mutants ['178']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test update-dredd-5.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  ALTER TABLE a ADD f;
+  INSERT INTO a VALUES('9af1', '624856269', 0.8175361225644044, NULL, 3),
+      (0, '', '', '', x'');
+  ALTER TABLE a RENAME TO g;
+  CREATE UNIQUE INDEX h ON g(0, CASE WHEN(0, 1, 1) NOT BETWEEN(2, 2, 1)
+                                    AND(2, 9, 1) THEN e END);
+  ALTER TABLE g RENAME TO a;
+  UPDATE a SET e = 0;
+} {1 {UNIQUE constraint failed: index 'h'}}
+
+# kill mutants ['179']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-6.1 {
+  CREATE TABLE a(c0);
+  CREATE INDEX    b ON a((0, 0)AND(0));
+  UPDATE   a SET(c0) = 0  ;
+} {}
+
+# kill mutants ['3760']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-7.1 {
+  CREATE TABLE a(b PRIMARY KEY) WITHOUT ROWID;
+  INSERT INTO a VALUES('');
+  ALTER TABLE a RENAME b TO c;
+  ALTER TABLE a RENAME TO d;
+  UPDATE d SET c = 0 BETWEEN(2) AND 0;
+} {}
+
+# kill mutants ['177']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test update-dredd-8.1 {
+  CREATE TABLE t0(c0 , c2 a);
+  CREATE  INDEX i78 ON t0(0 ,
+                                CASE WHEN 0 THEN(c2 ) ELSE CAST(c2 AS )
+                                    END   );
+  UPDATE t0 SET c0 ='' ;
+} {}
+
+# kill mutants ['2679']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test update-dredd-9.1 {
+  CREATE TABLE a(b UNIQUE ON CONFLICT REPLACE);
+  ALTER TABLE a RENAME b TO c;
+  PRAGMA reverse_unordered_selects = true;
+  INSERT INTO a VALUES('ἡN*h2'), (0.63140373861871871930495158);
+  UPDATE OR IGNORE a SET(c, c, c) = ('', '', '');
+  UPDATE a SET(c) = load_extension(c);
+} {1 {ἡN*h2.so: cannot open shared object file: No such file or directory}}
+
+finish_test

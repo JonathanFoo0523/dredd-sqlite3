@@ -1,0 +1,2 @@
+CREATE VIEW a(b) AS SELECT FIRST_VALUE(NULL) OVER();
+ SELECT load_extension(MIN(b)) FROM a;

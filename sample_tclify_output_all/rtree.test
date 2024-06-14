@@ -1,0 +1,123 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['17938', '17941']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0, 1);
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, b, c2, +c3);
+  INSERT INTO a VALUES('', '');
+  CREATE TABLE t0(c0 INTEGER);
+  INSERT OR ABORT INTO rt1(c0, c2, c3) VALUES(x'', x'', NULL);
+  INSERT OR IGNORE INTO t0 VALUES(0.6777677801688525);
+  ANALYZE;
+  CREATE TEMPORARY VIEW v0 AS SELECT ALL x'' FROM a, t0, rt1;
+  BEGIN;
+  ANALYZE temp;
+  ROLLBACK;
+  INSERT INTO t0 VALUES(0);
+  SELECT t0.c0 FROM rt1, a, t0, v0;
+} {0.677767780168853 0 0.677767780168853 0}
+
+# kill mutants ['19399']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test rtree-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING rtree(d, e, f);
+  ALTER TABLE a ADD g CHECK(0);
+  CREATE UNIQUE INDEX h ON a(0);
+  INSERT INTO a VALUES('/', '1431183135');
+} {1 {CHECK constraint failed: 0}}
+do_catchsql_test rtree-dredd-2.2 {
+  INSERT INTO c VALUES('');
+} {1 {table c has 3 columns but 1 values were supplied}}
+
+# kill mutants ['21568', '21569', '21601']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d, e, f, g, h);
+  INSERT INTO a VALUES(NULL, -5.72959194E8, '-45539286', -1.460817453E9,
+                       0.8039495985212288, '', x'');
+  SELECT rtreecheck('a');
+} {ok}
+
+# kill mutants ['8453', '8485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(b) VALUES(0.027845189815818405);
+  UPDATE a SET c = 1.295025454E9 WHERE(NULL) BETWEEN(c) AND(d);
+} {}
+
+# kill mutants ['17365', '17370']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  INSERT INTO a VALUES('CE矣', '#G&Z矣ꅯPp', 0.27557158615765553);
+  INSERT INTO a(d) VALUES('');
+  SELECT DATE() FROM a;
+} {2024-06-13 2024-06-13}
+
+# kill mutants ['18122', '18154']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-6.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, a, c2);
+  INSERT INTO rt1(a) VALUES(''), (''), (''), (0.08143310259986203), ('');
+  INSERT OR REPLACE INTO rt1 VALUES(NULL, 0.02371754429734174, '');
+  INSERT OR IGNORE INTO rt1(c2, c0) VALUES('', NULL), (9, 0.77543830426904),
+      (x'', NULL);
+  INSERT OR IGNORE INTO rt1 VALUES(x'', '', NULL), (NULL, NULL, ''),
+      ('781642092', 0.3202528565720453, NULL), (NULL, 0.08143310259986203, '');
+  ANALYZE;
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2);
+  VACUUM;
+  INSERT OR IGNORE INTO rt0(c2, c0) VALUES(2, NULL), ('', NULL), (NULL, NULL);
+  SELECT ALL LEAD((0)OR'', CAST(rt0.c0 AS)) OVER() FROM rt1, rt0;
+} {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {} {}}
+
+# kill mutants ['9668']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-7.1 {
+   CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+                           ANALYZE;
+                           REPLACE INTO a(c, b) VALUES (x'73b8', 0.13176307637727058), (NULL, 7);
+                           CREATE VIRTUAL TABLE e USING rtree(b, c, d);
+                           INSERT INTO e(c, d) VALUES (0.04938558750584521, 0.2872669878491244);
+                           INSERT INTO e VALUES (0.27975285124907834, NULL, '976c');
+                           SELECT LAG(CASE WHEN a.b THEN e.d END) OVER () FROM e, a;
+} {{} {} 0.287266999483109 {}}
+
+# kill mutants ['17174', '17206']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test rtree-dredd-8.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, a, b, c4, c5, c6);
+  INSERT INTO rt0(a, c1, c0) VALUES('', x'', x'');
+  INSERT OR FAIL INTO rt0(c5, c1, c6, c4, c0) VALUES(x'', '', '', 3, x''),
+      ('', 0.3048529501433582, NULL, 7.14552143E8, NULL);
+} {1 {UNIQUE constraint failed: rt0.c0}}
+
+# kill mutants ['18113', '18145']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-9.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c2);
+  INSERT INTO rt0(b, c2) VALUES(0.8411419071244722, 0.8411419071244722);
+  INSERT INTO rt0(a) VALUES(''), (NULL);
+  INSERT OR FAIL INTO rt0(c2) VALUES(x'');
+  ANALYZE;
+  CREATE TABLE c(d);
+  CREATE VIRTUAL TABLE e USING rtree_i32(a, c2, f);
+  ALTER TABLE c RENAME TO g;
+  INSERT INTO e(f) VALUES(NULL), (2.001613771E9);
+  SELECT(f) FROM rt0, e;
+} {0 2001613771 0 2001613771 0 2001613771 0 2001613771}
+
+finish_test

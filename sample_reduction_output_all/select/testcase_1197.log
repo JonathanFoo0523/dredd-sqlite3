@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE TABLE e(f);
+SELECT CUME_DIST() OVER() FROM e JOIN a ON(json_remove(0, g));

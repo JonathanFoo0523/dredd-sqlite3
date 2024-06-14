@@ -1,0 +1,8 @@
+CREATE VIRTUAL TABLE a USING rtree(c0, c1, c2, b, c);
+INSERT OR FAIL INTO a(c) VALUES('f3bd');
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2, +b );
+INSERT OR ABORT INTO rt0(b, c1, c2) VALUES(x'', x'', '');
+SELECT AVG(CASE WHEN a.c1 THEN rt0.c2 END),
+    CAST(0 AS e),
+    CASE 0 WHEN CASE WHEN rt0.c1 THEN rt0.c2 END THEN CAST(a.c2 AS) END FROM a,
+    rt0 GROUP BY CAST(json_array_length(a.c2, a.b) AS);

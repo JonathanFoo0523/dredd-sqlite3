@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, a, b);
+INSERT INTO rt1 VALUES(0, 2, '683841295');
+INSERT INTO rt1 VALUES('689311858', '', '');
+PRAGMA cell_size_check = true;
+UPDATE rt1 SET(c0) = '' ;
+UPDATE OR REPLACE rt1 SET(c0) = 0;
+UPDATE rt1 SET(b) = 0;

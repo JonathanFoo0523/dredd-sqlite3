@@ -1,0 +1,111 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10967', '10999', '11009', '11029', '11033', '11041', '11061', '11065']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  INSERT INTO e VALUES('pgsz');
+} {1 {no such table: e}}
+
+# kill mutants ['33234', '33235', '33238', '33239', '33277', '33279', '33280', '33281', '33282', '33284', '33302', '33306', '33308', '33309', '33312', '33313', '33314', '33316', '33334']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-2.1 {
+  CREATE TABLE a(b);
+  PRAGMA secure_delete = true;
+} {1}
+do_execsql_test btree-dredd-2.2 {
+  DROP TABLE a;
+  ANALYZE;
+} {}
+
+# kill mutants ['10884', '10900', '10901', '10903', '10905', '10907', '10909', '10910', '10911', '10916', '10932', '10933', '10935', '10937', '10939', '10941', '10942', '10943', '10944', '10945', '10946', '10947', '10948', '10949', '10950', '10951', '10953', '10954', '10955', '10958', '10959', '10960', '10961', '10963', '10964', '10965', '10966', '10968', '10969', '10970', '10971', '10973', '10976', '10977', '10978', '10979', '10980', '10981', '10982', '10983', '10985', '10986', '10987', '10990', '10991', '10992', '10993', '10995', '10996', '10997', '10998', '11000', '11001', '11002', '11003', '11005', '11031', '11032', '11044', '11063', '11064', '11075', '11080', '11086', '11089', '11090', '11091', '11093', '11094', '11095', '11098', '11099', '11100', '11101', '11102', '11103', '11107', '11112', '11118', '11121', '11122', '11123', '11125', '11127', '11130', '11131', '11132', '11133', '11134', '11135', '11136', '11137', '11138', '11139', '11142', '11143', '11147', '11148', '11151', '11152', '11168', '11169', '11170', '11171', '11174', '11175', '11179', '11180', '11183', '11184', '11186']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-3.1 {
+  CREATE TABLE a(b);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  INSERT INTO c VALUES('pgsz');
+} {1 {no such table: c}}
+
+# kill mutants ['10897', '10898', '10929', '10930', '11016', '11028', '11030', '11034', '11035', '11036', '11037', '11042', '11045', '11048', '11060', '11062', '11066', '11067', '11068', '11069', '11073', '11076', '11078', '11079', '11105', '11108', '11110', '11111', '11204', '11205', '11206', '11236', '11237', '11238', '11480', '11481', '11484', '11485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-4.1 {
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  INSERT INTO a VALUES('pgsz');
+} {1 {no such table: a}}
+
+# kill mutants ['11021', '11022', '11023', '11024', '11053', '11054', '11055', '11056']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-5.1 {
+   CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, a, c4);
+                           CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1 , languageid="lid");
+                           INSERT INTO vt1(c1, lid, c0) VALUES ('958758674', '97fe', '480698361');
+                           INSERT   INTO rt0(c4, c0) VALUES ('', NULL), (NULL, 4.80698361E8);
+                           INSERT OR ROLLBACK INTO vt1 VALUES (x'', 0.06317974027915396), ('', x''), (0.7316559180258133, '');
+                           INSERT OR ABORT INTO vt1(c1) VALUES (3), (x''), ('');
+                           INSERT OR REPLACE INTO vt1(c1) VALUES (NULL), (3), ('');
+                           INSERT OR ROLLBACK INTO rt0(c4, c2) VALUES (NULL, x'');
+                           INSERT OR IGNORE INTO vt1(c1) VALUES (''), (x''), (NULL);
+                           INSERT OR IGNORE INTO rt0(c4) VALUES (0.12689496300959469);
+                           INSERT OR IGNORE INTO rt0(c1, c4, c0) VALUES (x'', x'', x''), (NULL, NULL, '1422414237779');
+                           INSERT OR ABORT INTO rt0(c2) VALUES (NULL), (0.12689496300959469), ('');
+                           PRAGMA cell_size_check = true;
+                           INSERT OR ABORT INTO vt1(lid) VALUES (x'');
+                           INSERT OR IGNORE INTO rt0(c4) VALUES (NULL);
+                           INSERT OR FAIL INTO vt1(c1, c0, lid) VALUES (0.18931703131407318, 7, x'');
+                          SELECT COUNT() OVER () FROM vt1, rt0;
+} {150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150 150}
+
+# kill mutants ['11208', '11209', '11210', '11211', '11214', '11215', '11217', '11218', '11219', '11220', '11221', '11222', '11223', '11224', '11225', '11226']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-6.1 {
+  CREATE TABLE a(b);
+} {}
+
+# kill mutants ['11047', '11140', '11172']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(b, c, d);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+  INSERT INTO e VALUES('pgsz');
+} {1 {no such table: e}}
+
+# kill mutants ['11126']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test btree-dredd-8.1 {
+    CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2);
+       PRAGMA cell_size_check = true;
+       UPDATE OR IGNORE rt1 SET (c0)=0;
+} {1 {no such table: rt1}}
+do_catchsql_test btree-dredd-8.2 {
+       VACUUM;
+       INSERT INTO vt00 VALUES('pgsz', '62562');
+} {1 {no such table: vt00}}
+do_execsql_test btree-dredd-8.3 {
+       
+} {}
+
+# kill mutants ['10904', '10936']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test btree-dredd-9.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(notindexedc0c0, 1, c2);
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c2);
+  PRAGMA cell_size_check = true;
+  VACUUM;
+} {}
+

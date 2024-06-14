@@ -1,0 +1,92 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['155', '157', '158', '187', '189', '190', '198']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  REPLACE INTO a(d, b) VALUES('', '');
+  SELECT NTH_VALUE(0, c) OVER(
+      ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE NO OTHERS) FROM a;
+} {1 {second argument to nth_value must be a positive integer}}
+
+# kill mutants ['2379', '2381', '2388', '2411', '2413']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-2.1 {
+  SELECT TOTAL(0 IS TRUE) OVER();
+} {0.0}
+
+# kill mutants ['3607', '3775']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, +e);
+  INSERT INTO a(e, d, b) VALUES('f7be', 0.3838007528050702, '%');
+  INSERT INTO a(c) VALUES(-1.825281481E9);
+  SELECT FIRST_VALUE(4) OVER(),
+      NTH_VALUE(0, COALESCE(c IS FALSE, '1509971284')) OVER() FROM a;
+} {1 {second argument to nth_value must be a positive integer}}
+
+# kill mutants ['3609', '3641']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  REPLACE INTO a(b) VALUES(NULL), (0.99889397547942761591464849);
+  SELECT DISTINCT TOTAL(1) OVER(),
+      DENSE_RANK() OVER(PARTITION BY CASE WHEN 0 THEN 0 END) FROM a;
+} {2.0 1}
+
+# kill mutants ['2954', '2986']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  CREATE VIRTUAL TABLE e USING fts5(b);
+  SELECT DENSE_RANK() OVER() FROM e NATURAL JOIN a;
+} {}
+
+# kill mutants ['181', '193', '195', '196', '197', '199']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-6.1 {
+  SELECT NTH_VALUE(0, 1)
+      OVER(ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING EXCLUDE NO OTHERS);
+} {0}
+
+# kill mutants ['7561', '7593']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-7.1 {
+   CREATE TABLE t0 (a , c1 , b );
+                           ALTER TABLE t0 ADD c59;
+                           INSERT INTO t0 VALUES ('', x'3176', 3, '');
+                           SELECT DISTINCT 0, CUME_DIST() OVER (), LEAD(t0.c59, (0)OR(0 BETWEEN 0 AND 0), t0.c1) OVER (), 0 COLLATE RTRIM, 0 FROM t0 WHERE '' NOT BETWEEN 0 AND 0 ;
+} {0 1.0 1v 0}
+
+# kill mutants ['11983', '12015']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test window-dredd-8.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(a, b, c2);
+  INSERT INTO rt1(c2) VALUES(''), (0.7511287546103228), (0.37336356378495517);
+  SELECT DISTINCT CASE WHEN 0 THEN 0 WHEN rt1.c2
+      COLLATE RTRIM THEN CAST(x'' AS) END,
+      GROUP_CONCAT(2) OVER(GROUPS c PRECEDING) FROM rt1;
+} {1 {frame starting offset must be a non-negative integer}}
+
+# kill mutants ['1417', '1449']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  CREATE VIRTUAL TABLE e USING rtree(b, f, g);
+  REPLACE INTO e(b, f) VALUES(NULL, NULL);
+  INSERT INTO a(d, b) VALUES('65de76b1', NULL), (2, 0.9074744753233566),
+      (0, NULL);
+  SELECT LAG(0, ~e.b) OVER() FROM e, a;
+} {{} {} {}}
+
+finish_test

@@ -1,0 +1,3 @@
+CREATE TABLE a(b CHECK(NULL));
+INSERT INTO a VALUES('');
+PRAGMA integrity_check;

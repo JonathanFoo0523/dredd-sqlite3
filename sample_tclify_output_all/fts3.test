@@ -1,0 +1,171 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['7019', '7025', '7035']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-1.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(a, c1);
+  INSERT INTO vt0 VALUES('', x'');
+  INSERT OR IGNORE INTO vt0(c1) VALUES('');
+  SELECT a < 0 FROM vt0 GROUP BY c1;
+} {{} 0}
+
+# kill mutants ['15140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-2.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts4(c1, "lid");
+  REPLACE INTO vt1(lid) VALUES(''), (0.8377492112151568), (6);
+  UPDATE OR FAIL vt1 SET c1 = x'';
+  SELECT NULL FROM vt1;
+} {{} {} {}}
+
+# kill mutants ['2232']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, 1, 2, 3, "");
+  INSERT INTO a VALUES('1863844182', NULL, '0969', '1462237948', 2);
+  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['7001', '7004', '7006', '7007', '7024', '7029', '7030', '7033', '7036', '7038', '7039', '7040', '7041']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-4.1 {
+                    CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1, c2, c3, order=DESC, "lid");
+                           REPLACE INTO vt1(lid) VALUES ('');
+                           INSERT OR IGNORE INTO vt1(c0, c2, c3, c1) VALUES (NULL, '', 0.6370875431928006, x'');
+                           SELECT DISTINCT c3 FROM vt1;
+} {0.637087543192801 {}}
+
+# kill mutants ['6995', '7002', '7005', '7027', '7028', '7031', '7034', '7037']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b);
+  INSERT INTO a VALUES('1605299013'), ('-598923299');
+  SELECT b FROM a ORDER BY b;
+} {-598923299 1605299013}
+
+# kill mutants ['15135', '15138', '15148']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-6.1 {
+                    CREATE VIRTUAL TABLE a USING fts4(b , c, d, languageid="lid"                 );
+                                   INSERT INTO a(lid, b, c, d) VALUES ('', '-1614580271', 2, 0.6184338714216769);
+                                   UPDATE a SET c=NULL;
+} {}
+
+# kill mutants ['15149', '15150']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-7.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1, c2, c3, order=DESC, languageid="lid");
+                           REPLACE INTO vt1(lid) VALUES (''), (0.8377492112151568), (6);
+                           INSERT OR ROLLBACK INTO vt1(c2, lid, c0, c1, c3) VALUES ('1863844182', NULL, x'', '', NULL);
+                           UPDATE vt1 SET c3=0;
+                           SELECT TOTAL_CHANGES() ;
+} {45}
+
+# kill mutants ['15137', '15151']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-8.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts4(1, a, languageid="lid");
+                                   REPLACE INTO vt1(lid) VALUES (''), (0.8377492112151568), (6);
+                                   INSERT OR ROLLBACK INTO vt1 VALUES ('', NULL);
+                                   UPDATE vt1 SET a=0;
+                                   SELECT TOTAL_CHANGES() ;
+} {43}
+
+# kill mutants ['15133']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-9.1 {
+                  CREATE VIRTUAL TABLE a USING fts4(languageid="lid");
+                                  INSERT INTO a VALUES (0.9132085669439115);
+                                  SELECT  lid FROM a  ;
+} {0}
+
+# kill mutants ['15139', '15143']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-10.1 {
+   CREATE VIRTUAL TABLE a USING fts4(b , c, d, e, languageid="lid");
+                           INSERT INTO a(d, lid, b, c, e) VALUES ('1863844182', NULL, '0969', '-1462237948', 2);
+                           UPDATE a SET c='7a9c';
+} {}
+
+# kill mutants ['15147']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-11.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b, "lid");
+  REPLACE INTO a(lid) VALUES(''), (0.83774921121515686);
+  UPDATE a SET b = 0;
+} {}
+
+# kill mutants ['7026']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-12.1 {
+                    CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1, c2, c3, order=DESC, languageid="lid");
+                           REPLACE INTO vt1(lid) VALUES ('');
+                           INSERT OR IGNORE INTO vt1(c0, c2, c3, c1) VALUES (NULL, '', 0.6370875431928006, x'');
+                           SELECT DISTINCT c3 FROM vt1;
+} {0.637087543192801 {}}
+
+# kill mutants ['15134']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-13.1 {
+                  CREATE VIRTUAL TABLE a USING fts4(languageid="lid");
+                          INSERT INTO a VALUES (0.9132085669439115);
+                          SELECT lid   FROM a;
+} {0}
+
+# kill mutants ['15142']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-14.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts4(c0, c1, c2, c3, "lid");
+  REPLACE INTO vt1(lid) VALUES(''), (0.8377492112151568), (6);
+  INSERT OR ROLLBACK INTO vt1(c2, lid, c0, c1, c3) VALUES('', NULL, x'', '', 2);
+  UPDATE OR FAIL vt1 SET c1 = x'';
+  SELECT c3 FROM vt1;
+} {{} {} {} 2}
+
+# kill mutants ['15136']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-15.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+                                   REPLACE INTO a VALUES (')  
+                  INSERT OR ROLLBACK INTO rt0 VALUES (x');
+                                  SELECT a    FROM a;
+} {{}}
+
+# kill mutants ['15141', '15144', '15145', '15146']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-16.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts4(c1, "lid");
+  REPLACE INTO vt1(lid) VALUES(''), (0.8377492112151568), (6);
+  UPDATE OR FAIL vt1 SET c1 = x'';
+} {}
+
+# kill mutants ['12293']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-17.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts4(c3, languageid="lid");
+                           REPLACE INTO vt1(lid) VALUES (''), (0.8377492112151568), (6);
+                           UPDATE OR IGNORE vt1 SET c3=0;
+                           BEGIN  TRANSACTION;
+                           UPDATE OR IGNORE vt1 SET lid=0;
+                           INSERT INTO vt1(vt1) VALUES('integrity-check');
+} {}
+
+finish_test

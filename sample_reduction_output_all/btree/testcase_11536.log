@@ -1,0 +1,2 @@
+PRAGMA secure_delete = true;
+BEGIN EXCLUSIVE;

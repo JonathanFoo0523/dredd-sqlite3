@@ -1,0 +1,6 @@
+ PRAGMA encoding = 'UTF16';
+                                 CREATE TABLE a (c0 INT , c1 TEXT , c2 BLOB );
+                                 CREATE VIRTUAL TABLE vt0 USING fts5(c0 UNINDEXED);
+                                 ALTER TABLE a ADD b REAL;
+                                 CREATE UNIQUE INDEX c ON a(0 COLLATE BINARY ,CASE 0  WHEN c0 COLLATE RTRIM THEN c2 ELSE NULL COLLATE d END ASC,(0 NOT BETWEEN (((((b)AND(c1)))OR(c0))) AND ((0>=0))),UPPER(c1 COLLATE d) DESC) WHERE CAST(CAST(c2 AS REAL) AS e);
+                                 ALTER TABLE a RENAME TO t1;

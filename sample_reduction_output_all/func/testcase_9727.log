@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d, +e, +f);
+INSERT INTO a VALUES(9, '', x'', '', ''), (NULL, -1982191492, '', x'', 0);
+SELECT TOTAL(f)
+FROM a;

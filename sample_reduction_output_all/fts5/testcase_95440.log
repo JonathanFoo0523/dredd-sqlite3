@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING fts5(b);
+       INSERT INTO a(a) VALUES('automerge=6');

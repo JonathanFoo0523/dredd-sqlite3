@@ -1,0 +1,283 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['24256', '24260']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+  INSERT INTO a(c, f) VALUES('-1931967356', '');
+  CREATE VIRTUAL TABLE g USING fts5(0);
+  REPLACE INTO g VALUES(NULL);
+  SELECT 0 FROM a JOIN g ON(d OR CASE WHEN e THEN 2 END) OR(DATETIME(c));
+} {}
+
+# kill mutants ['8242', '8243', '8244', '8245', '8246', '8247', '8248', '8249', '8250', '8253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-2.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, a, b);
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, a, b);
+  CREATE TABLE c(c0 );
+  ALTER TABLE c RENAME TO t1;
+  INSERT INTO t1 VALUES(NULL);
+  INSERT INTO rt0(a, b) VALUES(-133898762, '');
+  INSERT OR FAIL INTO rt1(c0) VALUES(NULL);
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+                 INSERT OR FAIL INTO vt0 VALUES (9), (0), (''); -- 0ms
+  SELECT DISTINCT COUNT() FROM rt0, vt0, rt1, t1 WHERE CAST('' AS )  BETWEEN 0 AND 0 GROUP BY (CASE WHEN 7 THEN rt0.c0 END)HAVING (0.17808939934772428)AND(CAST(rt1.a AS )) ;
+} {}
+
+# kill mutants ['24143']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-3.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(a, b, c2);
+  INSERT INTO rt1(c2) VALUES('');
+  CREATE VIRTUAL TABLE vt1 USING fts5(0, 1 UNINDEXED, 2, prefix = 1);
+  INSERT OR IGNORE INTO vt1 VALUES('', '', x'');
+  SELECT ALL CAST(rt1.c2 COLLATE BINARY AS BLOB) FROM rt1,
+      vt1 WHERE(0 NOT BETWEEN(CAST('0.7771522821548057' AS REAL)) AND 0) GROUP
+          BY(0, 0, 0) > (0, 0, '');
+} {0.0}
+
+# kill mutants ['24705']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-4.1 {
+  CREATE TABLE c (    b );
+   ALTER TABLE c RENAME b TO a;
+   ALTER TABLE c RENAME  a TO d;
+} {}
+
+# kill mutants ['14400', '14401']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-5.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING rtree_i32(d, e, f);
+  ALTER TABLE a RENAME TO g;
+  CREATE TRIGGER h INSERT ON g BEGIN UPDATE c SET i = '1398683517';
+  END;
+  CREATE TEMPORARY VIEW j AS SELECT 0;
+  ALTER TABLE g RENAME TO a;
+} {}
+
+# kill mutants ['24259']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-6.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(c1);
+  CREATE TABLE t0(a);
+  INSERT INTO vt0 VALUES(0.061407255728010535);
+  INSERT INTO t0 VALUES('');
+  SELECT DISTINCT 0, 0, 0, CASE 0 WHEN CAST(vt0.c1 AS TEXT) THEN 0 END,
+      CAST(0 AS BLOB) FROM vt0,
+      t0 WHERE NOT(x''AND(NULL) AND(9) AND(NULL) AND(NULL) OR(NULL) OR(x''));
+} {}
+
+# kill mutants ['14403']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  SELECT(b IN(COUNT(), b)) FROM a;
+} {{}}
+
+# kill mutants ['14402']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-8.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, a);
+  INSERT INTO rt1(a, c0) VALUES('cf10', NULL);
+  CREATE VIRTUAL TABLE vt1 USING fts5(c0, c1, 2);
+  INSERT INTO vt1 VALUES('78935483', '1397344037', '');
+  SELECT ALL 0 IN(0 % vt1.c1) FROM vt1, rt1 WHERE(0) IS NOT((NULL)ISNULL) ORDER
+      BY(vt1.c0, rt1.c0, rt1.c1) BETWEEN(0, x'', 0)
+          AND(0.23274024153247752, 0, 0);
+} {1}
+
+# kill mutants ['24258']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-9.1 {
+  CREATE TABLE a(b CHECK((0)IS NOT(0 IN())));
+  INSERT INTO a VALUES('909036940');
+} {1 {CHECK constraint failed: (0)IS NOT(0 IN())}}
+
+# kill mutants ['14482']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-10.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT CASE WHEN MAX('387200030') THEN CAST('' AS) WHEN(d IN(d)) THEN
+      8 END FROM a;
+} {{}}
+
+# kill mutants ['24397']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-11.1 {
+  CREATE TABLE t0(a);
+  ALTER TABLE t0 ADD c66;
+  INSERT INTO t0(c66) VALUES('');
+  ALTER TABLE t0 RENAME TO t1;
+  SELECT DISTINCT CAST(t1.c66 AS TEXT) FROM t1 WHERE(0 OR''IS'') OR(NULL);
+} {{}}
+
+# kill mutants ['24070']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-12.1 {
+  SELECT 0 WHERE(NULL) AND(highlight()) OR(0 < 0);
+} {}
+
+# kill mutants ['14479', '14480', '14483']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-13.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT CASE WHEN MAX('387200030') THEN CAST('' AS) WHEN(d IN(d)) THEN
+      0 END FROM a;
+} {{}}
+
+# kill mutants ['24140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-14.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(8);
+  SELECT 0 FROM a WHERE(0.8269448353400027) BETWEEN 0 AND
+      0 AND(0 NOT BETWEEN 0 AND 0) OR CASE WHEN '731723149' THEN 2.503747E7 END;
+} {0}
+
+# kill mutants ['24703']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-15.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT GROUP_CONCAT(b)
+  FROM a WHERE(NOT(5));
+} {{}}
+
+# kill mutants ['20973']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-16.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+  INSERT INTO vt0 VALUES('');
+  SELECT ALL vt0.c0 FROM vt0 ORDER BY CAST(vt0.c0 AS INTEGER)
+      AND(highlight(vt0.c0, vt0.c0, vt0.c0, vt0.c0)) AND(vt0.c0 IN(vt0.c0)) OR'' ;
+} {1 {no such cursor: 0}}
+
+# kill mutants ['24138']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-17.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING fts4;
+  CREATE VIEW d(e)
+  AS SELECT NULL FROM a;
+  SELECT CASE WHEN(e) AND(c) OR(c) THEN COUNT() END FROM c, d;
+} {{}}
+
+# kill mutants ['24139']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-18.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(a, c1, b);
+  INSERT INTO rt1(b) VALUES('');
+  SELECT ALL NULLIF(0, CASE rt1.c1 WHEN x'' THEN 0 END) FROM rt1 WHERE
+      ~0 NOT BETWEEN 0 AND 0;
+} {0}
+
+# kill mutants ['9034', '9066']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-19.1 {
+  CREATE TABLE a(b);
+  SELECT 0 FROM a GROUP BY b HAVING(b) BETWEEN(COUNT()) AND 0;
+} {}
+
+# kill mutants ['25683']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-20.1 {
+  CREATE TABLE a(b);
+} {}
+
+# kill mutants ['24443']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-21.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  BEGIN;
+  INSERT INTO c VALUES(NULL);
+  CREATE INDEX d ON c(CASE WHEN 0 THEN 0 END) WHERE(0) IS NOT(0)
+      OR(0 BETWEEN 0 AND 0);
+  COMMIT;
+} {}
+
+# kill mutants ['14481']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-22.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT CASE WHEN MAX('387200030') THEN CAST('' AS) WHEN(3 IN(d)) THEN
+      8 END FROM a;
+} {{}}
+
+# kill mutants ['24142']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-23.1 {
+  SELECT 0 WHERE(0 NOT BETWEEN'' AND 0);
+} {0}
+
+# kill mutants ['24711']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-24.1 {
+  CREATE VIEW a AS SELECT b;
+  SELECT 0 WHERE '201547400' OR(NULL);
+} {0}
+
+# kill mutants ['24710']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-25.1 {
+  SELECT CUME_DIST() OVER() WHERE(0.111818044811914490)
+      OR(CASE WHEN '' THEN 4 ELSE '' END);
+} {1.0}
+
+# kill mutants ['26521', '26525']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-26.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT b END FROM a GROUP BY CASE WHEN END THEN 0 END HAVING CASE WHEN 0 THEN
+      AVG('b2fc0656') END;
+} {}
+
+# kill mutants ['14404']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-27.1 {
+  CREATE TABLE a(b);
+  VACUUM;
+  SELECT c FROM d;
+} {1 {no such table: d}}
+
+# kill mutants ['24442']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-28.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES(NULL);
+  CREATE INDEX d ON c(CASE WHEN 0 THEN 0 END) WHERE(0) IS NOT(0)
+      OR(0 BETWEEN 0 AND 0);
+} {}
+
+finish_test

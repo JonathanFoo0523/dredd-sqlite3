@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(c, d, b);
+PRAGMA cell_size_check = true;
+VACUUM;
+SELECT 0 FROM a;

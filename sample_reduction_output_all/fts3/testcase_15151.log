@@ -1,0 +1,5 @@
+ CREATE VIRTUAL TABLE vt1 USING fts4(1, a, languageid="lid");
+                                 REPLACE INTO vt1(lid) VALUES (''), (0.8377492112151568), (6);
+                                 INSERT OR ROLLBACK INTO vt1 VALUES ('', NULL);
+                                 UPDATE vt1 SET a=0;
+                                 SELECT TOTAL_CHANGES() ;

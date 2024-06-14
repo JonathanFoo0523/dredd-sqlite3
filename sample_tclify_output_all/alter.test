@@ -1,0 +1,69 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1000', '1010', '1011', '1014', '899', '910', '931', '942', '968', '978', '979', '982']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE t0(a);
+  ALTER TABLE t0 ADD c;
+  CREATE INDEX b ON t0(c DESC);
+  INSERT INTO t0(a) VALUES(NULL);
+  UPDATE t0 SET c ='';
+  INSERT OR FAIL INTO t0 VALUES('', NULL);
+  SELECT CASE WHEN 0 THEN x'' ELSE 0 BETWEEN 0 AND c END FROM t0;
+} {1 {}}
+
+# kill mutants ['4738', '4744', '4748', '4749', '4750', '4754', '4757', '4770', '4776', '4780', '4781', '4782', '4786', '4789', '4818', '4850']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-2.1 {
+  CREATE TEMP TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  CREATE TEMPORARY VIEW d AS SELECT 5 FROM a ORDER BY c;
+  ALTER TABLE a RENAME c TO e;
+} {1 {error in view d: no such column: e}}
+
+# kill mutants ['2574', '2576', '2584', '2606', '2608', '2616']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  CREATE INDEX c ON a(TRUE);
+  ALTER TABLE a RENAME TO d;
+  ALTER TABLE d RENAME b TO e;
+  UPDATE d SET(e) = 0;
+} {}
+
+# kill mutants ['2759', '2791']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-4.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c UPDATE ON a BEGIN INSERT INTO a(b) VALUES('e93f');
+  END;
+  ALTER TABLE a RENAME b TO d;
+  UPDATE a SET d = CASE WHEN 9 THEN 0 END;
+} {}
+
+# kill mutants ['1578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-5.1 {
+    CREATE  TABLE   d( b);
+                  CREATE TEMP TABLE e (a  )  ;
+                  ALTER TABLE e RENAME  a TO c;
+} {}
+
+# kill mutants ['2438', '2470']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-6.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  CREATE VIEW d AS SELECT DISTINCT 5 FROM a ORDER BY c;
+  ALTER TABLE a RENAME c TO e;
+} {}
+
+finish_test

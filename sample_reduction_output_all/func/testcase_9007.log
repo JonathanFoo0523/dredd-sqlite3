@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+SELECT load_extension(0);

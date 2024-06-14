@@ -1,0 +1,16 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3411', '3443']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vtab-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  CREATE VIRTUAL TABLE c USING rtree(b, d, e, f, g, +h, +i);
+  BEGIN;
+  UPDATE a SET b = 2;
+  INSERT INTO c(i, d, e, g, f, h) VALUES('a54f', '', NULL, NULL, x'', 3);
+  DROP TABLE a;
+} {}
+
+finish_test

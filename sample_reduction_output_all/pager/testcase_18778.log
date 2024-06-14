@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+INSERT INTO a(d) VALUES(NULL), ('');
+PRAGMA mmap_size = 04975;
+UPDATE a SET b = 0;

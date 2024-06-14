@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING fts4;
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(b, e, c);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO d VALUES('62562');

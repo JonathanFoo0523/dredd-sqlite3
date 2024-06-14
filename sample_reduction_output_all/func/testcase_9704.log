@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+INSERT INTO a(d, b) VALUES('', 1e500), (NULL, NULL);
+SELECT AVG(b)
+FROM a;
