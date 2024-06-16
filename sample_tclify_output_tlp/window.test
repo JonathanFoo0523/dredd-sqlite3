@@ -1,0 +1,56 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10942']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  CREATE VIEW c AS SELECT DISTINCT COUNT(('1277591832', 0, b) = (1, a, b))
+      OVER() FROM a;
+  CREATE VIRTUAL TABLE d USING fts5(0);
+  INSERT INTO a VALUES('1087986439');
+  CREATE TABLE e(f);
+  INSERT INTO d VALUES(0);
+  SELECT 0 FROM a, d, c, e UNION SELECT 0 FROM a, d, c, e UNION SELECT 0 FROM a,
+      d, e;
+} {}
+
+# kill mutants ['2379', '2381', '2388', '2411', '2413']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-2.1 {
+  SELECT NTILE(0) OVER() WHERE(0 IS FALSE, '' COLLATE NOCASE, 0) <
+      (CASE WHEN '1084581081' THEN 1 WHEN 0 THEN '' END, 0, 0);
+} {}
+
+# kill mutants ['7561']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(d, e, b);
+  REPLACE INTO a(e) VALUES(0);
+  CREATE VIEW c AS SELECT LAG(0, 0, 0) OVER() FROM a;
+  SELECT 0 FROM c;
+} {0}
+
+# kill mutants ['10910']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-4.1 {
+  CREATE VIRTUAL TABLE c USING fts5(a);
+  INSERT INTO c VALUES('1df3');
+  CREATE VIEW b AS SELECT COUNT(('1277591832', 0, a) != (a, 0, a)) OVER() FROM c;
+  SELECT 0 FROM b UNION SELECT 0 FROM b;
+} {0}
+
+# kill mutants ['7593']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test window-dredd-5.1 {
+  CREATE TABLE b(a);
+  CREATE VIEW c AS SELECT LAG(0, 0, 0) OVER();
+  SELECT *FROM b, c;
+} {}
+
+finish_test

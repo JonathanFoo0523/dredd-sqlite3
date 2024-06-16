@@ -1,0 +1,75 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['25376']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-1.1 {
+  PRAGMA journal_size_limit = 0;
+} {0}
+
+# kill mutants ['24858', '24930', '24934']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-2.1 {
+  PRAGMA temp_store = MEMORY;
+  BEGIN;
+  ANALYZE temp;
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_catchsql_test pager-dredd-2.2 {
+  ROLLBACK;
+  DELETE FROM sqlite_stat1;
+} {1 {no such table: sqlite_stat1}}
+
+# kill mutants ['25379']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-3.1 {
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_execsql_test pager-dredd-3.2 {
+  PRAGMA temp.a;
+  PRAGMA wal_checkpoint;
+} {0 -1 -1}
+
+# kill mutants ['1567', '1599']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-4.1 {
+  PRAGMA locking_mode = EXCLUSIVE;
+} {exclusive}
+do_execsql_test pager-dredd-4.2 {
+  PRAGMA journal_size_limit = 99958319409720;
+} {99958319409720}
+do_execsql_test pager-dredd-4.3 {
+  ANALYZE;
+} {}
+
+# kill mutants ['1421', '1453']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-5.1 {
+  PRAGMA synchronous = 0;
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  PRAGMA locking_mode = EXCLUSIVE;
+} {exclusive}
+do_execsql_test pager-dredd-5.2 {
+  ALTER TABLE c RENAME TO a;
+} {}
+
+# kill mutants ['18863']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  PRAGMA mmap_size = 08788;
+} {8788}
+do_execsql_test pager-dredd-6.2 {
+  VACUUM;
+  UPDATE a SET c = 0;
+  PRAGMA mmap_size = 0;
+} {0}
+
+finish_test

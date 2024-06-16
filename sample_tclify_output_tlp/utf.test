@@ -1,0 +1,36 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['1483', '1484', '1485', '1486', '1487', '1489', '1490', '1491', '1492', '1493', '1495', '1496', '1497', '1498', '1499', '1501', '1502']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test utf-dredd-1.1 {
+  PRAGMA encoding = 'UTF16be';
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a(a) VALUES('optimize');
+} {}
+
+# kill mutants ['1481', '1482']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test utf-dredd-2.1 {
+  PRAGMA encoding = 'UTF16be';
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+
+# kill mutants ['209', '220', '241', '252']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test utf-dredd-3.1 {
+   PRAGMA encoding = 'UTF16';
+                           CREATE TABLE t0 (a , b , c );
+                           CREATE TABLE t1 (c0 );
+                           INSERT INTO t1 VALUES ('');
+                           UPDATE OR IGNORE t1 SET c0=NULL;
+                           INSERT OR IGNORE INTO t0 VALUES (0,0,0) ON CONFLICT DO NOTHING;
+                           CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2, c3, c4, c5, c6, +c7  );
+                           INSERT OR IGNORE INTO rt0(c2, c7, c5, c3) VALUES (x'',0,0, '');
+                          SELECT * FROM rt0, t1, t0 WHERE 0 UNION  SELECT  * FROM rt0, t1, t0 WHERE 0 UNION  SELECT * FROM rt0, t1, t0 WHERE 0 BETWEEN t1.c0 AND UNICODE(x'20df') ISNULL;
+} {1 0 0 0 0 0 0 0 {} 0 0 0}
+
+finish_test

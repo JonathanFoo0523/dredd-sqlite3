@@ -1,0 +1,6 @@
+CREATE TABLE b (c , d , e , f );
+           ALTER TABLE b ADD c22 ;
+           INSERT OR IGNORE INTO b VALUES (x'113d83f6',0,0, '㦯8j틨E', 0);
+           CREATE VIRTUAL TABLE a USING rtree_i32(g, c, d);
+           CREATE VIEW  IF NOT EXISTS h AS SELECT DISTINCT 0 FROM a;
+           SELECT * FROM h, b WHERE (NOT (c22  IN (TOTAL_CHANGES() ))) ;

@@ -1,0 +1,6 @@
+CREATE  TABLE    t0 (c0   );
+             REPLACE INTO t0 VALUES (0);
+           ALTER TABLE t0 RENAME c0 TO a;
+           ALTER TABLE t0 ADD c81 ;
+           ALTER TABLE t0 RENAME a TO c41;
+           SELECT c41 FROM t0 WHERE (load_extension('2114441314', c81) );

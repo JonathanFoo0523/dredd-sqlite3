@@ -1,0 +1,7 @@
+ CREATE VIRTUAL TABLE a USING fts4(b,0, order=DESC);
+                         INSERT INTO a VALUES ('07b9', '1728491789');
+                         INSERT INTO a VALUES (0.26055372645534514, 1.728491789E9), (0, 0.05547871892584355), ('2078803741', '}|%Dw}[IP');
+                         INSERT INTO a(b) VALUES ('1728491789'), ('l1넍aou'), ('0l2A^');
+                         INSERT INTO a VALUES (1078238641, 0.8677888032442315), (0.5776228278010225, 0.3890754826081294), (0.7910453075245281, '匇NJv');
+                         PRAGMA cell_size_check = 1;
+                         UPDATE a SET b='2068664020';

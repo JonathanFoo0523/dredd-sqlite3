@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+  BEGIN ;
+  PRAGMA cell_size_check = 1 ;
+  ANALYZE;

@@ -1,0 +1,7 @@
+CREATE TABLE t1(a);
+         CREATE  TABLE b  (a, c, d);
+         INSERT INTO b VALUES(0, 0, ''), ('', x'', 0);
+         INSERT OR IGNORE INTO t1 VALUES(''), (x''), (0), (x''), ('');
+         CREATE UNIQUE INDEX e ON t1(NULL );
+         ANALYZE;
+         SELECT t1.a FROM b, t1 WHERE(NULL) ISNULL;

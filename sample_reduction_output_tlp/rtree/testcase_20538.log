@@ -1,0 +1,2 @@
+ CREATE  TABLE   rtree_i32('');
+          SELECT   (((rtreenode(1, 0))))  ;

@@ -1,0 +1,6 @@
+PRAGMA temp_store = MEMORY;
+BEGIN;
+ANALYZE temp;
+PRAGMA journal_mode = PERSIST;
+ROLLBACK;
+DELETE FROM sqlite_stat1;

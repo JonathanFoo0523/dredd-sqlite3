@@ -1,0 +1,138 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['5248', '5251', '5252', '5256', '5257', '5258', '5259', '5262', '5274']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-1.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a RENAME TO d;
+  CREATE VIEW e AS SELECT d.c FROM d;
+  ALTER TABLE d RENAME TO f;
+} {}
+
+# kill mutants ['1000', '1010', '1011', '1014', '899', '910', '931', '942', '968', '978', '979', '982']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-2.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('xR');
+  ALTER TABLE a ADD c;
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO d VALUES(0, 0);
+  CREATE TRIGGER e INSERT ON d BEGIN UPDATE d SET(c) = 0;
+  END;
+  VACUUM;
+  CREATE INDEX f ON d(c DESC);
+  ALTER TABLE d ADD g;
+  INSERT INTO d(c) VALUES('');
+} {}
+
+# kill mutants ['4738', '4744', '4748', '4749', '4750', '4754', '4757', '4770', '4776', '4780', '4781', '4782', '4786', '4789', '4818', '4850', '5186', '5211', '5212', '5218', '5243', '5244', '5261', '5264']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-3.1 {
+  CREATE TEMP TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a RENAME TO d;
+  CREATE TEMPORARY VIEW e AS SELECT c FROM d;
+  ALTER TABLE d RENAME c TO f;
+} {1 {error in view e: no such column: f}}
+
+# kill mutants ['2574', '2576', '2584', '2606', '2608', '2616']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-4.1 {
+  CREATE TABLE a(b CHECK(TRUE));
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c RENAME b TO d;
+  REPLACE INTO c VALUES(0);
+} {}
+
+# kill mutants ['4125', '4151', '4155', '4157']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-5.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c UPDATE ON a BEGIN DELETE FROM a WHERE d;
+  END;
+  ALTER TABLE a RENAME TO e;
+} {1 {error in trigger c: no such column: d}}
+
+# kill mutants ['5260']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-6.1 {
+  CREATE TEMP TABLE b(a);
+  ALTER TABLE b ADD f;
+  ALTER TABLE b RENAME TO c;
+  CREATE TEMPORARY VIEW d AS SELECT f FROM c;
+  ALTER TABLE c RENAME f TO e;
+} {1 {error in view d: no such column: e}}
+
+# kill mutants ['3865', '3897']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-7.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE TRIGGER d DELETE ON c WHEN e BEGIN UPDATE f SET g ='' ;
+  END;
+  ALTER TABLE c RENAME TO h;
+} {1 {error in trigger d: no such column: e}}
+
+# kill mutants ['5130', '5162']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-8.1 {
+  CREATE TEMP TABLE a(c);
+  CREATE TRIGGER d DELETE ON a BEGIN UPDATE a SET b = c;
+  END;
+  ALTER TABLE a RENAME c TO e;
+} {1 {error in trigger d: no such column: e}}
+
+# kill mutants ['2438', '2470']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-9.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE VIEW d AS SELECT DISTINCT b FROM c;
+  ALTER TABLE c RENAME b TO e;
+} {}
+
+# kill mutants ['5249']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test alter-dredd-10.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a RENAME TO d;
+  CREATE VIEW e AS SELECT d.c FROM d;
+  ALTER TABLE d RENAME TO a;
+} {}
+
+# kill mutants ['5263']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-11.1 {
+  CREATE TEMP TABLE b(a);
+  ALTER TABLE b ADD c;
+  ALTER TABLE b RENAME TO d;
+  CREATE TEMPORARY VIEW e AS SELECT c FROM d;
+  ALTER TABLE d RENAME c TO c22;
+} {1 {error in view e: no such column: c22}}
+
+# kill mutants ['5292']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test alter-dredd-12.1 {
+  CREATE TEMP TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a RENAME TO e;
+  CREATE TEMPORARY VIEW f AS SELECT c FROM e;
+  ALTER TABLE e RENAME c TO d;
+} {1 {error in view f: no such column: d}}
+
+finish_test

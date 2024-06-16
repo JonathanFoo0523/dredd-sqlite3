@@ -1,0 +1,5 @@
+PRAGMA encoding = 'UTF16le';
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE VIRTUAL TABLE e USING rtree_i32(b, c, d);
+VACUUM;
+VACUUM;

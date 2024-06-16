@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, a, b, c4);
+             INSERT INTO rt0(b, c0) VALUES(0,0), ('', 1);
+             INSERT OR ROLLBACK INTO rt0(c1, c0) VALUES('', '');
+             PRAGMA reverse_unordered_selects = 1;
+             PRAGMA main.integrity_check;
+             CREATE VIEW    v0(c0) AS SELECT 0 OVER0 FROM rt0     WHERE(0) GROUP BY     CAST(((((rt0.c0)AND(rt0.c4)))AND(rt0.c1))AS) HAVING (0);
+             SELECT  0,0,1,0, 0 FROM rt0, v0;

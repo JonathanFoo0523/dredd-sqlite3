@@ -1,0 +1,30 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6923', '6924', '6925', '6926', '6927', '6928', '6929', '6930', '6931', '6932', '6933', '6934', '6935', '6936', '6937', '6938', '6939', '6940', '6941']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test os_unix-dredd-1.1 {
+  PRAGMA mmap_size = 10044748665;
+} {2147418112}
+
+# kill mutants ['15367', '15368', '15370', '15371', '15372', '15376', '15379', '15380', '15381', '15382', '15384', '15387', '15390', '15391', '15392', '15393', '15394']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test os_unix-dredd-2.1 {
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['15383', '15388']
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test os_unix-dredd-3.1 {
+#   CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+#   REPLACE INTO a(c, b, d) VALUES('Ly煆IE2v\n', 1.7976931348623157E308, 0),
+#       (0, NULL, 0);
+#   SELECT b FROM a;
+# } {9223372036854775807 430949533025824050}
+
+finish_test

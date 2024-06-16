@@ -1,0 +1,6 @@
+  PRAGMA temp_store=MEMORY;
+                       CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+                       INSERT INTO vt0 VALUES (x''), ('QIU_Tqd'), ('');
+                       VACUUM;
+                       SELECT a.b, a.c0, a.f, a.c, a.g, a.d, a.e FROM a GROUP BY a.b, a.c0, a.f, a.c, a.g, a.d, a.e;
+                       SELECT c0 FROM vt0 GROUP BY 1;

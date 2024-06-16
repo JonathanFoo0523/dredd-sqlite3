@@ -1,0 +1,6 @@
+CREATE TABLE a(b, c);
+ALTER TABLE a ADD d;
+ALTER TABLE a RENAME TO e;
+PRAGMA reverse_unordered_selects = 1;
+INSERT INTO e VALUES(0, 0, 0), ('', 0, 0);
+SELECT *FROM e;

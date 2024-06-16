@@ -1,0 +1,5 @@
+PRAGMA synchronous = 0;
+CREATE TABLE a(b);
+ALTER TABLE a RENAME TO c;
+PRAGMA locking_mode = EXCLUSIVE;
+ALTER TABLE c RENAME TO a;

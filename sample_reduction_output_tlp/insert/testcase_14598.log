@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts5(0);
+INSERT INTO a(a, rank) VALUES('usermerge', 6);
+VACUUM;
+PRAGMA integrity_check;

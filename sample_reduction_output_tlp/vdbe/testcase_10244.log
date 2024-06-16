@@ -1,0 +1,4 @@
+CREATE TABLE a(b c);
+REPLACE INTO a VALUES(NULL);
+ALTER TABLE a ADD d e;
+PRAGMA integrity_check;

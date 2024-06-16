@@ -1,0 +1,8 @@
+CREATE TABLE rt0(c0, c1, c3, c5);
+INSERT INTO rt0(c3, c0)
+    VALUES( '', CASE WHEN 0 THEN 0 ELSE 0 COLLATE NOCASE END);
+INSERT OR IGNORE INTO rt0(c1, c3) VALUES(x'', x'');
+PRAGMA cell_size_check = 1;
+UPDATE rt0 SET(c3, c5) = (0, '');
+VACUUM;
+UPDATE OR IGNORE rt0 SET(c0, c5) = ('', '');

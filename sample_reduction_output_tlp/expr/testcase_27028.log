@@ -1,0 +1,6 @@
+CREATE TABLE a(b, c, d);
+ALTER TABLE a RENAME TO t1;
+ALTER TABLE t1 ADD e;
+CREATE INDEX f ON t1(0) WHERE(b) NOT NULL;
+INSERT INTO t1 VALUES(NULL, 0, 0,                                   '');
+SELECT 0 FROM t1 WHERE(NOT(0 IN('', 1)));

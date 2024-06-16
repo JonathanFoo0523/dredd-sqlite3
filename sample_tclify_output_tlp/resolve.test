@@ -1,0 +1,73 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6512', '6530', '6536', '6539', '6540', '6542', '6562', '6568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-1.1 {
+  SELECT a IS(b());
+} {1 {no such column: a}}
+
+# kill mutants ['8029']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-2.1 {
+  SELECT 0 ORDER BY 0;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['4847']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-3.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(c0);
+  SELECT  0  a  
+            WHERE(INSTR((0 NOTNULL), 0)) UNION SELECT 0 FROM    vt1 ((((vt1.c0))) ||
+                                        0) ;
+} {}
+
+# kill mutants ['6786', '6789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-4.1 {
+  SELECT CASE a() WHEN 0 THEN b END;
+} {1 {no such function: a}}
+
+# kill mutants ['4845']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-5.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(0,0 UNINDEXED);
+} {1 {vtable constructor failed: vt0}}
+do_execsql_test resolve-dredd-5.2 {
+                CREATE VIRTUAL TABLE rt1 USING rtree(a, c1 ,    c4  );
+                CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, c1,  c3  );
+                SELECT  0 FROM rt1  INNER JOIN rt0 ON ROUND((0 ISNULL), 0) WHERE ((((0&(rt0.c1))) IS TRUE)) ;
+} {}
+
+# kill mutants ['6528', '6560']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-6.1 {
+  SELECT(a) IS b.c;
+} {1 {no such column: a}}
+
+# kill mutants ['8265']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-7.1 {
+  SELECT 0 ORDER BY 510260;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['4849']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-8.1 {
+  CREATE  TABLE t0( INTEGER);
+  CREATE VIRTUAL TABLE b USING rtree(a , c4, c5 );
+  SELECT ALL
+      b.c4 FROM b  JOIN t0 ON GLOB(0, (0 NOT NULL)) WHERE(
+             ((c5 COLLATE NOCASE)))    UNION SELECT b
+          .c4 FROM b GROUP BY b.c4;
+} {}
+
+finish_test

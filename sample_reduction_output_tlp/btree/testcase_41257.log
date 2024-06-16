@@ -1,0 +1,6 @@
+ PRAGMA encoding = 'UTF16le';
+                CREATE TABLE a ( INTEGER     );
+                CREATE VIRTUAL TABLE rt0 USING rtree(b, c,  INTEGER );
+                ANALYZE;
+                PRAGMA secure_delete = 1;
+                CREATE VIRTUAL TABLE vt0 USING fts5;

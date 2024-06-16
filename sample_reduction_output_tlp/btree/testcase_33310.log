@@ -1,0 +1,5 @@
+CREATE TABLE a(b);
+CREATE INDEX i83 ON a(0);
+PRAGMA auto_vacuum = 1;
+VACUUM;
+DROP INDEX "i83";

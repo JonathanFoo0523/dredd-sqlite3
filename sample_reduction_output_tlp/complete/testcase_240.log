@@ -1,0 +1,2 @@
+REINDEX BINARY; -- ms
+ROLLBACK ; 

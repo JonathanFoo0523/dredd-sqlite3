@@ -1,0 +1,4 @@
+CREATE TABLE a(b, c, d, e, f, g, h);
+INSERT INTO a VALUES('4/', 0, '', '', '', 0, 0);
+UPDATE a SET g = -h;
+SELECT *FROM a;

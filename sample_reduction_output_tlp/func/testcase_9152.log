@@ -1,0 +1,8 @@
+ CREATE TABLE a (b );
+                         INSERT INTO a VALUES (-7.861715E7)                 ;
+                         INSERT INTO a VALUES (x'5b308da0'), (-504852730);
+                         UPDATE a SET b=NULL WHERE 0 BETWEEN ((0)OR(b)) AND 0;
+                         INSERT INTO a VALUES ('405841620'), ('252721741');
+                         UPDATE a SET b==0.5056564391211094 WHERE b ISNULL ;
+                         ALTER TABLE a RENAME b TO c;
+                         SELECT TOTAL(c) FROM a;

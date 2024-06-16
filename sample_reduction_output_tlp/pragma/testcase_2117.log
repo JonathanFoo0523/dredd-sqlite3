@@ -1,0 +1,2 @@
+PRAGMA default_cache_size = 0;
+PRAGMA cache_spill;

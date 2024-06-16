@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, +e, +f);
+REPLACE INTO a(e) VALUES('4');

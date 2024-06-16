@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+  CREATE  TABLE rt1  (b   );
+  CREATE VIEW v0(b, c1, c) AS SELECT(0 % b), 0, 0 FROM rt1   ;
+  SELECT *FROM a JOIN v0 ON(v0.b)GLOB(0);

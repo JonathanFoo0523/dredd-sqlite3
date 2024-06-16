@@ -1,0 +1,7 @@
+CREATE TABLE vt0(c0);
+      CREATE TABLE rt4(   a );
+     CREATE TABLE vt1( c2);
+     CREATE TABLE t0(c0);
+      CREATE VIEW v0 AS SELECT 0 FROM        t0   ;
+     CREATE  INDEX i36 ON t0(1   )     WHERE(0 IN()) ;
+     SELECT   0 FROM v0      LEFT  JOIN rt4 ON(0 IN()) JOIN vt1     ON((b)IN()) ;

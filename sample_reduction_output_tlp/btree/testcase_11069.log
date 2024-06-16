@@ -1,0 +1,4 @@
+ANALYZE;
+PRAGMA shrink_memory;
+PRAGMA cell_size_check = 1;
+ANALYZE;

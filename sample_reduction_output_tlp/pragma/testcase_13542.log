@@ -1,0 +1,2 @@
+CREATE INDEX a ON b(0);
+PRAGMA threads;

@@ -1,0 +1,37 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8916', '8918', '8919', '8920', '8921', '8923', '8924', '8927', '8948', '8950', '8951', '8952', '8953', '8954', '8955', '8956', '8959', '8960', '8961', '8962', '8963', '8964', '8965', '8966']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-1.1 {
+  SELECT a;
+} {1 {no such column: a}}
+
+# kill mutants ['10087']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-2.1 {
+  CREATE TABLE t0(c0 );
+  CREATE INDEX i16 ON t0( '0.5867007595560292' COLLATE a ) WHERE
+      1 ;
+} {1 {no such column: 0.5867007595560292}}
+
+# kill mutants ['8925', '8957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-3.1 {
+  SELECT a.b;
+} {1 {no such column: a.b}}
+
+# kill mutants ['10178']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-4.1 {
+  SELECT ALL * FROM t1 (((0!=(t1.c81))) ISNULL) UNION ALL SELECT ALL * FROM t1 WHERE ((NOT (((((t1.c81)<>(t1.c81))) ISNULL)))) UNION ALL SELECT * FROM t1 WHERE (((((((t1.c81)<>(t1.c81))) ISNULL)) ISNULL));
+} {1 {no such table: t1}}
+do_execsql_test printf-dredd-4.2 {
+  
+} {}
+
+finish_test

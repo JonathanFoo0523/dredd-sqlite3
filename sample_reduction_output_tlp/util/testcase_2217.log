@@ -1,0 +1,6 @@
+ PRAGMA encoding = 'UTF16';
+                         CREATE TABLE a (b );
+                         REPLACE INTO a VALUES (x'33b06698')                 ;
+                         CREATE VIRTUAL TABLE c USING fts5(0)                 ;
+                         INSERT INTO c VALUES (0);
+                         SELECT 0 FROM a, c ON b   ;

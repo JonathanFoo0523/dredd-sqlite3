@@ -1,0 +1,13 @@
+CREATE TEMPORARY TABLE    t0 (c , c1 , d  );
+                    CREATE VIRTUAL TABLE rt1 USING rtree_i32(c, c1, d);
+                    ALTER TABLE t0 ADD a ;
+                    ALTER TABLE t0 ADD e ;
+                    INSERT INTO t0(a, c1, c  ) VALUES (  '6f15',0,0);
+                    ALTER TABLE t0 ADD b ;
+                    INSERT INTO rt1(c,  d) VALUES ( '',0);
+                    INSERT OR IGNORE INTO rt1(c1) VALUES (0);
+                    ALTER TABLE t0 ADD   TEXT;
+                    CREATE  INDEX i19 ON t0(0  COLLATE NOCASE,CASE WHEN 0 THEN x'' WHEN 0 THEN 0 COLLATE BINARY END COLLATE NOCASE COLLATE NOCASE  );
+                    INSERT OR IGNORE INTO t0 VALUES ('',0, 0,0, '',0, x'')            ;
+                    ANALYZE i19;
+                    SELECT * FROM t0 INDEXED BY i19, rt1;

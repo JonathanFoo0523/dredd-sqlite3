@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c, c1, c2, c3, a);
+                         INSERT INTO rt0 VALUES(0,0, 0,                                  0, '');
+                         CREATE VIEW v0(c, c1, c2) AS SELECT DISTINCT LEAD(0 = (rt0.c3) = 0,                         ((0)BETWEEN(0) AND(0 IN())),                         (((((((0)OR(0)))AND(0.34732840727733016)))                                AND(0 COLLATE RTRIM))OR(0))) OVER(),     0, (1 || ((NULL)NOTNULL)) FROM rt0 ;
+                         SELECT *FROM rt0,     v0 WHERE(((((rt0.c3)OR(v0.c2))OR(rt0.c3))AND(rt0.c2 IN(v0.c))))                   AND(rt0.c1 COLLATE b) UNION SELECT *FROM rt0,     v0 WHERE(NOT((0)AND(0)AND(rt0.c1 COLLATE b)))         UNION SELECT *FROM rt0,     v0 WHERE(((((((((rt0.c3)OR(v0.c2)))OR(rt0.c3)))AND(0))                    AND(rt0.c1 COLLATE b)))ISNULL);

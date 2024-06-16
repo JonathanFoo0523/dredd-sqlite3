@@ -1,0 +1,242 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['31837', '31855', '31858', '31859', '31862', '31863', '31896']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  BEGIN;
+  INSERT INTO a(a) VALUES('automerge=8');
+  PRAGMA journal_mode = MEMORY;
+} {delete}
+
+# kill mutants ['8672', '8677', '8678', '8681', '8682', '8694', '8695', '8713', '8714', '8717', '8718', '8745', '8746', '8749', '8750', '8783', '8784']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-2.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0);
+  BEGIN;
+  INSERT INTO vt0 VALUES(0);
+  UPDATE vt0 SET c0 ='';
+  INSERT OR FAIL INTO vt0 VALUES(0);
+  INSERT INTO vt0(vt0) VALUES('automerge=2');
+  UPDATE OR IGNORE vt0 SET c0 =
+      0 WHERE CASE 0 WHEN 0 THEN 1 WHEN 0 THEN 0 COLLATE RTRIM WHEN 0 THEN CASE
+          WHEN 0 THEN '' ELSE 0 END END;
+  INSERT INTO vt0(vt0) VALUES('optimize');
+  UPDATE vt0 SET c0 = 0;
+  END;
+} {}
+
+# kill mutants ['3629', '3632', '3633', '3634', '3639', '3642', '3643', '3646', '3647']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING fts4(   languageid=);
+                                  INSERT INTO a VALUES ( 0);
+                                  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['31618', '31619', '31620', '31621', '31623', '31624', '31625', '31626', '31627', '31628', '31629', '31630', '31631']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts3_write-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a(a) VALUES('merge=14578316305');
+} {1 {SQL logic error}}
+
+# kill mutants ['8768', '8769', '8770', '8771']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES(0);
+} {}
+
+# kill mutants ['3648', '3649', '3656', '3657', '3660', '3661', '3662']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, b, "");
+  INSERT INTO a VALUES('1228065689', 0, 0);
+  UPDATE a SET b = '1433951714';
+} {}
+
+# kill mutants ['8772', '8777', '8778', '8779', '8782', '8785', '8786', '8787', '8789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES(0);
+  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['3288', '3320']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-8.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b , c , languageid=);
+                          INSERT INTO a VALUES ( 0,0);
+                          UPDATE a SET c=-'1433951714';
+                          UPDATE a SET b='';
+} {}
+
+# kill mutants ['8683', '8687', '8689', '8690', '8691', '8692']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-9.1 {
+  CREATE TABLE a(b);
+  BEGIN;
+  CREATE VIRTUAL TABLE vt0 USING fts4(0, 1, c);
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO vt0(vt0) VALUES('automerge=14');
+  INSERT INTO vt0(c) VALUES(0);
+  INSERT INTO vt0 VALUES('Nxi.\{S⬼', 0, 0);
+  UPDATE vt0 SET c ='';
+  INSERT INTO vt0(vt0) VALUES('optimize');
+  INSERT OR IGNORE INTO vt0 VALUES('', x'', 0);
+  UPDATE vt0 SET c = 0;
+  END;
+} {}
+
+# kill mutants ['35960', '35964']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts3_write-dredd-10.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(0, 1);
+  INSERT INTO vt0 VALUES('1228065689', 0);
+  BEGIN;
+  CREATE TABLE t0(a);
+  INSERT INTO vt0 VALUES('', 0);
+  ALTER TABLE t0 ADD c87;
+  INSERT INTO vt0(vt0) VALUES('optimize');
+  ALTER TABLE t0 RENAME TO b;
+  DROP TABLE vt0;
+  END;
+} {1 {SQL logic error}}
+
+# kill mutants ['3628', '3631', '3635']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-11.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0 , b , languageid=);
+                          INSERT INTO a VALUES ( 0,0);
+                          UPDATE a SET b=='1433951714';
+                          INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['8673']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-12.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0);
+  BEGIN;
+  INSERT INTO vt0 VALUES(0);
+  UPDATE vt0 SET c0 ='';
+  INSERT OR FAIL INTO vt0 VALUES(0);
+  INSERT INTO vt0(vt0) VALUES('automerge=2');
+  UPDATE OR IGNORE vt0 SET c0 = 1 WHERE CASE WHEN 0 THEN 0 WHEN CAST(1 AS)
+                                    THEN CASE WHEN vt0.c0 THEN '' ELSE 1 END END;
+  INSERT OR IGNORE INTO vt0 VALUES(0), ('');
+  INSERT INTO vt0(vt0) VALUES('optimize');
+  END;
+} {}
+
+# kill mutants ['35950']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-13.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, 1);
+  INSERT INTO a VALUES('-1228065689', 0);
+} {}
+
+# kill mutants ['8788', '8790']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-14.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b);
+  INSERT INTO a VALUES(0);
+  INSERT INTO a VALUES(0);
+  UPDATE a SET b = 1;
+  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['3644', '3645']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-15.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a(a) VALUES('rebuild');
+} {}
+
+# kill mutants ['35952']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-16.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, 1, "");
+  INSERT INTO a VALUES('-1228065689', 0, 0);
+} {}
+
+# kill mutants ['3270', '3302']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-17.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0 ,1 , languageid=);
+                          INSERT INTO a VALUES ( 0,0);
+                          INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['3650']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts3_write-dredd-18.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0 , c1 , languageid=);
+                 INSERT INTO vt0 VALUES ('', x'');
+                 -- 0;
+                 COMMIT TRANSACTION;
+} {1 {cannot commit - no transaction is active}}
+do_execsql_test fts3_write-dredd-18.2 {
+                 UPDATE OR ABORT vt0 SET c1=-1390456872, c0='';
+} {}
+
+# kill mutants ['3630']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-19.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0 ,1 , languageid=);
+                          INSERT INTO a VALUES ('1228065689' ,0);
+                          INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['3654']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-20.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0, 0, "");
+  INSERT INTO vt0 VALUES('1228065689', 0, 0);
+  INSERT INTO vt0 VALUES('', '', x'');
+  UPDATE OR IGNORE vt0 SET(c0, c0) = (0, 0);
+  INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+# kill mutants ['8674']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_write-dredd-21.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(c0);
+  CREATE TABLE a(c0 CHECK(c0));
+  BEGIN;
+  INSERT INTO vt0 VALUES(0);
+  UPDATE a SET c0 = '';
+  INSERT OR FAIL INTO vt0 VALUES(0);
+  INSERT INTO vt0(vt0) VALUES('automerge=2');
+  UPDATE OR IGNORE vt0 SET c0 = 0 WHERE CASE WHEN 0 THEN 0 WHEN CAST(1 AS)
+      THEN 1 COLLATE RTRIM WHEN 0 THEN CASE WHEN 0 THEN '' ELSE 0 END END;
+  INSERT INTO vt0(vt0) VALUES('optimize');
+  INSERT INTO vt0 VALUES('b');
+  END;
+  INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+finish_test

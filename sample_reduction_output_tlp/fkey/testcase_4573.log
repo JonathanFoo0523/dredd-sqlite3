@@ -1,0 +1,3 @@
+ CREATE VIRTUAL TABLE a USING fts5(1);
+            PRAGMA foreign_keys = 1;
+            INSERT INTO a VALUES ('');

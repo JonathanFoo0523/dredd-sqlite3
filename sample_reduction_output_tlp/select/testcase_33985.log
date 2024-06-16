@@ -1,0 +1,4 @@
+ CREATE VIRTUAL TABLE a USING fts4(    languageid="lid");
+                                 INSERT   INTO a VALUES ('')                 ;
+                                 CREATE  TABLE b  (c)                 ;
+                                 SELECT 0 FROM a     RIGHT JOIN b WHERE lid BETWEEN 0 AND 0 ;

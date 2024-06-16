@@ -1,0 +1,4 @@
+ PRAGMA cell_size_check = 1;
+          ANALYZE;
+          BEGIN  ;
+          CREATE VIEW     a AS SELECT 0;

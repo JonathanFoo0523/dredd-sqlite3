@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('');

@@ -1,0 +1,5 @@
+        CREATE TABLE    a (b  );
+                           ALTER TABLE a ADD  c ;
+                           INSERT   INTO a(c) VALUES (x'eb2d');
+                           ALTER TABLE a RENAME  c TO d;
+                           SELECT 0 FROM  a        WHERE json_valid(d) ;

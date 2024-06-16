@@ -1,0 +1,4 @@
+                 CREATE VIRTUAL TABLE a USING rtree(c, d, b);
+                                 INSERT   INTO a( d) VALUES ( x'3ad4');
+                                 CREATE  VIEW e(c) AS SELECT  0 GROUP BY  CASE WHEN 0 THEN 0 END;
+                                 SELECT 0 FROM a  JOIN e ON a.c BETWEEN e.c AND d WHERE CASE WHEN 1 THEN json_remove(0, e.c) END  ;

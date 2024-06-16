@@ -1,0 +1,2 @@
+PRAGMA encoding = 'UTF16be';
+SELECT 0 % CAST(1 AS BLOB);

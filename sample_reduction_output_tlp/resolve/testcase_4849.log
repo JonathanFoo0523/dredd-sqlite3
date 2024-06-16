@@ -1,0 +1,6 @@
+CREATE  TABLE t0( INTEGER);
+CREATE VIRTUAL TABLE b USING rtree(a , c4, c5 );
+SELECT ALL
+    b.c4 FROM b  JOIN t0 ON GLOB(0, (0 NOT NULL)) WHERE(
+           ((c5 COLLATE NOCASE)))    UNION SELECT b
+        .c4 FROM b GROUP BY b.c4;

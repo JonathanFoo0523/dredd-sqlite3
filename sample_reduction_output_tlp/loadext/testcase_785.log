@@ -1,0 +1,2 @@
+VALUES  (load_extension(0) );
+

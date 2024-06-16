@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+REPLACE INTO a(c, b, d) VALUES('Ly煆IE2v\n', 1.7976931348623157E308, 0),
+    (0, NULL, 0);
+SELECT b FROM a;

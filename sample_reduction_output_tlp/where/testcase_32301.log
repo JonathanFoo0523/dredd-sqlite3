@@ -1,0 +1,6 @@
+PRAGMA encoding = 'UTF16be';
+        CREATE VIRTUAL TABLE rt0 USING rtree_i32(, c1 c2, c3, c4 VALUES);
+        PRAGMA reverse_unordered_selects = 1;
+        PRAGMA main.integrity_check;
+        CREATE VIEW    a AS SELECT 0      GROUP BY CAST(0 AS ) HAVING SUM(0);
+        SELECT 0 FROM rt0, a;

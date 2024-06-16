@@ -1,0 +1,6 @@
+CREATE TABLE t0(a, b, c, d, e);
+ALTER TABLE t0 RENAME d TO f;
+INSERT INTO t0 VALUES('', '', 0, 1, 0);
+INSERT OR IGNORE INTO t0 VALUES('', 0, x'', '', 0);
+SELECT SUM(f)
+FROM t0;

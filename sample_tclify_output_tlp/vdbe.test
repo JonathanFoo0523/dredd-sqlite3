@@ -1,0 +1,196 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8341', '8345', '8346', '8348', '8349', '8350', '8366', '8373', '8374', '8377', '8379', '8380', '8381', '8382', '8384', '8387', '8388', '8395', '8416', '8419', '8420', '8426', '8427']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-1.1 {
+   CREATE VIRTUAL TABLE a USING fts5(b);
+                           INSERT INTO a VALUES (x'7d8c');
+                              SELECT 0 FROM a (CASE b  WHEN b THEN b END BETWEEN 0 AND CAST(b AS TEXT))   ;
+} {}
+
+# kill mutants ['29450', '29451', '29456', '29459', '29460', '29461', '29463', '29464', '29465', '29467', '29468', '29469', '29470', '29472', '29473', '29477', '29482', '29483', '29484', '29488', '29491', '29492']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-2.1 {
+  BEGIN;
+  PRAGMA journal_mode = WAL;
+} {1 {cannot change into wal mode from within a transaction}}
+
+# kill mutants ['8347', '8394']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-3.1 {
+  CREATE TABLE t0(a, b, c TEXT);
+  ALTER TABLE t0 ADD d;
+  INSERT INTO t0 VALUES(0, '', '1374120421', x'');
+  ALTER TABLE t0 RENAME TO t1;
+  SELECT *FROM t1 WHERE 0 UNION SELECT *FROM t1 WHERE NOT x''>= c;
+} {}
+
+# kill mutants ['5081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-4.1 {
+       CREATE  VIEW g(c) AS SELECT  (1)AND(HEX(0))   WHERE 1;
+            SELECT 0 FROM g WHERE ((g.c||c)) ;
+} {0}
+
+# kill mutants ['8342']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-5.1 {
+  CREATE TABLE t1(a, b, c2 TEXT);
+  REPLACE INTO t1(b, c2, a) VALUES(0, x'', 0), ('', '', 0);
+  ALTER TABLE t1 RENAME c2 TO c77;
+  SELECT *FROM t1 WHERE(t1.c77 IN('2046407213', x'')) UNION ALL SELECT *FROM t1
+      WHERE(t1.c77 IN('', x''));
+} {0 0 {} 0 0 {} 0 {} {}}
+
+# kill mutants ['8390', '8391', '8422', '8423', '8429', '8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-6.1 {
+  SELECT CAST(0 AS TEXT) IN(1, '' IN()) WHERE(CAST(0 AS TEXT) IN(1, 0 IN()));
+} {1}
+
+# kill mutants ['29474', '29475', '29476', '29478', '29480', '29481', '29485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-7.1 {
+  PRAGMA journal_mode = WAL;
+} {wal}
+
+# kill mutants ['8378', '8428']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-8.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO t1;
+  ALTER TABLE t1 ADD c8 TEXT;
+  INSERT INTO t1 VALUES('148457354', x'');
+  INSERT OR REPLACE INTO t1(c8) VALUES('');
+  SELECT 0, 0 FROM t1 WHERE(0 == (x'' = t1.c8)) UNION SELECT 0,
+      1 FROM t1 WHERE(NOT(0 = (x'' = c8)));
+} {0 0 0 1}
+
+# kill mutants ['1051', '1052']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-9.1 {
+  SELECT CAST(0 AS BLOB) BETWEEN 0 AND 0;
+} {0}
+
+# kill mutants ['23905', '23910', '23912', '23913', '23924']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-10.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  REINDEX;
+  BEGIN;
+  CREATE VIEW b AS SELECT 0;
+  ROLLBACK;
+  INSERT INTO a VALUES(0);
+} {}
+
+# kill mutants ['6838']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-11.1 {
+  CREATE TABLE t0(a);
+  INSERT INTO t0 VALUES('');
+  ALTER TABLE t0 RENAME TO t1;
+  CREATE TABLE IF NOT EXISTS t0(c0, BLOB, c3);
+  INSERT OR REPLACE INTO t0 VALUES(-136851432, 0, '');
+  SELECT 0 FROM t0 JOIN t1 ON(c0 >> c0);
+} {}
+
+# kill mutants ['1236', '1237']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-12.1 {
+  PRAGMA encoding = 'UTF16be';
+  SELECT 0 % CAST(1 AS BLOB);
+} {0}
+
+# kill mutants ['13075']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-13.1 {
+   CREATE TABLE t0 (a  );
+               CREATE INDEX b ON t0(0 ) WHERE CAST(CASE   WHEN '' THEN 0 ELSE '' END AS );
+               ALTER TABLE t0 ADD  c80 REAL;
+               INSERT OR FAIL INTO t0(c80) VALUES ('478449942918254012');
+} {}
+
+# kill mutants ['29873']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbe-dredd-14.1 {
+  BEGIN;
+  VACUUM;
+} {1 {cannot VACUUM from within a transaction}}
+
+# kill mutants ['13909', '13918', '13941', '13950']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-15.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c REAL;
+  INSERT INTO a(c) VALUES(''), ('478449942918254012');
+  ALTER TABLE a RENAME TO d;
+  SELECT *FROM d;
+} {{} {} {} 4.78449942918254e+17}
+
+# kill mutants ['13945']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-16.1 {
+  CREATE TABLE a(b, c1, c2 REAL);
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES(0, 0, '-9223372036854775808');
+} {}
+
+# kill mutants ['13107']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-17.1 {
+  CREATE TABLE a(c0);
+    CREATE INDEX i54 ON a(0 ) ;
+    ALTER TABLE a ADD c80 REAL;
+    INSERT INTO a(c80) VALUES('478449942918254012');
+} {}
+
+# kill mutants ['31476']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-18.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(d) VALUES(0);
+  SELECT CHANGES();
+} {1}
+
+# kill mutants ['10244']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-19.1 {
+  CREATE TABLE a(b c);
+  REPLACE INTO a VALUES(NULL);
+  ALTER TABLE a ADD d e;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['13913']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbe-dredd-20.1 {
+   CREATE TABLE    t1 (c0  , c1  , c2 REAL )
+   ;
+   
+   ALTER TABLE t1 RENAME TO t2
+    ;
+   INSERT   INTO t2   VALUES (0, 0xffffffff94a31e54, '-9223372036854775808'   );
+} {}
+
+finish_test

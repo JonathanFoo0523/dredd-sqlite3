@@ -1,0 +1,58 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['7289']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-1.1 {
+  CREATE VIRTUAL TABLE d USING rtree_i32(a, f, b, e, g);
+  INSERT INTO d(e) VALUES('-1529625380');
+  CREATE VIEW c(a, f, b)
+  AS SELECT LEAD(1 BETWEEN 0 AND((0)OR(0 IS 0))) OVER(), 0, 0 FROM d;
+  SELECT *FROM d, c WHERE(d.b IN(c.a)) UNION SELECT *FROM d, c;
+} {1 0 0 -1529625380 0 {} 0 0}
+
+# kill mutants ['16089', '16121']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-2.1 {
+  CREATE TABLE a(b, c);
+  REPLACE INTO a(b) VALUES(0);
+  INSERT INTO a(c) VALUES( '');
+  CREATE VIRTUAL TABLE d USING fts4;
+  SELECT *FROM d RIGHT JOIN a WHERE(NULL) GLOB(c) ISNULL;
+} {{} 0 {} {} {} {}}
+
+# kill mutants ['5635']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-3.1 {
+  CREATE TABLE vt0(c0);
+        CREATE TABLE rt4(   a );
+       CREATE TABLE vt1( c2);
+       CREATE TABLE t0(c0);
+        CREATE VIEW v0 AS SELECT 0 FROM        t0   ;
+       CREATE  INDEX i36 ON t0(1   )     WHERE(0 IN()) ;
+       SELECT   0 FROM v0      LEFT  JOIN rt4 ON(0 IN()) JOIN vt1     ON((b)IN()) ;
+} {}
+
+# kill mutants ['7257']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-4.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c, c1, c2, c3, a);
+                           INSERT INTO rt0 VALUES(0,0, 0,                                  0, '');
+                           CREATE VIEW v0(c, c1, c2) AS SELECT DISTINCT LEAD(0 = (rt0.c3) = 0,                         ((0)BETWEEN(0) AND(0 IN())),                         (((((((0)OR(0)))AND(0.34732840727733016)))                                AND(0 COLLATE RTRIM))OR(0))) OVER(),     0, (1 || ((NULL)NOTNULL)) FROM rt0 ;
+                           SELECT *FROM rt0,     v0 WHERE(((((rt0.c3)OR(v0.c2))OR(rt0.c3))AND(rt0.c2 IN(v0.c))))                   AND(rt0.c1 COLLATE b) UNION SELECT *FROM rt0,     v0 WHERE(NOT((0)AND(0)AND(rt0.c1 COLLATE b)))         UNION SELECT *FROM rt0,     v0 WHERE(((((((((rt0.c3)OR(v0.c2)))OR(rt0.c3)))AND(0))                    AND(rt0.c1 COLLATE b)))ISNULL);
+} {0 0 0 0 0 0 0 10}
+
+# kill mutants ['7633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-5.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, a, +c3);
+  INSERT INTO rt1 VALUES(0, '', 0, '');
+  INSERT OR REPLACE INTO rt1(c3, c0, c1) VALUES(0, '', '');
+} {}
+
+finish_test

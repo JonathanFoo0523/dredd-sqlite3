@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE vt1 USING fts4(UNINDEXED, DESC);
+      PRAGMA cell_size_check = 1;
+      CREATE VIEW v00 AS SELECT CAST(CASE WHEN t0c75 THEN 0.8285128162388518 ELSE                                    vt1c0 END AS INTEGER) FROM t0vt1     WHERE((0 ));

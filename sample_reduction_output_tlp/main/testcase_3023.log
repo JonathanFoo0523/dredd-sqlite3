@@ -1,0 +1,4 @@
+ PRAGMA temp_store=MEMORY;
+                         CREATE  TABLE vt0  (c0);
+                         REPLACE INTO vt0 VALUES (x''), ('QIU_Tqd'), ('')            ;
+                         SELECT c0 FROM vt0 GROUP BY 1;

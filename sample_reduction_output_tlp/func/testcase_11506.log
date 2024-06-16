@@ -1,0 +1,2 @@
+PRAGMA case_sensitive_like = 0;
+SELECT LIKE(0, 0);

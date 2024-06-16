@@ -1,0 +1,135 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6028']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-1.1 {
+  CREATE TABLE t0(a);
+  INSERT INTO t0 VALUES(''), (0);
+  ALTER TABLE t0 RENAME TO t1;
+  ANALYZE;
+  CREATE TABLE t0(INTEGER);
+  INSERT OR IGNORE INTO t0 VALUES(0), ('');
+  ALTER TABLE t1 RENAME TO b;
+  ALTER TABLE t0 RENAME TO t1;
+  ALTER TABLE b ADD c;
+  SELECT *FROM b JOIN t1 ON(NULL) IS(c);
+} {{} {} 0 {} {} {} 0 {} 0 0 {} {}}
+
+# kill mutants ['8914']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d UNIQUE);
+  INSERT INTO c VALUES('151944303');
+  ALTER TABLE c RENAME TO e;
+  ALTER TABLE e RENAME d TO f;
+  SELECT 0 FROM e LEFT JOIN a ON(f) ISNULL;
+} {0}
+
+# kill mutants ['7058', '7090', '7112', '7113', '7114', '7117', '7144', '7145', '7146', '7149']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-3.1 {
+  CREATE TABLE vt0(a);
+  CREATE TABLE b(a PRIMARY KEY, c);
+  INSERT INTO b(c) VALUES( '');
+  INSERT OR IGNORE INTO vt0 VALUES('');
+  SELECT 0 FROM b JOIN vt0 ON(0 IN() NOTNULL);
+} {0}
+
+# kill mutants ['5383', '5385', '5386', '5387', '5388', '5390']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(c0, b, c);
+  INSERT INTO a(b, c0, c) VALUES(  '', 0, 0), (0, 1, '');
+  CREATE TABLE t0(c0);
+  INSERT OR IGNORE INTO t0 VALUES(0), (x'');
+  SELECT *FROM t0, a WHERE(c, CAST(0 AS BLOB)) >= (0, t0.c0);
+} {0 0 0 0 0 1 0 0 {} 0 0 0 {} 1 0 0}
+
+# kill mutants ['6484', '6486']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test whereexpr-dredd-5.1 {
+                   CREATE VIRTUAL TABLE a USING rtree(c, d, b);
+                                   INSERT   INTO a( d) VALUES ( x'3ad4');
+                                   CREATE  VIEW e(c) AS SELECT  0 GROUP BY  CASE WHEN 0 THEN 0 END;
+                                   SELECT 0 FROM a  JOIN e ON a.c BETWEEN e.c AND d WHERE CASE WHEN 1 THEN json_remove(0, e.c) END  ;
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['7875', '7885']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test whereexpr-dredd-6.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  INSERT INTO c VALUES(0);
+  SELECT 0 FROM a, c WHERE(b, 0) = (0, load_extension(0));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['7254', '7256', '7260', '7286', '7288', '7292']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-7.1 {
+                  CREATE TABLE a (b   UNIQUE );
+                          INSERT INTO a VALUES ('151944303');
+                          ALTER TABLE a RENAME TO c;
+                          ANALYZE ;
+                          ALTER TABLE c ADD d ;
+                          INSERT INTO c VALUES ('981622186', '83b3bf4a');
+                          CREATE INDEX e ON c(x'f78a' ) ;
+                          ALTER TABLE c RENAME d TO f;
+                          ALTER TABLE c RENAME b TO g;
+                          ALTER TABLE c ADD h;
+                          ALTER TABLE c RENAME TO a;
+                          INSERT INTO a VALUES ( '', '' ,0);
+                          ALTER TABLE a RENAME TO c;
+                          SELECT g FROM c  WHERE f NOTNULL ;
+} {981622186 {}}
+
+# kill mutants ['5958', '6007']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test whereexpr-dredd-8.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  CREATE VIEW e AS SELECT RANK() OVER();
+  SELECT *FROM a JOIN e ON d FULL JOIN c;
+} {1 {ON clause references tables to its right}}
+
+# kill mutants ['7247', '7259', '7263', '7279', '7291', '7295']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-9.1 {
+                  CREATE TABLE a (b   UNIQUE );
+                                  INSERT INTO a VALUES ('151944303');
+                                  ALTER TABLE a RENAME TO c;
+                                  ANALYZE ;
+                                  ALTER TABLE c ADD d ;
+                                  CREATE INDEX e ON c(x'f78a' ) ;
+                                  ALTER TABLE c RENAME d TO f;
+                                  SELECT 0 FROM c  WHERE f NOTNULL ;
+} {}
+
+# kill mutants ['5396']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-10.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  ALTER TABLE a ADD d;
+  ALTER TABLE a RENAME TO e;
+  INSERT INTO e(c) VALUES('');
+  CREATE VIEW f(b)
+  AS SELECT TYPEOF(0);
+  CREATE INDEX g ON e(0);
+  ALTER TABLE e RENAME c TO h;
+  SELECT 0 FROM f JOIN e ON(b, h, 0) BETWEEN(b, b, 0) AND(d, 0, 0) = 0;
+} {0}
+
+finish_test

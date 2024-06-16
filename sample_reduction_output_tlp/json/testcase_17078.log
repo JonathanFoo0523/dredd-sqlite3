@@ -1,0 +1,6 @@
+CREATE TABLE a (b  );
+                   ALTER TABLE a ADD c88 ;
+                   ALTER TABLE a RENAME TO t0;
+                   ALTER TABLE t0 ADD   INT;
+                   INSERT   INTO t0 VALUES (0, x'fb5fb264', 0.14753290244626194);
+                   SELECT c88 FROM t0 WHERE (((json_array(CASE b  WHEN b THEN c88   END)) ));

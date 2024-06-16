@@ -1,0 +1,35 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['958', '959']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-1.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c DELETE ON a BEGIN UPDATE a SET d = 0;
+  END;
+  ALTER TABLE a RENAME TO e;
+} {}
+
+# kill mutants ['948', '949', '952', '953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-2.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO t0;
+  CREATE TRIGGER c INSERT ON t0 BEGIN INSERT INTO d VALUES('');
+  END;
+  INSERT OR IGNORE INTO t0 VALUES('');
+} {1 {no such table: main.d}}
+
+# kill mutants ['957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-3.1 {
+  CREATE TABLE t1(INT);
+      ALTER TABLE t1 RENAME TO t0;
+      CREATE TRIGGER AFTER INSERT ON t0 BEGIN VALUES(0);
+      END;
+} {}
+
+finish_test

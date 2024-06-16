@@ -1,0 +1,9 @@
+        CREATE TABLE a ( INTEGER  );
+           ALTER TABLE a ADD c55 ;
+           INSERT   INTO a(c55) VALUES  (0.7389701354464181);
+           ALTER TABLE a RENAME TO b
+           ;
+           ALTER TABLE b RENAME c55 TO c59
+           ;
+                 VACUUM       ;
+           SELECT  1 FROM b  WHERE TRIM(c59, -9.65209054E8);

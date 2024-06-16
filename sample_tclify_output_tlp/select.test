@@ -1,0 +1,474 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['34177', '34182', '34186', '34188', '34189', '34190', '34200', '34201', '34214', '34218', '34220', '34221', '34222', '34223', '34224', '34226', '34228', '34229', '34230', '34232', '34233', '34251', '34252', '34255', '34256', '34257', '34263', '34266', '34287', '34288', '34295', '34298']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-1.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('dd95');
+  INSERT INTO a VALUES(0);
+  ALTER TABLE a ADD c;
+  CREATE VIEW d AS SELECT 0 FROM a ORDER BY 1;
+  INSERT INTO a(b) VALUES('039b');
+  ALTER TABLE a RENAME TO e;
+  INSERT INTO e(b) VALUES(0);
+  INSERT INTO e(b) VALUES(0);
+  INSERT INTO e VALUES(0, '0.6620328004420404');
+  INSERT INTO e VALUES(0, 0);
+  INSERT INTO e VALUES(0, 0);
+  INSERT INTO e VALUES(0, '');
+  ALTER TABLE e RENAME c TO f;
+  ANALYZE;
+  SELECT *FROM d, e WHERE 0 BETWEEN 0 AND f;
+} {0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {} 0 0 0.6620328004420404 0 0 0 0 0 0 0 0 {}}
+
+# kill mutants ['1348', '1349', '1354', '1355', '1365', '1371', '1373', '1374', '1380', '1381', '1386', '1387', '1395', '1397', '1401', '1403', '1404', '1405', '1406', '1423', '1424', '1425', '1426', '1428', '1431', '1438', '1439', '1455', '1456', '1457', '1458', '1460', '1463', '1470', '1471']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING fts4;
+  CREATE TABLE d(e);
+  SELECT *FROM d LEFT JOIN a ON LIKELIHOOD(c, 0.9586887727344751) JOIN c ON b;
+} {}
+
+# kill mutants ['34355']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  INSERT INTO a VALUES('1202307893');
+  CREATE VIEW c(b)
+  AS SELECT TYPEOF(b)
+  FROM a ORDER BY(0) OR(b);
+  INSERT INTO a VALUES('/V\Uo\{)');
+  SELECT b;
+} {1 {no such column: b}}
+do_execsql_test select-dredd-3.2 {
+  SELECT DISTINCT b FROM c;
+} {integer text}
+
+# kill mutants ['28964']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-4.1 {
+  CREATE  TABLE h(a);
+      ALTER TABLE h ADD b TEXT;
+      CREATE VIRTUAL TABLE c USING rtree(a d, e, f);
+      CREATE INDEX g ON h(0 COLLATE RTRIM,                      ('0eef', 0, 0)BETWEEN(0, 0, 0) AND(a, 0, 0));
+      SELECT 0 FROM c, h GROUP BY c.a UNION SELECT a FROM c GROUP BY 1 HAVING MAX(f) UNION SELECT 0 ;
+} {0}
+
+# kill mutants ['26704']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-5.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  SELECT 0 FROM c JOIN a ON(e);
+} {1 {no such column: e}}
+
+# kill mutants ['19524', '19525', '19533']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-6.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE VIEW d AS SELECT b FROM c;
+  CREATE TABLE e(b);
+  INSERT INTO e VALUES('');
+  CREATE TABLE f(g);
+  SELECT 0 FROM d JOIN f ON d.b FULL JOIN e;
+} {0}
+
+# kill mutants ['26063', '34307', '34329', '34330', '34333', '34334', '34335', '34339', '34361', '34362', '34365', '34366', '34367']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-7.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c(b)
+  AS SELECT TYPEOF(b)
+  FROM a ORDER BY CAST(b AS);
+  INSERT INTO a VALUES('1953218456');
+  INSERT INTO a VALUES('au)玅oX');
+  INSERT INTO a VALUES(x'');
+  SELECT DISTINCT b FROM c;
+} {blob text}
+
+# kill mutants ['19537', '19541']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test select-dredd-8.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  CREATE TABLE b(c);
+  INSERT INTO a VALUES(0);
+  CREATE VIEW d(e)
+  AS SELECT(0 IN()) FROM b;
+  SELECT *FROM a, d WHERE(load_extension(e));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['33998', '34030']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-9.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  ALTER TABLE c ADD e;
+  CREATE VIRTUAL TABLE f USING fts5(0);
+  CREATE TABLE g(h);
+  ALTER TABLE c ADD i;
+  ALTER TABLE c ADD j;
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO k;
+  ALTER TABLE c ADD l;
+  INSERT INTO c VALUES(   '', '', 0, 0, '', 1);
+  SELECT 0 FROM g JOIN k ON 0 FULL JOIN c FULL JOIN f WHERE l;
+} {0}
+
+# kill mutants ['21999', '22003', '22006', '22015']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-10.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c AS SELECT 0 FROM a;
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO d VALUES(0);
+  SELECT *FROM d LEFT JOIN c ON 0;
+} {0 {}}
+
+# kill mutants ['19545']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-11.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  ALTER TABLE a RENAME b TO e;
+  CREATE VIEW f(b)
+  AS SELECT d FROM c;
+  CREATE TABLE g(d);
+  ALTER TABLE a RENAME TO h;
+  SELECT 0 FROM h JOIN g ON b JOIN f;
+} {}
+
+# kill mutants ['34331']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-12.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  INSERT INTO a VALUES('1202307893');
+  CREATE VIEW c AS SELECT TYPEOF(b)
+  FROM a ORDER BY CAST(b AS);
+  INSERT INTO a VALUES('/V\Uo\{)');
+  SELECT 0;
+} {0}
+do_execsql_test select-dredd-12.2 {
+  SELECT DISTINCT *FROM c;
+} {integer text}
+
+# kill mutants ['34326']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-13.1 {
+        CREATE  TABLE vt0  (c0 );
+                       INSERT INTO vt0 VALUES (1);
+                       INSERT INTO vt0 VALUES ('1202307893');
+                       CREATE VIEW  v0(c0) AS SELECT TYPEOF(c0) FROM vt0 ORDER BY CASE WHEN 0  THEN c0 END  , ((((((vt0.c0 )AND(c0  ))))))   ;
+                       INSERT   INTO vt0 VALUES ('/V\Uo\{)')                ;
+                       SELECT DISTINCT c0 FROM v0;
+} {integer text}
+
+# kill mutants ['19479']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-14.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c AS SELECT b FROM a;
+  CREATE TABLE d(e);
+  CREATE VIRTUAL TABLE f USING fts4;
+  SELECT *FROM c, d JOIN a ON c.b RIGHT JOIN f UNION SELECT *FROM c,
+      d JOIN a JOIN f;
+} {}
+
+# kill mutants ['19570']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-15.1 {
+  CREATE TABLE rt1(c1);
+   CREATE VIEW v0(a, c1, c2) AS SELECT(MAX(c1, 0)), 0, 0 FROM rt1;
+   CREATE TABLE t0(INTEGER);
+   SELECT *FROM t0 JOIN v0 ON(a IS 1);
+} {}
+
+# kill mutants ['1165', '1197']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-16.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  ALTER TABLE c RENAME TO e;
+  CREATE TABLE f(g);
+  SELECT 0 FROM f, a RIGHT JOIN e ON LIKELY(d);
+} {}
+
+# kill mutants ['34360']
+# EXCLUDED: INDETERMINISTICS DUE TO PRESENCE OF FILE
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test select-dredd-17.1 {
+#   VACUUM INTO 'au)玅oX';
+# } {1 {output file already exists}}
+
+# kill mutants ['34359']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-18.1 {
+   CREATE VIRTUAL TABLE vt0 USING fts5(a );
+             CREATE VIEW b(a) AS SELECT TYPEOF(a)   FROM vt0 ORDER BY CASE     WHEN(0)ISNULL THEN 0 END  ,     (CAST(vt0.a AS ) );
+            INSERT INTO vt0 VALUES('1953218456');
+            INSERT INTO vt0 VALUES('au)玅oX');
+            INSERT INTO vt0 VALUES(x'');
+            SELECT DISTINCT b.a FROM b;
+} {blob text}
+
+# kill mutants ['24702']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-19.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  SELECT MAX('') FROM c;
+} {{}}
+
+# kill mutants ['33662']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-20.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b);
+  CREATE TABLE c(d, e);
+  CREATE TABLE f(d);
+  INSERT INTO c(d) VALUES('');
+  CREATE TABLE g(d);
+  SELECT 0 FROM c JOIN f ON b JOIN g ON json_insert(0, e)
+  LEFT JOIN a;
+} {}
+
+# kill mutants ['33583', '33588']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-21.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(b);
+  CREATE TABLE d(b);
+  SELECT 0 FROM c LEFT JOIN d ON CAST(CASE a.b WHEN 0 THEN 0 END AS) JOIN a
+      ON(d.b);
+} {}
+
+# kill mutants ['34327']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-22.1 {
+  CREATE TABLE a(b);
+  INSERT INTO c VALUES('fc65');
+} {1 {no such table: c}}
+do_execsql_test select-dredd-22.2 {
+  CREATE VIEW d AS SELECT TYPEOF(b)
+  FROM a ORDER BY CAST(b AS);
+  CREATE TABLE e(f);
+  INSERT INTO a VALUES('1953218456');
+  INSERT INTO a VALUES('au)玅oX');
+  INSERT INTO a VALUES(x'');
+  SELECT DISTINCT *FROM d;
+} {blob text}
+
+# kill mutants ['34320']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-23.1 {
+  CREATE TABLE a(b);
+         CREATE VIEW c(b) AS SELECT TYPEOF(b) FROM a ORDER BY(NOT 0)AND(b) ;
+         CREATE TABLE d(b);
+         INSERT INTO a VALUES(1);
+         INSERT INTO a VALUES('1953218456');
+         INSERT INTO a VALUES('au)玅oX');
+         SELECT DISTINCT b FROM c;
+} {integer text}
+
+# kill mutants ['34363']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-24.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c(b)
+  AS SELECT TYPEOF(b)
+  FROM a ORDER BY(1) AND(a.b);
+  INSERT INTO d VALUES('1527415080');
+} {1 {no such table: d}}
+do_execsql_test select-dredd-24.2 {
+  INSERT INTO a VALUES('1953218456');
+  INSERT INTO a VALUES('au)玅oX');
+  INSERT INTO a VALUES(x'');
+  SELECT DISTINCT b FROM c;
+} {blob text}
+
+# kill mutants ['33985', '34014', '34017', '34046']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-25.1 {
+   CREATE VIRTUAL TABLE a USING fts4(    languageid="lid");
+                                   INSERT   INTO a VALUES ('')                 ;
+                                   CREATE  TABLE b  (c)                 ;
+                                   SELECT 0 FROM a     RIGHT JOIN b WHERE lid BETWEEN 0 AND 0 ;
+} {}
+
+# kill mutants ['34323']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-26.1 {
+  CREATE TABLE a(c);
+  CREATE VIEW b(c)
+  AS SELECT TYPEOF(c)
+  FROM a ORDER BY CAST(c AS);
+  INSERT INTO a(c) VALUES('1953218456');
+  INSERT INTO a VALUES('au)玅oX');
+  INSERT INTO a VALUES(x'');
+  SELECT DISTINCT c FROM b;
+} {blob text}
+
+# kill mutants ['26510']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-27.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c CHECK(0);
+} {}
+
+# kill mutants ['1088']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-28.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0);
+  CREATE TABLE c(d);
+  SELECT 0 FROM a LEFT JOIN c ON LIKELY(0);
+} {0}
+
+# kill mutants ['34358']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-29.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  INSERT INTO a VALUES('1202307893');
+  CREATE VIEW c(b)
+  AS SELECT TYPEOF(b)
+  FROM a ORDER BY(0) OR(b);
+  REPLACE INTO a VALUES('');
+  SELECT a;
+} {1 {no such column: a}}
+do_execsql_test select-dredd-29.2 {
+  SELECT DISTINCT b FROM c;
+} {integer text}
+
+# kill mutants ['1427', '1459']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-30.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING fts4;
+  CREATE TABLE e(d);
+  SELECT *FROM e LEFT JOIN a ON LIKELIHOOD(
+      c, 0.9586887727344751) JOIN c ON b UNION SELECT *FROM e JOIN a JOIN c;
+} {}
+
+# kill mutants ['23698']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-31.1 {
+  CREATE TABLE t0(a);
+  CREATE TABLE rt1(b, c1, c);
+  REPLACE INTO rt1 VALUES('', x'', x'');
+  INSERT OR ABORT INTO t0 VALUES('');
+  CREATE VIEW IF NOT EXISTS v0 AS SELECT 0 FROM rt1, t0 ORDER BY 1 NULLS FIRST;
+  INSERT OR ROLLBACK INTO rt1(c1) VALUES('');
+  SELECT *FROM rt1 LEFT JOIN v0 ON 1;
+} {{} {} {} 0 {} {} {} 0 {} {} {} 0 {} {} {} 0}
+
+# kill mutants ['19571']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-32.1 {
+  CREATE TABLE a(b);
+    CREATE  TABLE rt1  (b   );
+    CREATE VIEW v0(b, c1, c) AS SELECT(0 % b), 0, 0 FROM rt1   ;
+    SELECT *FROM a JOIN v0 ON(v0.b)GLOB(0);
+} {}
+
+# kill mutants ['34328']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-33.1 {
+  CREATE TABLE a(b);
+          INSERT INTO a VALUES(1);
+          INSERT INTO a VALUES('1202307893');
+          CREATE VIEW c AS SELECT TYPEOF(b) FROM a ORDER BY(CAST(b AS));
+          INSERT INTO a VALUES('/V\Uo\{)');
+          SELECT 0;
+} {0}
+do_execsql_test select-dredd-33.2 {
+          SELECT DISTINCT *FROM c;
+} {integer text}
+
+# kill mutants ['34352']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-34.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  INSERT INTO a VALUES('1202307893');
+  CREATE VIEW c AS SELECT TYPEOF(b)
+  FROM a ORDER BY(0 OR(b));
+  INSERT INTO a VALUES('');
+  SELECT 0;
+} {0}
+do_execsql_test select-dredd-34.2 {
+  SELECT DISTINCT *FROM c;
+} {integer text}
+
+# kill mutants ['36540']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-35.1 {
+  CREATE TABLE a(c);
+  CREATE VIEW d(b)
+  AS SELECT 0;
+  SELECT *FROM a, d WHERE b == json_remove(0, 0);
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['21960', '21992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-36.1 {
+  CREATE TABLE a(b);
+  CREATE VIEW c AS SELECT b FROM a ORDER BY 1 NULLS LAST;
+  INSERT INTO a VALUES(NULL), ('1979478917');
+  SELECT DISTINCT b FROM c;
+} {1979478917 {}}
+
+# kill mutants ['33668']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-37.1 {
+  CREATE TABLE a(d);
+  CREATE VIRTUAL TABLE e USING rtree(b, c, d);
+  CREATE TABLE f(g);
+  ALTER TABLE f ADD h;
+  INSERT INTO f VALUES(0, '');
+  SELECT 0 FROM f JOIN a ON c LEFT JOIN e WHERE(json_array_length(h));
+} {}
+
+finish_test

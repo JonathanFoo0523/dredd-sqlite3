@@ -1,0 +1,7 @@
+ PRAGMA encoding = 'UTF16';
+                                    CREATE TABLE    c (b );
+                                    ALTER TABLE c ADD i ;
+                                    INSERT   INTO c(i) VALUES (x'eb2d');
+                                    CREATE  TABLE a  (bj);
+                                    ALTER TABLE c RENAME  i TO h;
+                                    SELECT 0 FROM  c,  a     ON  json_valid(h   ) ;

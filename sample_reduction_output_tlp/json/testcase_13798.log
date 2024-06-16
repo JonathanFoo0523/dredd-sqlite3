@@ -1,0 +1,1 @@
+SELECT CAST(json_extract('.', 0) AS);

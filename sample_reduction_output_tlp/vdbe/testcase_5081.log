@@ -1,0 +1,2 @@
+     CREATE  VIEW g(c) AS SELECT  (1)AND(HEX(0))   WHERE 1;
+          SELECT 0 FROM g WHERE ((g.c||c)) ;
