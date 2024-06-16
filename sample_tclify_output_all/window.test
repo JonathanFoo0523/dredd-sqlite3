@@ -64,7 +64,7 @@ do_execsql_test window-dredd-7.1 {
                            ALTER TABLE t0 ADD c59;
                            INSERT INTO t0 VALUES ('', x'3176', 3, '');
                            SELECT DISTINCT 0, CUME_DIST() OVER (), LEAD(t0.c59, (0)OR(0 BETWEEN 0 AND 0), t0.c1) OVER (), 0 COLLATE RTRIM, 0 FROM t0 WHERE '' NOT BETWEEN 0 AND 0 ;
-} {0 1.0 1v 0}
+} {0 1.0 1v 0 0}
 
 # kill mutants ['11983', '12015']
 reset_db

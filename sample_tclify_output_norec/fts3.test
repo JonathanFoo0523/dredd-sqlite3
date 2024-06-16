@@ -38,3 +38,5 @@ do_execsql_test fts3-dredd-3.1 {
                 END;
 } {}
 
+finish_test
+

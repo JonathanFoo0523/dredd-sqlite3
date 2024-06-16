@@ -71,7 +71,7 @@ do_execsql_test vdbe-dredd-7.1 {
   SELECT 0, 0 COLLATE RTRIM, LAG(0, 0, TRIM(DISTINCT 0, 0)) OVER(), 0,
       CASE(0 NOT BETWEEN 0 AND(t0.c7)) WHEN 0 THEN CAST(t0.c49 AS BLOB) WHEN
       SQLITE_COMPILEOPTION_GET('') THEN 7 END FROM t0;
-} {0 0 0 {} 0 0 0 {}}
+} {0 0 0 0 {} 0 0 0 0 {}}
 
 # kill mutants ['6814', '6846']
 reset_db

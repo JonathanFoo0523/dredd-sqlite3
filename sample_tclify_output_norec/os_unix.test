@@ -62,14 +62,15 @@ do_catchsql_test os_unix-dredd-6.2 {
 } {1 {no such table: rt0}}
 
 # kill mutants ['15388']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test os_unix-dredd-7.1 {
-  CREATE VIRTUAL TABLE rt1 USING rtree_i32(a, b, c2, c3, c4, +c5);
-  INSERT INTO rt1(c3, c2, a, c4, c5, b) VALUES(0, 0, 1e500, '', '', 0);
-  INSERT OR IGNORE INTO rt1(c4, c3, c5, c2) VALUES(x'', '', 0, '');
-  SELECT *FROM rt1;
-} {9223372036854775807 0 0 0 0 {} 430949533025824050 0 0 0 0 0}
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test os_unix-dredd-7.1 {
+#   CREATE VIRTUAL TABLE rt1 USING rtree_i32(a, b, c2, c3, c4, +c5);
+#   INSERT INTO rt1(c3, c2, a, c4, c5, b) VALUES(0, 0, 1e500, '', '', 0);
+#   INSERT OR IGNORE INTO rt1(c4, c3, c5, c2) VALUES(x'', '', 0, '');
+#   SELECT *FROM rt1;
+# } {9223372036854775807 0 0 0 0 {} 430949533025824050 0 0 0 0 0}
 
 # kill mutants ['10948']
 reset_db

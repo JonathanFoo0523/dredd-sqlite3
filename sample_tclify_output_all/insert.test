@@ -201,14 +201,14 @@ do_execsql_test insert-dredd-20.1 {
         VACUUM;
 } {}
 
-# # kill mutants ['7197']
-# reset_db
-# sqlite3_db_config db DEFENSIVE 1
-# do_catchsql_test insert-dredd-21.1 {
-#   CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
-#   INSERT INTO a(e, d, b, c)
-#       VALUES('1e500', 0.7819532531565033, 0.6917260418722515, 'rm}[B3FGu');
-# } {1 {rtree constraint failed: a.(e<=f)}}
+# kill mutants ['7197']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-21.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+  INSERT INTO a(e, d, b, c)
+      VALUES('1e500', 0.7819532531565033, 0.6917260418722515, 'rm\}[B3FGu');
+} {1 {rtree constraint failed: a.(e<=f)}}
 
 # kill mutants ['14597']
 reset_db

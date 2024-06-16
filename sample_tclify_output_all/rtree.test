@@ -53,15 +53,16 @@ do_execsql_test rtree-dredd-4.1 {
   UPDATE a SET c = 1.295025454E9 WHERE(NULL) BETWEEN(c) AND(d);
 } {}
 
+# EXCLUDED: INDETERMINISTICS TEST RESULT DUE TO DATE TIME
 # kill mutants ['17365', '17370']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test rtree-dredd-5.1 {
-  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
-  INSERT INTO a VALUES('CE矣', '#G&Z矣ꅯPp', 0.27557158615765553);
-  INSERT INTO a(d) VALUES('');
-  SELECT DATE() FROM a;
-} {2024-06-13 2024-06-13}
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test rtree-dredd-5.1 {
+#   CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+#   INSERT INTO a VALUES('CE矣', '#G&Z矣ꅯPp', 0.27557158615765553);
+#   INSERT INTO a(d) VALUES('');
+#   SELECT DATE() FROM a;
+# } {2024-06-15 2024-06-15}
 
 # kill mutants ['18122', '18154']
 reset_db

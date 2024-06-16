@@ -91,6 +91,7 @@ do_execsql_test func-dredd-9.1 {
   SELECT ROUND(0);
 } {0.0}
 
+# MODIFIED: ADD SURROUNDING {}
 # kill mutants ['5608', '5623']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
@@ -98,7 +99,7 @@ do_execsql_test func-dredd-10.1 {
   CREATE VIRTUAL TABLE a USING fts5(b);
   INSERT INTO a VALUES('5s^S.\>');
   SELECT *FROM a(CHAR(1) < b);
-} {5s^S.\>}
+} {{5s^S.\>}}
 
 # kill mutants ['8974', '8977', '8978', '9006', '9009', '9010']
 reset_db
@@ -118,6 +119,7 @@ do_execsql_test func-dredd-12.1 {
   SELECT CAST(0 AS TEXT) BETWEEN(CHAR( '' )) AND 0;
 } {1}
 
+# MODIFIED: ADD SURROUNDING {}
 # kill mutants ['5624']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
@@ -125,7 +127,7 @@ do_execsql_test func-dredd-13.1 {
   CREATE VIRTUAL TABLE a USING fts5(b);
   INSERT INTO a VALUES('5s^S.\>');
   SELECT *FROM a(CHAR(b) < b);
-} {5s^S.\>}
+} {{5s^S.\>}}
 
 # kill mutants ['7720']
 reset_db
@@ -175,3 +177,4 @@ do_execsql_test func-dredd-18.1 {
                               SELECT 0 FROM  h      WHERE UPPER(c31||c31)  ;
 } {0}
 
+finish_test

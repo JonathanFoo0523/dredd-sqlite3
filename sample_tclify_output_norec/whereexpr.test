@@ -44,7 +44,7 @@ do_execsql_test whereexpr-dredd-4.1 {
   CREATE TABLE f(b);
   INSERT INTO f VALUES('0815');
   SELECT *FROM d, f WHERE c NOT NULL ORDER BY(0) GLOB(0);
-} {0815 0}
+} {{} 0 0815}
 
 # kill mutants ['7051']
 reset_db
@@ -85,7 +85,7 @@ do_execsql_test whereexpr-dredd-7.1 {
   ALTER TABLE a RENAME e TO g;
   ANALYZE;
   SELECT *FROM f, a WHERE((0)OR(g)) = 0;
-} {0 {} 0 {} 0 {} 0 {}}
+} {0 0 {} 0 0 {} 1 0 {} 1 0 {}}
 
 # kill mutants ['7199', '7231', '7235', '7244', '7267', '7276']
 reset_db

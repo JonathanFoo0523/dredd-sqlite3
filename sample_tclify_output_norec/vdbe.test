@@ -44,15 +44,16 @@ do_execsql_test vdbe-dredd-4.1 {
 } {ok}
 
 # kill mutants ['22174', '22175', '22206', '22207']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test vdbe-dredd-5.1 {
-  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, +c3);
-  INSERT INTO rt1 VALUES('00c23bb7ced5', 0, '', '');
-  UPDATE OR IGNORE rt1 SET c0 = 9223372036854775807, c2 ='';
-  INSERT OR IGNORE INTO rt1(c2, c3, c1) VALUES('', 0, 0);
-  SELECT *FROM rt1;
-} {9223372036854775807 0.0 0.0 {} 2891290284081666165 0.0 0.0 0}
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RANDOM INDEX IN RTREE
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test vdbe-dredd-5.1 {
+#   CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, +c3);
+#   INSERT INTO rt1 VALUES('00c23bb7ced5', 0, '', '');
+#   UPDATE OR IGNORE rt1 SET c0 = 9223372036854775807, c2 ='';
+#   INSERT OR IGNORE INTO rt1(c2, c3, c1) VALUES('', 0, 0);
+#   SELECT *FROM rt1;
+# } {9223372036854775807 0.0 0.0 {} 2891290284081666165 0.0 0.0 0}
 
 # kill mutants ['8409', '8441']
 reset_db
@@ -142,18 +143,19 @@ do_execsql_test vdbe-dredd-14.1 {
 } {}
 
 # kill mutants ['22155', '22187']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test vdbe-dredd-15.1 {
-  CREATE VIRTUAL TABLE a USING rtree;
-} {1 {Too few columns for an rtree table}}
-do_execsql_test vdbe-dredd-15.2 {
-  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, +c3);
-  INSERT INTO rt1 VALUES('00c23bb7ced5', 0, '', '');
-  UPDATE OR IGNORE rt1 SET c0 = 9223372036854775807, c2 ='';
-  INSERT OR IGNORE INTO rt1(c2, c3, c1) VALUES('', 0, 0);
-  SELECT *FROM rt1;
-} {9223372036854775807 0.0 0.0 {} 1529491544152961494 0.0 0.0 0}
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RANDOM INDEX RTREE
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test vdbe-dredd-15.1 {
+#   CREATE VIRTUAL TABLE a USING rtree;
+# } {1 {Too few columns for an rtree table}}
+# do_execsql_test vdbe-dredd-15.2 {
+#   CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, +c3);
+#   INSERT INTO rt1 VALUES('00c23bb7ced5', 0, '', '');
+#   UPDATE OR IGNORE rt1 SET c0 = 9223372036854775807, c2 ='';
+#   INSERT OR IGNORE INTO rt1(c2, c3, c1) VALUES('', 0, 0);
+#   SELECT *FROM rt1;
+# } {9223372036854775807 0.0 0.0 {} 1529491544152961494 0.0 0.0 0}
 
 # kill mutants ['29873']
 reset_db

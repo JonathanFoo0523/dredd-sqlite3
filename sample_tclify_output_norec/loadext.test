@@ -10,17 +10,17 @@ do_catchsql_test loadext-dredd-1.1 {
 } {1 {0.so: cannot open shared object file: No such file or directory}}
 
 # kill mutants ['23', '25', '26', '3', '35', '37', '5', '55', '57', '58', '62', '757', '775', '776', '777', '779', '807', '808', '809', '811']
-# reset_db
-# sqlite3_db_config db DEFENSIVE 1
-# sqlite3_enable_load_extension db 1
-# do_catchsql_test loadext-dredd-2.1 {
-#   CREATE TABLE a(b);
-#   INSERT INTO a VALUES('xC}');
-#   CREATE VIRTUAL TABLE rt42 USING rtree_i32(c, d, e, +f);
-#   UPDATE a SET b ='';
-#   INSERT OR IGNORE INTO rt42 VALUES(x'', '', '', x'');
-#   SELECT(SELECT 0 FROM a JOIN rt42 ON CASE load_extension(b) WHEN 0 THEN 0 END);
-# } {1 {unable to open shared library []}}
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-2.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('xC\}');
+  CREATE VIRTUAL TABLE rt42 USING rtree_i32(c, d, e, +f);
+  UPDATE a SET b ='';
+  INSERT OR IGNORE INTO rt42 VALUES(x'', '', '', x'');
+  SELECT(SELECT 0 FROM a JOIN rt42 ON CASE load_extension(b) WHEN 0 THEN 0 END);
+} {1 {unable to open shared library []}}
 
 # kill mutants ['933', '936', '937', '938', '941', '946']
 reset_db

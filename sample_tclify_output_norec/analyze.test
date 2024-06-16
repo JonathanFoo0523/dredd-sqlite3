@@ -84,7 +84,7 @@ do_execsql_test analyze-dredd-6.1 {
   INSERT OR REPLACE INTO t82 VALUES('', x'', 0), (0, '', 0), ('', 0, 0);
   ANALYZE;
   SELECT *FROM t82, a WHERE CASE WHEN e THEN 0 ELSE 1 END;
-} {{} {} 4GR2** dd2b 0 0 0 {} 4GR2** dd2b 0 0 {} 0 4GR2** dd2b 0 0 {} {} {} 682585516 {} {} 0 {} {} 682585516 {} {} {} 0 {} 682585516 {} {} {} {} {} {} {} {} 0 {} {} {} {} {} {} 0 {} {} {} {}}
+} {{} {} 0 dd2b 0 4GR2** 0 0 {} 0 dd2b 0 4GR2** 0 {} 0 0 dd2b 0 4GR2** 0 {} {} 0 682585516 {} {} {} 0 {} 0 682585516 {} {} {} {} 0 0 682585516 {} {} {} {} {} 0 {} {} {} {} 0 {} 0 {} {} {} {} {} 0 0 {} {} {} {}}
 
 # kill mutants ['3100']
 reset_db

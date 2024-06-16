@@ -9,15 +9,16 @@ do_execsql_test pager-dredd-1.1 {
 } {0}
 
 # kill mutants ['16572']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test pager-dredd-2.1 {
-  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
-  INSERT INTO a VALUES(0, 0, 0);
-  UPDATE a SET b = 1e500;
-  INSERT INTO a(c) VALUES( '');
-  SELECT *FROM a;
-} {9223372036854775807 0 0 2891290284081666165 0 0}
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test pager-dredd-2.1 {
+#   CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+#   INSERT INTO a VALUES(0, 0, 0);
+#   UPDATE a SET b = 1e500;
+#   INSERT INTO a(c) VALUES( '');
+#   SELECT *FROM a;
+# } {9223372036854775807 0 0 2891290284081666165 0 0}
 
 # kill mutants ['25379']
 reset_db

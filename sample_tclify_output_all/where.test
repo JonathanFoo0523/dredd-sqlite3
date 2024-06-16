@@ -207,7 +207,7 @@ do_execsql_test where-dredd-11.13 {
   SELECT DISTINCT '' COLLATE NOCASE,
       SUM(CASE rt0.c3 WHEN t1.c0 THEN rt0.c0 ELSE rt0.c4 END) OVER, 0, 0,
       GROUP_CONCAT(0) FROM t0, t1, rt0 WHERE 0;
-} {{} {} 0 {}}
+} {{} {} 0 0 {}}
 do_execsql_test where-dredd-11.14 {
   SELECT ALL 0 FROM t0 t1, rt0 WHERE 0 LIMIT 4 OFFSET 1;
   SELECT 0,
@@ -215,7 +215,7 @@ do_execsql_test where-dredd-11.14 {
           WHEN rt0.c0 THEN rt0.c4 WHEN rt0.c0 THEN rt0.c3 END THEN
           COUNT() ELSE LENGTH(rt0.c3) END,
       0 FROM rt0, t0, t1 WHERE 0;
-} {0 0}
+} {0 0 0}
 do_execsql_test where-dredd-11.15 {
   SELECT rt0.c4, 0,
       CASE rt0.c2 WHEN t0.c81 THEN rt0.c0 ELSE rt0.c1 END COLLATE RTRIM FROM t0,

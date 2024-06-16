@@ -122,7 +122,7 @@ do_execsql_test expr-dredd-12.1 {
   INSERT INTO h VALUES('');
   INSERT OR IGNORE INTO rt0 VALUES(x'', x'', 0, 0, x'');
   SELECT *FROM h, rt0 WHERE e NOT NULL;
-} {0 0.0 0.0 0.0 0.0}
+} {{} 0 0.0 0.0 0.0 0.0}
 
 # kill mutants ['25157']
 reset_db
@@ -392,13 +392,14 @@ do_execsql_test expr-dredd-38.1 {
   INSERT INTO a(d, c, b) VALUES('1548711520', '', ''),
       ('0.9321369038970101', 0, 0);
   SELECT *FROM a LEFT JOIN e WHERE a.d IS TRUE;
-} {0 0 {} {} {} {}}
+} {0 0 0.9321369038970101 {} {} {} 1548711520 {}}
 
 # kill mutants ['14404']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test expr-dredd-39.1 {
-  VACUUM INTO 't0';
-} {}
+# EXCLUDED: INDETERMINISTICS DUE TO FILE PRESENCE
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test expr-dredd-39.1 {
+#   VACUUM INTO 't0';
+# } {1 {output file already exists}}
 
 finish_test

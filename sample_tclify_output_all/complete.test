@@ -38,14 +38,15 @@ do_catchsql_test complete-dredd-4.1 {
 } {1 {no such table: b}}
 
 # kill mutants ['240', '253']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test complete-dredd-5.1 {
-  VALUES ('23355690'); -- 
-} {23355690}
-do_execsql_test complete-dredd-5.2 {
-  VALUES-- ;
-} {}
+# EXCLUDED: SHELL CANT DETECT NON TERMI
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test complete-dredd-5.1 {
+#   VALUES ('23355690'); -- 
+# } {23355690}
+# do_execsql_test complete-dredd-5.2 {
+#   VALUES-- ;
+# } {}
 
 # kill mutants ['221']
 reset_db
@@ -58,13 +59,14 @@ do_execsql_test complete-dredd-6.2 {
 } {}
 
 # kill mutants ['208']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test complete-dredd-7.1 {
-  UPDATE a SET b=0.16967292169520387; -- 
-} {1 {no such table: a}}
-do_execsql_test complete-dredd-7.2 {
-  VALUES -- ;
-} {}
+# EXCLUDED: SHELL CANT DETECT NON TERMINATION
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test complete-dredd-7.1 {
+#   UPDATE a SET b=0.16967292169520387; -- 
+# } {1 {no such table: a}}
+# do_execsql_test complete-dredd-7.2 {
+#   VALUES -- ;
+# } {}
 
 finish_test

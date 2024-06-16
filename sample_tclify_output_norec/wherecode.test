@@ -1,3 +1,4 @@
 set testdir [file dirname $argv0]
 source $testdir/tester.tcl
 
+finish_test

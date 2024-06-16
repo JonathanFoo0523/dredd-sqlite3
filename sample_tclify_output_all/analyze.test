@@ -40,10 +40,18 @@ do_execsql_test analyze-dredd-3.1 {
   SELECT b.c0 FROM b, t0;
 } {8 {} 8 {}}
 
-# kill mutants ['4230', '4262']
+# kill mutants ['3211']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test analyze-dredd-4.1 {
+  CREATE TEMP TABLE t0(c0 );
+  ANALYZE t0;
+} {}
+
+# kill mutants ['4230', '4262']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-5.1 {
   CREATE TABLE a(b);
   INSERT INTO a VALUES('VVpYn');
   ALTER TABLE a RENAME TO c;
@@ -64,7 +72,7 @@ do_execsql_test analyze-dredd-4.1 {
 # kill mutants ['4080']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
-do_execsql_test analyze-dredd-5.1 {
+do_execsql_test analyze-dredd-6.1 {
   CREATE TABLE a(b);
   ALTER TABLE a RENAME TO c;
   ALTER TABLE c ADD d;
@@ -76,4 +84,6 @@ do_execsql_test analyze-dredd-5.1 {
   ANALYZE;
   SELECT DISTINCT(f), h FROM c;
 } {{} {} {} 0.397928209508897}
+
+finish_test
 

@@ -61,12 +61,12 @@ do_execsql_test func-dredd-5.1 {
   SELECT ALL SUM(t1.c23 / '494599534') FROM vt0, t1;
 } {2.560472681649e-08}
 
-# # kill mutants ['8987', '8988', '8991']
-# reset_db
-# sqlite3_db_config db DEFENSIVE 1
-# do_execsql_test func-dredd-6.1 {
-#   SELECT AVG('I}');
-# } {0.0}
+# kill mutants ['8987', '8988', '8991']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test func-dredd-6.1 {
+  SELECT AVG('I\}');
+} {0.0}
 
 # kill mutants ['10278', '10279']
 reset_db
@@ -196,11 +196,12 @@ do_execsql_test func-dredd-18.1 {
 } {0}
 
 # kill mutants ['5608', '5623']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test func-dredd-19.1 {
-  SELECT CHAR(3);
-} {u0003}
+# EXCLUDED DUE TO INVALID OUTPUT CHAR
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test func-dredd-19.1 {
+#   SELECT CHAR(3);
+# } {u0003}
 
 # kill mutants ['10284']
 reset_db
@@ -251,6 +252,7 @@ do_execsql_test func-dredd-24.1 {
   FROM a;
 } {�}
 
+# MODIFIED: BOUNDARY OF REWRITE IN E NOTATION
 # kill mutants ['9237', '9269', '9289', '9321']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
@@ -262,7 +264,7 @@ do_execsql_test func-dredd-25.1 {
   INSERT INTO e VALUES(0.9983404615685222, '', x''),
       (1.9365643E8, 19090849, 0.9994938163763012), ('', 0.26273857362477526, 2);
   SELECT TOTAL(b || e.c) FROM a, e;
-} {4.39493390726085e+16}
+} {43949339072608500.0}
 
 # kill mutants ['5609', '5611', '5612', '5613', '5614', '5621', '5622', '5625', '5626']
 reset_db
@@ -282,14 +284,15 @@ do_execsql_test func-dredd-27.1 {
 } {0}
 
 # kill mutants ['9704', '9705']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test func-dredd-28.1 {
-  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
-  INSERT INTO a(d, b) VALUES('', 1e500), (NULL, NULL);
-  SELECT AVG(b)
-  FROM a;
-} {4.8271607849403e+18}
+# EXCLUDED: INDETERMINISTICS TEST RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test func-dredd-28.1 {
+#   CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+#   INSERT INTO a(d, b) VALUES('', 1e500), (NULL, NULL);
+#   SELECT AVG(b)
+#   FROM a;
+# } {4.8271607849403e+18}
 
 # kill mutants ['7720']
 reset_db
@@ -306,7 +309,7 @@ do_execsql_test func-dredd-30.1 {
   INSERT INTO vt1 VALUES(''), (NULL), (0.5729896001907621);
   SELECT DISTINCT 0, 0,
       CASE WHEN RTRIM(vt0.c0) THEN 0 END FROM vt1 vt0 WHERE(UNICODE(x'')) ISNULL;
-} {0 {} 0 0}
+} {0 0 {} 0 0 0}
 
 # kill mutants ['11507']
 reset_db
@@ -429,15 +432,16 @@ do_catchsql_test func-dredd-42.1 {
 } {1 {0.so: cannot open shared object file: No such file or directory}}
 
 # kill mutants ['9391']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test func-dredd-43.1 {
-  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
-  INSERT INTO a(d, b) VALUES('', 3), (NULL, 1e500), (NULL, NULL);
-  UPDATE OR IGNORE a SET(b) = 0;
-  SELECT AVG(b)
-  FROM a;
-} {3.2181071899602e+18}
+# EXCLUDED: INDETERMINISTICS TEST RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test func-dredd-43.1 {
+#   CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+#   INSERT INTO a(d, b) VALUES('', 3), (NULL, 1e500), (NULL, NULL);
+#   UPDATE OR IGNORE a SET(b) = 0;
+#   SELECT AVG(b)
+#   FROM a;
+# } {3.2181071899602e+18}
 
 # kill mutants ['2328', '2329', '2330']
 reset_db
@@ -481,7 +485,7 @@ do_execsql_test func-dredd-48.1 {
   INSERT INTO t1 VALUES('25136076', '', '1005616937');
   ALTER TABLE t1 RENAME COLUMN c2 TO c16;
   SELECT ALL 0, 0, ROUND(t1.c16) / 4, UPPER(DISTINCT x'') FROM t1;
-} {0 251404234.25 {}}
+} {0 0 251404234.25 {}}
 
 # kill mutants ['2336']
 reset_db
@@ -509,12 +513,13 @@ do_execsql_test func-dredd-51.1 {
 } {0}
 
 # kill mutants ['8963', '8995']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-sqlite3_enable_load_extension db 1
-do_catchsql_test func-dredd-52.1 {
-  SELECT load_extension(DATETIME(), CASE WHEN 0.2818424134174067 THEN 5 END);
-} {1 {2024-06-13 12:22:12.so: cannot open shared object file: No such file or directory}}
+# EXCLUDED DUE TO INDETERMINISTICS TEST
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# sqlite3_enable_load_extension db 1
+# do_catchsql_test func-dredd-52.1 {
+#   SELECT load_extension(DATETIME(), CASE WHEN 0.2818424134174067 THEN 5 END);
+# } {1 {2024-06-15 20:27:32.so: cannot open shared object file: No such file or directory}}
 
 # kill mutants ['10276']
 reset_db

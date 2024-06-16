@@ -178,11 +178,12 @@ do_catchsql_test json-dredd-20.1 {
 } {1 {malformed JSON}}
 
 # kill mutants ['16087', '16119']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test json-dredd-21.1 {
-  SELECT JULIANDAY();
-} {2460475.01539294}
+# EXCLUDED DUE TO INDETERMINISTICS TEST RESULT
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test json-dredd-21.1 {
+#   SELECT JULIANDAY();
+# } {2460477.35242899}
 
 # kill mutants ['19457']
 reset_db
@@ -251,4 +252,6 @@ do_catchsql_test json-dredd-29.1 {
                         CREATE INDEX f ON a(json_patch(d, 3));
                         INSERT INTO a VALUES ('5d77', NULL, x'db4e', '1071320217');
 } {1 {malformed JSON}}
+
+finish_test
 

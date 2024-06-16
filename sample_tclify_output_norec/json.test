@@ -99,11 +99,12 @@ do_catchsql_test json-dredd-11.1 {
 } {1 {malformed JSON}}
 
 # kill mutants ['27176']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test json-dredd-12.1 {
-                            SELECT json(x'178c') ;
-} {"uffffff8c"}
+# EXCLUDED DUE TO INVALID OUTPUT CHAR
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test json-dredd-12.1 {
+#                             SELECT json(x'178c') ;
+# } {"uffffff8c"}
 
 # kill mutants ['28131']
 reset_db

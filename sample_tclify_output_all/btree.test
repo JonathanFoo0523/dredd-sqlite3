@@ -109,3 +109,5 @@ do_execsql_test btree-dredd-9.1 {
   VACUUM;
 } {}
 
+finish_test
+

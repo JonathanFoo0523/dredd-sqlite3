@@ -9,12 +9,13 @@ do_catchsql_test printf-dredd-1.1 {
   CREATE INDEX c ON a(d);
 } {1 {no such column: d}}
 
+# MODIFIED: CHANGE inf to Inf
 # kill mutants ['3718', '3722', '3727']
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test printf-dredd-2.1 {
   VALUES(-1e500);
-} {-inf}
+} {-Inf}
 
 # kill mutants ['8925']
 reset_db
