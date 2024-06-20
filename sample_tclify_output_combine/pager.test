@@ -1,0 +1,155 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['25376']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-0.1 {
+  PRAGMA journal_size_limit = 0;
+} {0}
+
+# kill mutants ['1421', '1453']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-1.1 {
+  PRAGMA synchronous = off;
+  PRAGMA locking_mode = EXCLUSIVE;
+} {exclusive}
+do_execsql_test pager-dredd-1.2 {
+  CREATE VIRTUAL TABLE a USING fts4;
+} {}
+
+# kill mutants ['18513']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-2.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(c0, c1, c2);
+  INSERT INTO vt0(c1) VALUES(0.44639818197898085);
+  INSERT INTO vt0(c1, c0) VALUES('yꍺC2\nq̉i''', NULL), (0.44639818197898085, '');
+  PRAGMA mmap_size = 02416436018227;
+} {2147418112}
+do_execsql_test pager-dredd-2.2 {
+  CREATE VIRTUAL TABLE vt2 USING fts4;
+  DROP TABLE IF EXISTS vt2;
+  UPDATE vt0 SET c2 = 1901948983 WHERE 0xffffffff2f29469;
+  PRAGMA main.shrink_memory;
+  INSERT OR IGNORE INTO vt0(c0, c1)
+      VALUES(0.13776547595376876, 0.10419156795865514),
+      (0.6803263245866968, '');
+  INSERT OR IGNORE INTO vt0(c2, c1) VALUES(x'', 0.09429850916402926), (x'', x''),
+      (0.540116307735206, NULL);
+  UPDATE OR IGNORE vt0 SET(c2) = '1767776915';
+  UPDATE vt0 SET c1 = 0.36892434973567234;
+} {}
+
+# kill mutants ['24858', '24930', '24934']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-3.1 {
+  PRAGMA temp_store = MEMORY;
+  BEGIN;
+  ANALYZE temp;
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_catchsql_test pager-dredd-3.2 {
+  ROLLBACK;
+  DELETE FROM sqlite_stat1;
+} {1 {no such table: sqlite_stat1}}
+
+# kill mutants ['25379']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-4.1 {
+  CREATE TEMP TABLE a(b);
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_execsql_test pager-dredd-4.2 {
+  PRAGMA wal_checkpoint;
+} {0 -1 -1}
+
+# kill mutants ['18841', '18842', '18873']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-5.1 {
+  PRAGMA encoding = 'UTF16le';
+  CREATE VIRTUAL TABLE a USING fts4;
+  PRAGMA mmap_size = 502335;
+} {502335}
+do_catchsql_test pager-dredd-5.2 {
+  CREATE VIRTUAL TABLE b USING c;
+} {1 {no such module: c}}
+do_execsql_test pager-dredd-5.3 {
+  PRAGMA mmap_size = 5;
+} {5}
+
+# kill mutants ['18778', '18810']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(d) VALUES(NULL), ('');
+  PRAGMA mmap_size = 04975;
+} {4975}
+do_catchsql_test pager-dredd-6.2 {
+  UPDATE a SET b = 0;
+} {1 {UNIQUE constraint failed: a.b}}
+
+# kill mutants ['1567', '1599']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-7.1 {
+  PRAGMA locking_mode = EXCLUSIVE;
+} {exclusive}
+do_execsql_test pager-dredd-7.2 {
+  PRAGMA journal_size_limit = 99958319409720;
+} {99958319409720}
+do_execsql_test pager-dredd-7.3 {
+  ANALYZE;
+} {}
+
+# kill mutants ['22513']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pager-dredd-8.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e(f);
+  INSERT INTO a(d) VALUES('H1i_RG(䘃N');
+  UPDATE a SET c = '900899502';
+} {1 {rtree constraint failed: a.(c<=d)}}
+do_execsql_test pager-dredd-8.2 {
+  UPDATE e SET f = '';
+} {}
+
+# kill mutants ['18516']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-9.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(c0, c1, c2);
+     INSERT INTO vt0(c1, c0) VALUES('yꍺC2\nq̉i', 'ffad'), ('', NULL),     (0.44639818197898085, '');
+     PRAGMA mmap_size = 02416436018227;
+} {2147418112}
+do_execsql_test pager-dredd-9.2 {
+     INSERT OR IGNORE INTO vt0 VALUES('393370758', '1e500', 0);
+     CREATE VIRTUAL TABLE vt2 USING fts4;
+     DROP TABLE IF EXISTS vt2;
+     PRAGMA main.shrink_memory;
+     INSERT OR IGNORE INTO vt0(c0, c1)     VALUES(0.13776547595376876, 0.10419156795865514),     (0.6803263245866968, 'UyUIN5');
+     INSERT OR IGNORE INTO vt0(c2, c1) VALUES(x'', 0.09429850916402926), (x'', x''),     (0.540116307735206, NULL);
+     UPDATE OR IGNORE vt0 SET c2 = '1767776915';
+     UPDATE vt0 SET(c1) = 0.36892434973567234;
+} {}
+
+# kill mutants ['18863']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-10.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  PRAGMA mmap_size = 08788;
+} {8788}
+do_execsql_test pager-dredd-10.2 {
+  VACUUM;
+  UPDATE a SET c = 0;
+  PRAGMA mmap_size = 0;
+} {0}
+
+finish_test

@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['276']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test walker-dredd-0.1 {
+  SELECT(a, b);
+} {1 {no such column: a}}
+
+finish_test

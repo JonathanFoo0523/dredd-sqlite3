@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['749']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test malloc-dredd-0.1 {
+  ANALYZE temp;
+} {}
+
+finish_test

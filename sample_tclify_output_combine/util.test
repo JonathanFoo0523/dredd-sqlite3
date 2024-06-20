@@ -1,0 +1,84 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6536', '6537', '6568', '6569', '6598', '6605', '6630', '6637', '6661', '6665', '6667', '6668', '6669', '6670', '6681', '6693', '6697', '6699', '6700', '6701', '6702']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test util-dredd-0.1 {
+  SELECT 0 ORDER BY 0Xd;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['2185', '2217']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-1.1 {
+   PRAGMA encoding = 'UTF16';
+                           CREATE TABLE a (b );
+                           REPLACE INTO a VALUES (x'33b06698')                 ;
+                           CREATE VIRTUAL TABLE c USING fts5(0)                 ;
+                           INSERT INTO c VALUES (0);
+                           SELECT 0 FROM a, c ON b   ;
+} {}
+
+# kill mutants ['12628', '12629', '12634', '12636']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-2.1 {
+  SELECT LAG(0, 0) OVER();
+} {0}
+
+# kill mutants ['12632']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-3.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  CREATE VIRTUAL TABLE c USING rtree_i32(b, d, e);
+  INSERT INTO a VALUES(8);
+  INSERT INTO c(d) VALUES(0.010888612738151893);
+  ALTER TABLE a RENAME TO f;
+  SELECT LAG((0, CAST(f.b AS), CASE WHEN c.b THEN 1 END, 0.8342888257114008, 1, 0,
+              0) > (CASE WHEN 1 THEN e END, 0, 0, 0, 0, 0, f.b),
+             ~00) OVER() FROM c,
+      f;
+} {1 {}}
+
+# kill mutants ['12633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-4.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(NULL);
+  ALTER TABLE a RENAME TO c;
+  UPDATE c SET b = CAST(((b)ISNULL)AS);
+  SELECT LEAD(-b, 0) OVER() FROM c;
+} {-1}
+
+# kill mutants ['5980']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-5.1 {
+  VALUES(0x90731e85);
+} {2423463557}
+
+# kill mutants ['12638', '12639', '12640', '12641', '12648', '12651', '12652']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-6.1 {
+  CREATE TABLE a(b);
+  REPLACE INTO a VALUES('');
+  SELECT - b FROM a;
+} {0}
+
+# kill mutants ['12642', '12643', '12645', '12646', '12647', '12650', '12654']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-7.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a ADD d;
+  INSERT INTO a VALUES(5, '', '-9223372036854775808');
+  SELECT - d FROM a;
+} {9.22337203685478e+18}
+
+finish_test

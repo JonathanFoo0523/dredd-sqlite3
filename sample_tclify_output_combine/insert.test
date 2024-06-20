@@ -1,0 +1,257 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14597', '14598']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-0.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  INSERT INTO a(a, rank) VALUES('usermerge', 6);
+  VACUUM;
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['7831', '7835', '7863', '7867', '9093', '9125']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-1.1 {
+  CREATE TABLE a(b INTEGER PRIMARY KEY CHECK(0 BETWEEN 0 AND(b)));
+  INSERT INTO a VALUES(0);
+  ALTER TABLE a RENAME b TO c;
+  UPDATE a SET c = -646686143;
+} {1 {CHECK constraint failed: 0 BETWEEN 0 AND(c)}}
+
+# kill mutants ['14600', '14601', '14633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-2.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  CREATE INDEX c ON a(CASE WHEN 0 THEN b END);
+  CREATE INDEX d ON a(0.6552420975789282);
+  VACUUM;
+  UPDATE a SET b = NULL;
+} {}
+
+# kill mutants ['4934']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-3.1 {
+  CREATE TABLE t0(c0);
+   ;
+   ALTER TABLE t0 RENAME TO t1;
+   ALTER TABLE t1 ADD c86;
+   INSERT INTO t1 VALUES('h4');
+} {1 {table t1 has 2 columns but 1 values were supplied}}
+
+# kill mutants ['14536']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-4.1 {
+  CREATE TABLE a(b REAL);
+  CREATE INDEX c ON a(0 IN(b)) WHERE(0 % 0);
+  VACUUM;
+} {}
+
+# kill mutants ['8401', '8407', '8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-5.1 {
+  CREATE TABLE a(b PRIMARY KEY, c, d)
+  WITHOUT ROWID;
+  INSERT INTO a VALUES('', '', NULL);
+  UPDATE a SET(b, b) = (NULL, NULL);
+} {1 {NOT NULL constraint failed: a.b}}
+
+# kill mutants ['14545']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-6.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CAST(0 AS), CASE WHEN 0 THEN 0 IS TRUE END);
+  VACUUM;
+} {}
+
+# kill mutants ['14549']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-7.1 {
+  CREATE TABLE a (b );
+                   CREATE INDEX c ON a(0 ) ;
+                   VACUUM;
+} {}
+
+# kill mutants ['6743']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-8.1 {
+  CREATE TABLE t0(a);
+  CREATE TRIGGER b INSERT ON t0 BEGIN UPDATE t0 SET a =
+      CASE WHEN CASE WHEN 0 THEN '?V/ F<Dꌃ' END THEN 0 END;
+  END;
+  CREATE INDEX c ON t0((SUBSTR(a, a), 0, 0) <= (0, 0, CAST('' AS REAL)));
+  INSERT OR ROLLBACK INTO t0 VALUES(x''), (0.6552420975789282), ('');
+} {}
+
+# kill mutants ['7834', '7866']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-9.1 {
+  CREATE TABLE a(b INTEGER PRIMARY KEY CHECK((b)BETWEEN 0 AND(b)));
+  INSERT INTO a VALUES(0);
+  ALTER TABLE a RENAME b TO c;
+  UPDATE a SET c = -646686143;
+} {1 {CHECK constraint failed: (c)BETWEEN 0 AND(c)}}
+
+# kill mutants ['14683', '14684']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-10.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  INSERT INTO a VALUES('995812171'), ('');
+} {1 {table a has 3 columns but 1 values were supplied}}
+
+# kill mutants ['7197']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-11.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+  INSERT INTO a(e, d, b, c)
+      VALUES('1e500', 0.7819532531565033, 0.6917260418722515, 'rm\}[B3FGu');
+} {1 {rtree constraint failed: a.(e<=f)}}
+
+# kill mutants ['4447']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-12.1 {
+  CREATE TABLE t0(a);
+  CREATE TRIGGER b INSERT ON t0 BEGIN UPDATE t0 SET a =
+      CASE WHEN CASE WHEN 0 THEN '?V/ F<Dꌃ' END THEN 0 END;
+  END;
+  CREATE INDEX c ON t0(0 COLLATE RTRIM)
+          WHERE(a, 0, 0) <= (0, 0, CAST('' AS REAL));
+  INSERT OR ROLLBACK INTO t0 VALUES(x''), (0.6552420975789282), ('');
+} {}
+
+# kill mutants ['14568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-13.1 {
+  CREATE TABLE t0(a);
+   CREATE INDEX i82 ON t0(json_quote(0)% 0);
+   VACUUM;
+} {}
+
+# kill mutants ['14569']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-14.1 {
+  CREATE TABLE a(c0 , b , c2 );
+  CREATE INDEX i95 ON a(CAST(0 AS b )  ,
+                                       CASE(c2) WHEN(0)
+                                           THEN c0 END);
+  VACUUM ;
+} {}
+
+# kill mutants ['14570']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-15.1 {
+  CREATE TABLE a(c);
+  CREATE INDEX b ON a(0, CASE WHEN 0 THEN TRUE END);
+  VACUUM;
+} {}
+
+# kill mutants ['4909']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-16.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES('8ff5');
+} {}
+
+# kill mutants ['14573']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-17.1 {
+  CREATE TABLE b(c);
+  CREATE INDEX a ON b(CASE WHEN(0) THEN 0 END);
+  VACUUM;
+} {}
+
+# kill mutants ['14574']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-18.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX i81 ON a(0);
+  VACUUM;
+} {}
+
+# kill mutants ['14575']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-19.1 {
+   CREATE TABLE    a ( b  );
+            ALTER TABLE a RENAME TO c;
+            CREATE INDEX i2 ON c (  TRUE)  ;
+           VACUUM;
+} {}
+
+# kill mutants ['14577']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-20.1 {
+  CREATE TABLE t0(a);
+  CREATE INDEX i95 ON t0(CAST((a)AS), CASE WHEN 0 THEN(0 IS TRUE) END);
+  VACUUM;
+} {}
+
+# kill mutants ['14578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-21.1 {
+  CREATE TABLE a(d);
+  ALTER TABLE a RENAME TO b;
+  CREATE INDEX c ON b(0);
+  VACUUM;
+} {}
+
+# kill mutants ['14581']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-22.1 {
+                CREATE TABLE t0 (c0 CHECK ( c0 COLLATE RTRIM));
+                ALTER TABLE t0 RENAME TO t1;
+                CREATE UNIQUE INDEX    i2 ON t1(0 );
+               VACUUM;
+} {}
+
+# kill mutants ['14585']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-23.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE INDEX d ON c(0);
+  VACUUM;
+} {}
+
+# kill mutants ['14586', '14588']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-24.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  VACUUM;
+} {}
+
+# kill mutants ['9910']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-25.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(c1);
+  PRAGMA foreign_keys = true;
+  INSERT INTO vt1 VALUES(NULL);
+} {}
+
+finish_test

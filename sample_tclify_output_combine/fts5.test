@@ -1,0 +1,29 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['95424']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts5-dredd-0.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE VIRTUAL TABLE vt1 USING fts5(b);
+  BEGIN;
+  INSERT INTO vt1 VALUES('optimize');
+  REPLACE INTO a(c, b, d) VALUES(5, '', 0.49600887847559993),
+      ('', 0.34972453588882335, x'');
+} {1 {rtree constraint failed: a.(c<=d)}}
+do_execsql_test fts5-dredd-0.2 {
+  INSERT OR IGNORE INTO vt1 VALUES(0.0235908906297575), (0.4502822732337922),
+      ('');
+  SELECT 0 FROM vt1;
+} {0 0 0 0}
+
+# kill mutants ['95433', '95434', '95435', '95438', '95439', '95441', '95442', '95443', '95444', '95445', '95446', '95447', '95448', '95449', '95450']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test fts5-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  INSERT INTO a(a) VALUES('automerge=6');
+} {1 {SQL logic error}}
+
+finish_test
