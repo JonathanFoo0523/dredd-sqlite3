@@ -161,14 +161,15 @@ do_execsql_test rtree-dredd-13.1 {
 } {1 0 0 0 0.0 0.0 0.0 0.0 1 0 0 1 0.0 0.0 0.0 0.0 2 0 0 0 0.0 0.0 0.0 0.0 2 0 0 1 0.0 0.0 0.0 0.0}
 
 # kill mutants ['20506']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test rtree-dredd-14.1 {
-  ALTER TABLE a ADD;
-} {1 {no such table: a}}
-do_execsql_test rtree-dredd-14.2 {
-  SELECT rtreenode(1, 0);
-} {{}}
+# FALSE_ADV
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test rtree-dredd-14.1 {
+#   ALTER TABLE a ADD;
+# } {1 {no such table: a}}
+# do_execsql_test rtree-dredd-14.2 {
+#   SELECT rtreenode(1, 0);
+# } {{}}
 
 # kill mutants ['17174', '17206']
 reset_db
@@ -196,14 +197,15 @@ do_catchsql_test rtree-dredd-16.1 {
 } {1 {0.so: cannot open shared object file: No such file or directory}}
 
 # kill mutants ['20541']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_catchsql_test rtree-dredd-17.1 {
-  CREATE VIRTUAL TABLE a USING b   ( ;
-} {1 {incomplete input}}
-do_execsql_test rtree-dredd-17.2 {
-      SELECT rtreenode(1,0);
-} {{}}
+# FALSE_ADV
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test rtree-dredd-17.1 {
+#   CREATE VIRTUAL TABLE a USING b   ( ;
+# } {1 {incomplete input}}
+# do_execsql_test rtree-dredd-17.2 {
+#       SELECT rtreenode(1,0);
+# } {{}}
 
 # kill mutants ['20542']
 reset_db

@@ -225,13 +225,14 @@ do_execsql_test pragma-dredd-27.1 {
 } {}
 
 # kill mutants ['12919']
-reset_db
-sqlite3_db_config db DEFENSIVE 1
-do_execsql_test pragma-dredd-28.1 {
-  CREATE VIRTUAL TABLE a USING fts4;
-   INSERT INTO a VALUES(0);
-   PRAGMA optimize;
-} {}
+# FALSE_ADV
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test pragma-dredd-28.1 {
+#   CREATE VIRTUAL TABLE a USING fts4;
+#    INSERT INTO a VALUES(0);
+#    PRAGMA optimize;
+# } {}
 
 # kill mutants ['13115', '13202']
 reset_db
@@ -260,7 +261,8 @@ do_execsql_test pragma-dredd-31.1 {
   DELETE FROM sqlite_stat1;
 } {}
 
-# kill mutants ['12891', '12923', '13234']
+# kill mutants ['12891', '13234']
+# FALSE_ADV for '12923'
 reset_db
 sqlite3_db_config db DEFENSIVE 1
 do_execsql_test pragma-dredd-32.1 {
