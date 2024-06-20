@@ -1,0 +1,19 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['549']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test os-dredd-0.1 {
+  SELECT a FROM b;
+} {1 {no such table: b}}
+
+# kill mutants ['552', '553', '554', '555', '556']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test os-dredd-1.1 {
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+finish_test

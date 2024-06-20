@@ -1,0 +1,12 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10090']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test printf-dredd-0.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+  
+} {}
+
+finish_test

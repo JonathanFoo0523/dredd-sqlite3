@@ -1,0 +1,57 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['960']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test trigger-dredd-0.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE TRIGGER d DELETE ON c BEGIN UPDATE e SET f = 0;
+  END;
+  ALTER TABLE c RENAME TO a;
+} {1 {error in trigger d: no such table: main.e}}
+
+# kill mutants ['947']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-1.1 {
+  CREATE  TABLE b( CHECKCHECK0);
+      ALTER TABLE b RENAME TO t1;
+      CREATE  TRIGGER    a INSERT ON t1        BEGIN SELECT IGNORE;
+      END;
+} {}
+
+# kill mutants ['948', '949', '952', '953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-2.1 {
+  CREATE TABLE a(b, c);
+  INSERT INTO a(c) VALUES(NULL);
+  CREATE TRIGGER d INSERT ON a BEGIN DELETE FROM a;
+  END;
+  REPLACE INTO a VALUES('', '');
+  SELECT COUNT() FROM a;
+} {1}
+
+# kill mutants ['957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-3.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE TRIGGER d DELETE ON c BEGIN SELECT e;
+  END;
+} {}
+
+# kill mutants ['958', '959']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test trigger-dredd-4.1 {
+  CREATE TABLE a(b);
+  CREATE TRIGGER c UPDATE ON a BEGIN UPDATE a SET d = e;
+  END;
+  ANALYZE;
+} {}
+
+finish_test

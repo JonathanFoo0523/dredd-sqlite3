@@ -1,0 +1,14 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4573']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fkey-dredd-0.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, 1, 2);
+  PRAGMA foreign_keys = true;
+  INSERT INTO a VALUES(0.737635021089351, 0.5692284593563045, '1344960626');
+  SELECT TOTAL_CHANGES();
+} {5}
+
+finish_test

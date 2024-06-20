@@ -6,6 +6,25 @@ import re
 import shutil
 import pickle
 
+parser = argparse.ArgumentParser()
+parser.add_argument("dredd_output_directory")
+parser.add_argument("regress_directory")
+parser.add_argument("tclify_output_directory")
+args = parser.parse_args()
+
+regress_result = dict()
+try:
+    with open(os.path.join(args.regress_directory, 'regression_test.pkl'), 'rb') as f:
+        while True:
+            obj = pickle.load(f)
+            # print(">>>", obj['source'], len(obj['killed']), obj['total'])
+            # ['source', 'total', 'killed', 'in_coverage_survived', 'not_in_coverage']
+            covered = set(range(0, obj['total'])) - obj['not_in_coverage']
+            regress_result[obj['source']] = obj
+            regress_result[obj['source']]['covered'] = covered
+except EOFError:
+    pass
+
 
 def parse_tests(filename):
     kill_pattern = re.compile(r"# kill mutants \['(\d+)',?.*?\]")
@@ -37,11 +56,10 @@ def parse_tests(filename):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("dredd_output_directory")
-    parser.add_argument("tclify_output_directory")
-    args = parser.parse_args()
     total_no_of_unit_test = total_commented_out = total_total_mutants = total_succ_mutant = total_crash_mutant = total_pass_mutant = 0
+
+    newly_covered = 0
+    prev_covered = 0
 
     for source in sorted(os.listdir(args.tclify_output_directory)):
         source, ext = source.split('.')
@@ -82,10 +100,12 @@ def main():
         succ_mutant = 0
         crash_mutant= 0
         pass_mutant = 0
+    
         for mutants, unit in unit_test:
             if "EXCLUDED" in unit:
                 continue
-                
+            if "FALSE_ADV" in unit:
+                continue
             with tempfile.TemporaryDirectory() as tempdir:
                 shutil.copy2('tcl_testdir/malloc_common.tcl', tempdir)
                 shutil.copy2('tcl_testdir/tester.tcl', tempdir)
@@ -99,6 +119,7 @@ def main():
 
                 total_mutants += len(mutants)
                 for mutant in mutants:
+
                     env_copy = os.environ.copy()
                     env_copy['DREDD_ENABLED_MUTATION'] = str(mutant)
                     proc = subprocess.run([textfixture_bin, 'script.tcl', '--verbose=0'], cwd=tempdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env_copy)
@@ -109,11 +130,19 @@ def main():
                         crash_mutant += 1
                     else:
                         pass_mutant += 1
+                        print(">>>", source, mutant)
+                        continue
+                    
+                    if mutant in regress_result[source]['covered']:
+                        prev_covered += 1
+                    else:
+                        newly_covered += 1
+
                     # else:
                     #     print("fail adv", source, mutant)
         assert total_mutants == succ_mutant + crash_mutant + pass_mutant
 
-        print(source, ' & ', no_of_unit_test, ' & ', commented_out, ' & ', succ_mutant, ' & ', crash_mutant, ' & ', pass_mutant, ' \\\\')
+        # print(source, ' & ', no_of_unit_test, ' & ', commented_out, ' & ', succ_mutant, ' & ', crash_mutant, ' & ', pass_mutant, ' \\\\')
         total_no_of_unit_test += no_of_unit_test
         total_commented_out += commented_out
         total_total_mutants += total_mutants
@@ -122,19 +151,7 @@ def main():
         total_pass_mutant += pass_mutant
 
         
-        
-        # print(unit_test)
-        # assert len(unit_test) == no_of_unit_test
-
-        # break
-        # with tempfile.TemporaryDirectory() as tmpdir:
-        #     proc = subprocess.run([textfixture_bin, tcl_test], cwd=tmpdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        # if proc.returncode != 0:
-        #     print(proc.returncode)
-        #     print(proc.stdout.decode())
-        #     print(proc.stderr.decode())
-
+    print(prev_covered, newly_covered)
     print(total_no_of_unit_test, total_commented_out, total_succ_mutant, total_crash_mutant, total_pass_mutant)
 if __name__ == '__main__':
     main()

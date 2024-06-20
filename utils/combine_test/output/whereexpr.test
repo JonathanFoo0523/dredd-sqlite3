@@ -1,0 +1,265 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['7050', '7052', '7053', '7054', '7055', '7056', '7057', '7082', '7084', '7085', '7086', '7087', '7088', '7089', '7093', '7094', '7095', '7096', '7097', '7098', '7099', '7100', '7101', '7102', '7103', '7106', '7107', '7116', '7124', '7133', '7138', '7139', '7148', '7156', '7165', '7179', '7182', '7198', '7211', '7214', '7230', '7233', '7237', '7238', '7240', '7241', '7242', '7248', '7265', '7269', '7270', '7272', '7273', '7274', '7280', '7305', '7306', '7337', '7338']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-0.1 {
+  CREATE TABLE a(b PRIMARY KEY);
+  INSERT INTO a VALUES('');
+  INSERT INTO a VALUES(0);
+  SELECT *FROM a WHERE(b) NOTNULL;
+} {0 {}}
+
+# kill mutants ['9088']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-1.1 {
+   CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2 );
+           SELECT 0.6396101148379857 FROM rt1 LIMIT 1246802015;
+} {}
+
+# kill mutants ['9089', '9090']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  INSERT INTO a VALUES('');
+  SELECT ALL x'' FROM a LIMIT 4;
+} {{}}
+
+# kill mutants ['9092']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-3.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+  SELECT '' FROM vt1 LIMIT 886408348;
+} {}
+
+# kill mutants ['5383', '5385', '5386', '5387', '5388', '5390']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(c0, b, c);
+  INSERT INTO a(b, c0, c) VALUES(  '', 0, 0), (0, 1, '');
+  CREATE TABLE t0(c0);
+  INSERT OR IGNORE INTO t0 VALUES(0), (x'');
+  SELECT *FROM t0, a WHERE(c, CAST(0 AS BLOB)) >= (0, t0.c0);
+} {0 0 0 0 0 1 0 0 {} 0 0 0 {} 1 0 0}
+
+# kill mutants ['9096']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-5.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts5(a);
+                   SELECT ''  FROM vt1 LIMIT   8;
+} {}
+
+# kill mutants ['7051']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-6.1 {
+  CREATE TABLE a(b, d);
+  CREATE VIEW e(c)
+  AS SELECT 0;
+  SELECT *FROM a RIGHT JOIN e ON((0)OR(0)) AND(0, 0, d, 0, c) = (0, '', b, 0, c);
+} {{} {} 0}
+
+# kill mutants ['9099']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0 );
+  SELECT '' FROM a LIMIT 886408348;
+} {}
+
+# kill mutants ['6028']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-8.1 {
+  CREATE TABLE t0(a);
+  INSERT INTO t0 VALUES(''), (0);
+  ALTER TABLE t0 RENAME TO t1;
+  ANALYZE;
+  CREATE TABLE t0(INTEGER);
+  INSERT OR IGNORE INTO t0 VALUES(0), ('');
+  ALTER TABLE t1 RENAME TO b;
+  ALTER TABLE t0 RENAME TO t1;
+  ALTER TABLE b ADD c;
+  SELECT *FROM b JOIN t1 ON(NULL) IS(c);
+} {{} {} 0 {} {} {} 0 {} 0 0 {} {}}
+
+# kill mutants ['9102']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-9.1 {
+   CREATE VIRTUAL TABLE vt1 USING fts5(a);
+                SELECT '080c'  FROM vt1 LIMIT 70894;
+} {}
+
+# kill mutants ['9105']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-10.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  SELECT '' FROM a LIMIT 1230448756 OFFSET 886408348;
+} {}
+
+# kill mutants ['5266', '5267', '5298', '5299']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-11.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(b);
+  INSERT INTO a VALUES(0);
+  REPLACE INTO c VALUES(0);
+  CREATE INDEX d ON c(json_patch(0, 0));
+  ALTER TABLE a ADD e;
+  INSERT INTO a VALUES(0, 'f7c1def4');
+  ALTER TABLE c RENAME TO f;
+  INSERT INTO f VALUES(1);
+  UPDATE a SET e ='';
+  ALTER TABLE a RENAME e TO g;
+  ANALYZE;
+  SELECT *FROM f, a WHERE((0)OR(g)) = 0;
+} {0 0 {} 0 0 {} 1 0 {} 1 0 {}}
+
+# kill mutants ['5396']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-12.1 {
+   CREATE TABLE a (b , c );
+                           ALTER TABLE a RENAME TO d;
+                           INSERT INTO d VALUES (NULL, 0.45826893906851696);
+                           CREATE TABLE a (c );
+                           INSERT INTO a VALUES (0.45826893906851696);
+                           ALTER TABLE a RENAME TO e;
+                           CREATE INDEX f ON d(x'afd7');
+                           SELECT CUME_DIST() OVER ()FROM e, d WHERE 0xffffffffe0600136LIKE'1661839040'=0 ;
+} {1.0}
+
+# kill mutants ['7058', '7090', '7112', '7113', '7114', '7117', '7144', '7145', '7146', '7149']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-13.1 {
+  CREATE TABLE vt0(a);
+  CREATE TABLE b(a PRIMARY KEY, c);
+  INSERT INTO b(c) VALUES( '');
+  INSERT OR IGNORE INTO vt0 VALUES('');
+  SELECT 0 FROM b JOIN vt0 ON(0 IN() NOTNULL);
+} {0}
+
+# kill mutants ['6806', '6807', '6811', '6813']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test whereexpr-dredd-14.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e(b, d);
+  INSERT INTO e VALUES( '', '');
+  ALTER TABLE e RENAME b TO f;
+  SELECT *FROM a, e WHERE(c) BETWEEN 0 AND(json_patch(f, 0));
+} {1 {malformed JSON}}
+
+# kill mutants ['7199', '7231', '7235', '7244', '7267', '7276']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-15.1 {
+  CREATE TABLE t0(c0);
+  ALTER TABLE t0 RENAME c0 TO c96;
+  INSERT INTO t0 VALUES('');
+  INSERT OR IGNORE INTO t0 VALUES(0);
+  CREATE INDEX i52 ON t0(c96);
+  CREATE TABLE t1(c0);
+  INSERT OR IGNORE INTO t1 VALUES(x'');
+  SELECT *FROM t0, t1 WHERE(c0)
+  NOT NULL;
+} {{} {} 0 {}}
+
+# kill mutants ['7875', '7885']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test whereexpr-dredd-16.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  INSERT INTO c VALUES(0);
+  SELECT 0 FROM a, c WHERE(b, 0) = (0, load_extension(0));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['5958', '6007']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test whereexpr-dredd-17.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  CREATE VIEW e AS SELECT RANK() OVER();
+  SELECT *FROM a JOIN e ON d FULL JOIN c;
+} {1 {ON clause references tables to its right}}
+
+# kill mutants ['7247', '7259', '7263', '7279', '7291', '7295']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-18.1 {
+                  CREATE TABLE a (b   UNIQUE );
+                                  INSERT INTO a VALUES ('151944303');
+                                  ALTER TABLE a RENAME TO c;
+                                  ANALYZE ;
+                                  ALTER TABLE c ADD d ;
+                                  CREATE INDEX e ON c(x'f78a' ) ;
+                                  ALTER TABLE c RENAME d TO f;
+                                  SELECT 0 FROM c  WHERE f NOTNULL ;
+} {}
+
+# kill mutants ['7254', '7256', '7260', '7286', '7288', '7292']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-19.1 {
+                  CREATE TABLE a (b   UNIQUE );
+                          INSERT INTO a VALUES ('151944303');
+                          ALTER TABLE a RENAME TO c;
+                          ANALYZE ;
+                          ALTER TABLE c ADD d ;
+                          INSERT INTO c VALUES ('981622186', '83b3bf4a');
+                          CREATE INDEX e ON c(x'f78a' ) ;
+                          ALTER TABLE c RENAME d TO f;
+                          ALTER TABLE c RENAME b TO g;
+                          ALTER TABLE c ADD h;
+                          ALTER TABLE c RENAME TO a;
+                          INSERT INTO a VALUES ( '', '' ,0);
+                          ALTER TABLE a RENAME TO c;
+                          SELECT g FROM c  WHERE f NOTNULL ;
+} {981622186 {}}
+
+# kill mutants ['8913']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-20.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e('819337522');
+  INSERT INTO a(d) VALUES(0);
+  SELECT(SELECT 0 FROM a LEFT JOIN e ON NULL >= c);
+} {0}
+
+# kill mutants ['8914']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test whereexpr-dredd-21.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d UNIQUE);
+  INSERT INTO c VALUES('151944303');
+  ALTER TABLE c RENAME TO e;
+  ALTER TABLE e RENAME d TO f;
+  SELECT 0 FROM e LEFT JOIN a ON(f) ISNULL;
+} {0}
+
+# kill mutants ['6484', '6486']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test whereexpr-dredd-22.1 {
+                   CREATE VIRTUAL TABLE a USING rtree(c, d, b);
+                                   INSERT   INTO a( d) VALUES ( x'3ad4');
+                                   CREATE  VIEW e(c) AS SELECT  0 GROUP BY  CASE WHEN 0 THEN 0 END;
+                                   SELECT 0 FROM a  JOIN e ON a.c BETWEEN e.c AND d WHERE CASE WHEN 1 THEN json_remove(0, e.c) END  ;
+} {1 {bad JSON path: '0'}}
+
+finish_test
