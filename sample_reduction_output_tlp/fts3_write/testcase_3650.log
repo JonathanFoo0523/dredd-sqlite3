@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE vt0 USING fts4(c0 , c1 , languageid=);
+               INSERT INTO vt0 VALUES ('', x'');
+               -- 0;
+               COMMIT TRANSACTION;
+               UPDATE OR ABORT vt0 SET c1=-1390456872, c0='';

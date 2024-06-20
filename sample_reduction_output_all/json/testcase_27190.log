@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING fts5(b );
+                        CREATE VIRTUAL TABLE c USING fts4(b);
+                        INSERT INTO c VALUES (x'1f66');
+                        REPLACE INTO a VALUES (NULL);
+                        SELECT c   FROM a, c   ((0, 0, 0)=(0, NULLIF(a.b, 'z&1XN'), json_array_length(c.b ))) ;

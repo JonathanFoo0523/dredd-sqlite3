@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+BEGIN;
+INSERT INTO a(a) VALUES('automerge=8');
+PRAGMA journal_mode = MEMORY;

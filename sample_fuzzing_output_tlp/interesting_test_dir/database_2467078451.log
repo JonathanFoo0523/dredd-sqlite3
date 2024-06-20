@@ -1,0 +1,43 @@
+-- Time: 2024/06/09 04:23:51
+-- Database: database51
+-- Database version: 3.40.0
+-- seed value: 2467078451
+PRAGMA cache_size = 50000; -- 0ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 1ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+PRAGMA encoding = 'UTF-16le'; -- 0ms;
+CREATE VIRTUAL TABLE vt0 USING fts5(c0); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0, c0, c0)=(0.29470326967519667, '', ''); -- 0ms;
+UPDATE OR ABORT vt0 SET (c0, c0)=('1664440650', NULL) WHERE CAST(((vt0.c0) NOTNULL) AS TEXT); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0, c0)=('-2044871031', x'7b8b') WHERE INSTR(((vt0.c0) BETWEEN (NULL) AND (NULL)), ((vt0.c0)<(vt0.c0))); -- 0ms;
+REINDEX; -- 0ms;
+INSERT OR ROLLBACK INTO vt0 VALUES ('-51726092'); -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0, c0)=('-2044871031', NULL); -- 0ms;
+BEGIN IMMEDIATE TRANSACTION; -- 1ms;
+PRAGMA integrity_check; -- 0ms;
+END TRANSACTION; -- 0ms;
+INSERT INTO vt0(vt0) VALUES('rebuild'); -- 1ms;
+PRAGMA temp.shrink_memory; -- 0ms;
+UPDATE OR FAIL vt0 SET c0='(9)*.S', c0=0.25039380479621987, c0=x'' WHERE ((((vt0.c0)<=(vt0.c0)))LIKE(((NULL) NOT NULL))); -- 0ms;
+REINDEX; -- 1ms;
+PRAGMA integrity_check; -- 0ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES (-33913705); -- 1ms;
+ANALYZE temp; -- 0ms;
+UPDATE OR IGNORE vt0 SET (c0)=(x'') WHERE (- ((((vt0.c0))<=((vt0.c0))))); -- 1ms;
+UPDATE OR IGNORE vt0 SET (c0)=(x'') WHERE ((vt0.c0)|(vt0.c0)) COLLATE NOCASE COLLATE RTRIM; -- 0ms;
+INSERT INTO vt0(vt0) VALUES('automerge=0'); -- 0ms;
+INSERT INTO vt0(vt0) VALUES('integrity-check'); -- 1ms;
+BEGIN EXCLUSIVE TRANSACTION; -- 0ms;
+INSERT OR IGNORE INTO vt0(c0) VALUES ('0.25039380479621987'); -- 0ms;
+PRAGMA incremental_vacuum(-1912900179); -- 0ms;
+UPDATE OR ABORT vt0 SET c0=NULL; -- 0ms;
+UPDATE OR ABORT vt0 SET (c0, c0)=('2Y9E', 'l浺') WHERE ((((((vt0.c0)AND(vt0.c0)))OR(vt0.c0))) ISNULL); -- 1ms;
+CREATE VIRTUAL TABLE vt1 USING fts4(c0 UNINDEXED, languageid="lid"); -- 1ms;
+INSERT OR REPLACE INTO vt0(c0) VALUES (x'a52b'), (1.7976931348623157E308), (-1.912900179E9), (x''), (-2.044871031E9); -- 0ms;
+VACUUM temp; -- 0ms;
+PRAGMA cell_size_check = false; -- 0ms;
+INSERT OR ABORT INTO vt0 VALUES ((((((x'')) BETWEEN ((NULL)) AND ((NULL))))<(LENGTH('~뉤')))); -- 0ms;
+DELETE FROM vt0 WHERE (((- (0.382810274994289)))&(((vt0.c0)/(vt0.c0)))); -- 0ms;
+PRAGMA reverse_unordered_selects = false; -- 0ms;
+CREATE TEMPORARY VIEW v0(c0) AS SELECT DISTINCT ((((COALESCE(vt1.lid, vt1.c0))AND(((((NULL)OR(vt1.c0)))AND(vt0.c0)))))AND((((vt1.c0)) NOT BETWEEN ((vt1.lid)) AND ((vt1.c0))))) FROM vt0 GROUP BY (((vt0.c0, vt0.c0, vt1.c0)) BETWEEN ((vt0.c0, vt1.lid, vt1.lid)) AND ((vt1.lid, vt0.c0, vt1.c0))) COLLATE NOCASE; -- 0ms;

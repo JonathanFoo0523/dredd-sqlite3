@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4(0, 1);
+INSERT INTO a VALUES('', 0);
+PRAGMA temp.optimize;
+INSERT OR IGNORE INTO sqlite_stat1 VALUES('');

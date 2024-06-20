@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(  ,  c4, e f, g );
+ CREATE TEMPORARY VIEW h(a, b, c,  c4) AS SELECT  0, 0, 't^(&', rt0.c4 IS 1 FROM rt0 ;
+ SELECT  0 FROM rt0 JOIN h ON(h.c4) OR(0)           ;

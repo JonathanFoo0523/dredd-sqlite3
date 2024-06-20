@@ -1,0 +1,6 @@
+CREATE TABLE a(d);
+CREATE VIRTUAL TABLE e USING rtree(b, c, d);
+CREATE TABLE f(g);
+ALTER TABLE f ADD h;
+INSERT INTO f VALUES(0, '');
+SELECT 0 FROM f JOIN a ON c LEFT JOIN e WHERE(json_array_length(h));

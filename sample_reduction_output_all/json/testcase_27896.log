@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2, c3, c4, c5, a, +c7 INTEGER );
+        CREATE VIRTUAL TABLE rt43 USING rtree_i32(c0, c1, c2);
+        INSERT OR IGNORE INTO rt43(c2, c0) VALUES (NULL, -1.96040531E9);
+        INSERT INTO rt1(c3, c5, c1, c0, c2, a) VALUES ('-777651846', x'', '', x'', x'', '“');
+        SELECT CASE CASE WHEN rt1.c5 THEN rt43.c1 END  WHEN CASE WHEN rt1.c3 THEN rt1.c2 WHEN rt1.c0 THEN rt1.c4 WHEN rt1.c7 THEN rt1.c5 END THEN CAST(rt1.c4 AS TEXT) END, (-1776893412 IN ()), ((json_array_length(x''))) FROM rt43, rt1;

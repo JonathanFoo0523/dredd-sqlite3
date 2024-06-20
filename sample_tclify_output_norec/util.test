@@ -1,0 +1,26 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6536', '6537', '6568', '6569', '6598', '6605', '6630', '6637', '6661', '6665', '6667', '6668', '6669', '6670', '6681', '6693', '6697', '6699', '6700', '6701', '6702']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test util-dredd-1.1 {
+  SELECT 0 ORDER BY 0Xd;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['2185', '2217']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-2.1 {
+   PRAGMA encoding = 'UTF16';
+                                          SELECT 0  WHERE x'34f7' ;
+} {}
+
+# kill mutants ['5980']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-3.1 {
+  VALUES(0x9a65e673);
+} {2590369395}
+
+finish_test

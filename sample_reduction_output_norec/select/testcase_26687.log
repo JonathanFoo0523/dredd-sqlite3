@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+SELECT *FROM a INDEXED BY c, d;

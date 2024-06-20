@@ -1,0 +1,86 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10947', '10949']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeaux-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  BEGIN;
+  INSERT OR ROLLBACK INTO a VALUES('1985026503', NULL, 0.6539028924309611),
+      (0.11257892249591062, NULL, '-1093959821');
+} {1 {rtree constraint failed: a.(c<=d)}}
+do_execsql_test vdbeaux-dredd-1.2 {
+  SELECT TOTAL_CHANGES();
+} {3}
+
+# kill mutants ['13388', '13420']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeaux-dredd-2.1 {
+  PRAGMA case_sensitive_like=a;
+                                  CREATE TEMPORARY TABLE t1 (b UNIQUE , c1 , c );
+                                  INSERT INTO d VALUES ('', 0.8309249078183306);
+} {1 {no such table: d}}
+do_catchsql_test vdbeaux-dredd-2.2 {
+                                  ALTER TABLE t1 RENAME COLUMN c1 TO c99;
+                                  INSERT OR IGNORE INTO t1 VALUES (3, x'');
+} {1 {table t1 has 3 columns but 2 values were supplied}}
+do_catchsql_test vdbeaux-dredd-2.3 {
+                                  ALTER TABLE t1 RENAME TO t0;
+                                  INSERT OR IGNORE INTO t0 VALUES (x'', x'', '');
+                                  SELECT CASE WHEN  t0.c2 THEN 0 WHEN (0.2604250360350201)AND(vt0.c0)AND(t0.c99) THEN COUNT0 WHEN json_insert0 THEN 0 ELSE t0.c2-vt0.c0 END FROM vt0, t0 WHERE (0)OR-1.120110354E9>>0|0;
+} {1 {no such table: vt0}}
+do_execsql_test vdbeaux-dredd-2.4 {
+                                  SELECT DISTINCT LAG(UNLIKELY(DISTINCT t0.c99), x'3200'<b IN (b>>c99), CHANGES()) OVER ( ORDER BY 0>0<=2 ) FROM t0;
+} {1}
+
+# kill mutants ['17748', '17750', '17780', '17782']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeaux-dredd-3.1 {
+  CREATE TABLE t0(c0 TEXT);
+  INSERT INTO t0 VALUES(''), (5.5343259E7), (x'');
+  INSERT OR IGNORE INTO t0 VALUES('1092014317');
+  CREATE INDEX i1 ON t0(c0 DESC) WHERE CAST(c0 COLLATE RTRIM AS NUMERIC);
+  INSERT OR IGNORE INTO t0 VALUES('55343259');
+  ALTER TABLE t0 RENAME COLUMN c0 TO c55;
+  UPDATE OR ROLLBACK t0 SET c55 = '';
+} {}
+
+# kill mutants ['3499']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeaux-dredd-4.1 {
+  PRAGMA case_sensitive_like=ON;
+                CREATE VIRTUAL TABLE vt0 USING fts4;
+                CREATE TEMPORARY TABLE t1 (c0 REAL CONFLICT REPLACE PRIMARY KEY NOT NULL , c1 REAL NOT NULL CHECK ( '-343810107') UNIQUE ON CONFLICT FAIL , c2 );
+                ALTER TABLE t1 RENAME  c1 TO c99;
+                ROLLBACK ;
+} {1 {cannot rollback - no transaction is active}}
+do_catchsql_test vdbeaux-dredd-4.2 {
+                INSERT INTO vt0 VALUES ('-343810107''-343810107''');
+                BEGIN DEFERRED TRANSACTION;
+                REINDEX BINARY;
+                CREATE INDEX IF NOT EXISTS i33 ON t1(((((((c99) NOT BETWEEN (c99) AND (c99)))OR(c0 COLLATE BINARY)))AND(CASE c0  WHEN c0 THEN c0 END)) COLLATE RTRIM DESC,((c0 COLLATE RTRIM) NOT BETWEEN (((c0) IS FALSE)) AND (c2)) COLLATE NOCASE,ABS(DISTINCT ((c99)OR(c99))) COLLATE NOCASE ASC) WHERE 0;
+                DELETE FROM sqlite_stat1 WHERE CASE (0<0)  WHEN (0 NOT BETWEEN 0 AND 0) THEN 0.23056494904802838 COLLATE NOCASE WHEN (- 0) THEN (((NULL, NULL, NULL)) BETWEEN (('', 0.5036350358509994, x'')) AND ((NULL, 247500158, x'7eb2bbde6e0d'))) WHEN x'' THEN CASE ''  WHEN NULL THEN -1.709757692E9 ELSE NULL END WHEN (0||0) THEN (0 NOT BETWEEN 0 AND 0) WHEN (0 BETWEEN 0 AND (-6.1102481E7)) THEN (0 BETWEEN 0 AND 0) ELSE (0 BETWEEN 0 AND 0) END;
+} {1 {no such table: sqlite_stat1}}
+do_catchsql_test vdbeaux-dredd-4.3 {
+                DELETE FROM sqlite_stat1 WHERE (((NULL, NULL, NULL, -1425923887, '1939726837')) BETWEEN (((- 0), (0 NOT BETWEEN (-1.7976931348623157E308) AND 0), SQLITE_VERSION0, 0, (0 IS FALSE))) AND (((0 NOT BETWEEN 0 AND 0), (((NULL, 0.5666562135321532, NULL))<((0Xffffffff8a4a5551, 0.40366879725184, ''))), (((0.5969159695717772, x'', x''))!=((NULL, '', NULL))), ((0xffffffffbbb1a141)GLOB('1193001181')), MIN(0.07227132903604105, -489018379))));
+} {1 {no such table: sqlite_stat1}}
+do_execsql_test vdbeaux-dredd-4.4 {
+                INSERT INTO vt0(vt0) VALUES('integrity-check');
+                INSERT OR REPLACE INTO t1 VALUES (x'', x'', 0.37618417698047646), (0.41838681695701074, '', x''), (1.644806715E9, 0.7388360890673706, '');
+                REINDEX i33;
+                REINDEX;
+} {}
+
+# kill mutants ['13372']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeaux-dredd-5.1 {
+  PRAGMA encoding = 'UTF16be';
+  SELECT CAST(3 AS BLOB) BETWEEN 0 AND x'' ;
+} {0}
+
+finish_test

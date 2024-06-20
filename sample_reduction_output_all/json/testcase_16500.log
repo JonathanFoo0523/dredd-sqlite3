@@ -1,0 +1,4 @@
+ CREATE TABLE a (b , c , d );
+                      ALTER TABLE a ADD e;
+                      CREATE INDEX f ON a(json_patch(d, 3));
+                      INSERT INTO a VALUES ('5d77', NULL, x'db4e', '1071320217');

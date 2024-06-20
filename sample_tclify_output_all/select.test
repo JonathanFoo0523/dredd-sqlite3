@@ -1,0 +1,131 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['34177', '34182', '34186', '34188', '34189', '34190', '34200', '34201', '34214', '34218', '34220', '34221', '34222', '34223', '34224', '34226', '34228', '34229', '34230', '34232', '34233', '34251', '34252', '34255', '34256', '34257', '34263', '34266', '34287', '34288', '34295', '34298']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(b) VALUES('0.7991449387587137'), (6);
+  CREATE VIEW e AS SELECT 0 FROM a ORDER BY b;
+  SELECT b FROM a, e;
+} {0 0 6 6}
+
+# kill mutants ['19568', '19569', '19572', '19573', '19574', '19578', '19580', '19584', '19585', '19586', '19587', '19588', '19590', '19591', '19592', '19593', '19594', '19595', '19596']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-2.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(4);
+  CREATE VIEW c(b, d, e, f, g)
+  AS SELECT 0, h IN(), CAST('' AS), 0, 0 FROM a;
+  SELECT d FROM c;
+} {0}
+
+# kill mutants ['32226', '32227']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test select-dredd-3.1 {
+  CREATE TABLE t0(a);
+  CREATE VIRTUAL TABLE rt0 USING rtree(b, c, c2);
+  INSERT INTO rt0(c, b) VALUES('o0hIe]YPb', '');
+  SELECT DISTINCT CAST(LOWER(rt0.c2) AS NUMERIC) FROM rt0, t0 t1
+      WHERE(load_extension('') OR'' ) GROUP BY(0 NOTNULL) HAVING 0;
+} {1 {unable to open shared library []}}
+
+# kill mutants ['24719', '24721', '26687']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  SELECT 0 FROM a INDEXED BY b, c;
+} {1 {no such index: b}}
+
+# kill mutants ['39749', '39767', '39781', '39811', '39843']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  REPLACE INTO a VALUES(''), (2), ((0.17104393900294412)IS NOT(0));
+  CREATE VIRTUAL TABLE vt1 USING fts4(0 UNINDEXED, 1);
+  INSERT OR IGNORE INTO vt1 VALUES('', '');
+  SELECT b, GROUP_CONCAT(vt1), AVG(vt1) FROM a, vt1;
+} {{} {} {}}
+
+# kill mutants ['1165', '1197']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e(f);
+  SELECT CUME_DIST() OVER() FROM e JOIN a ON(json_remove(0, g));
+} {1 {no such column: g}}
+
+# kill mutants ['12246', '12278']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  SELECT CUME_DIST() OVER() < MIN(0) FROM a;
+} {{}}
+
+# kill mutants ['24702']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-8.1 {
+  CREATE TABLE a(b);
+  SELECT AVG(0) FROM a;
+} {{}}
+
+# kill mutants ['24707']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-9.1 {
+  VALUES(' NULL x') EXCEPT SELECT NULL ORDER BY NULL;
+} {{ NULL x}}
+
+# kill mutants ['33583', '33588']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-10.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(d);
+  CREATE VIRTUAL TABLE e USING fts5(f);
+  CREATE TABLE g(b);
+  ALTER TABLE c RENAME TO h;
+  ALTER TABLE a RENAME TO c;
+  SELECT 'i..fHSᲓ8' FROM h JOIN e ON(g.b) LEFT JOIN g ON(c.b) JOIN c;
+} {}
+
+# kill mutants ['39618', '39619']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-11.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE INDEX d ON c(0) WHERE 0;
+  INSERT INTO c VALUES(NULL);
+  ALTER TABLE c RENAME TO a;
+  SELECT COUNT() FROM a;
+} {1}
+
+# kill mutants ['26510']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test select-dredd-12.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c CHECK(0);
+} {}
+
+# kill mutants ['1088']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test select-dredd-13.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE VIRTUAL TABLE d USING fts5(0);
+  SELECT 0 FROM d JOIN c ON e(f);
+} {1 {no such column: f}}
+
+finish_test

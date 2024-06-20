@@ -1,0 +1,5 @@
+CREATE TABLE b(c);
+ALTER TABLE b RENAME TO a;
+BEGIN;
+ALTER TABLE a ADD d;
+PRAGMA cell_size_check = 1;

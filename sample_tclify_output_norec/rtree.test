@@ -1,0 +1,232 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['9327', '9329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  INSERT INTO a(c) VALUES(2205317860);
+  SELECT 0 FROM a WHERE(0) BETWEEN(c) AND 0;
+} {0}
+
+# kill mutants ['17938', '17941']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-2.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, a);
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2);
+  INSERT INTO rt1(c1, c0) VALUES('', 0);
+  ANALYZE;
+  CREATE VIRTUAL TABLE rt2 USING rtree_i32(c0, c1, c2, +c3);
+  INSERT OR REPLACE INTO rt0(c0) VALUES(x''), (1);
+  VACUUM;
+  CREATE TABLE t0(INT);
+  INSERT OR IGNORE INTO t0 VALUES('');
+  CREATE VIRTUAL TABLE vt0 USING fts4(0, 1);
+  INSERT OR IGNORE INTO vt0 VALUES(x'', 0);
+  INSERT OR ABORT INTO rt2 VALUES(0, x'', 0, x'');
+  INSERT OR IGNORE INTO rt1(c2, c1) VALUES('', '');
+  SELECT *FROM t0, rt1, vt0, rt0, rt2 ORDER BY(0 BETWEEN 0 AND 0);
+} {{} 0 0 0 {} 0 0 0 0 0 0 0 {} {} 0 0 0 {} 0 1 0 0 0 0 0 {} {} 1 0 0 {} 0 0 0 0 0 0 0 {} {} 1 0 0 {} 0 1 0 0 0 0 0 {}}
+
+# kill mutants ['21568', '21569', '21601']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-3.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, c1, c2, b, c4);
+  INSERT INTO rt0(b) VALUES( '');
+  UPDATE OR IGNORE rt0 SET(c4, c2, c1) = ('-', '', x'');
+  SELECT rtreecheck('rt0');
+} {ok}
+
+# kill mutants ['8453', '8485']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e(b, c);
+  INSERT INTO e(c) VALUES(0);
+  INSERT INTO a VALUES('', x'', x'');
+  SELECT *FROM e JOIN a ON d >= e.b;
+} {}
+
+# kill mutants ['19174']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-5.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, c1, b);
+  INSERT INTO rt0 VALUES('^ଲ', '', '');
+  PRAGMA journal_mode = WAL;
+} {wal}
+do_execsql_test rtree-dredd-5.2 {
+  UPDATE OR IGNORE rt0 SET c1 ='';
+  PRAGMA wal_checkpoint;
+} {0 2 2}
+
+# kill mutants ['8364', '8401', '8403']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-6.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING rtree(d, e, f);
+  INSERT INTO c(e) VALUES(0);
+  ALTER TABLE a ADD g;
+  INSERT INTO a VALUES('2057301437', 5847978);
+  ALTER TABLE a RENAME TO h;
+  ALTER TABLE h RENAME g TO i;
+  SELECT *FROM c JOIN h WHERE(i || '75019378' >= e);
+} {1 0.0 0.0 2057301437 5847978}
+
+# kill mutants ['17365', '17370']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test rtree-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, +e);
+  INSERT INTO a(d, c, b, e) VALUES(0, '', 0, x''), ('', 0, 1, 0),
+      (x'', 0, x'', 0);
+} {1 {UNIQUE constraint failed: a.b}}
+
+# kill mutants ['20364']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-8.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+   INSERT INTO a(b) VALUES('1196618396');
+   INSERT INTO a(d) VALUES(0), ('h0'), ('');
+   SELECT(SELECT 0 FROM a ORDER BY rtreenode(b, b));
+} {0}
+
+# kill mutants ['16598', '16600', '16606', '16627', '16628', '16629', '16630', '16631', '16632']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, +e, +f);
+  INSERT INTO a(d, e, c, b) VALUES(0, '2657381d', '', 0);
+} {}
+
+# kill mutants ['18122', '18154']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-10.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, c3, c4, a, c6, +c7);
+  INSERT INTO rt0(c0) VALUES(0);
+  REPLACE INTO rt0(c2) VALUES('jx\}Q괙查');
+  REPLACE INTO rt0(a, c2) VALUES('', 0);
+  INSERT OR IGNORE INTO rt0(c7, c6, c0, c3) VALUES('', '', NULL, 0);
+  INSERT OR IGNORE INTO rt0(c1) VALUES(''), (0), ('');
+  INSERT OR ROLLBACK INTO rt0(c7, c6, c4) VALUES(0, 0, 0), (x'', 0, 0),
+      ('', 0, '');
+  INSERT OR IGNORE INTO rt0(c3, c1, c4, c2) VALUES(x'', 0, '', ''),
+      (x'', x'', x'', '');
+  CREATE VIRTUAL TABLE rt52 USING rtree(c0, c1, c2);
+  ANALYZE;
+  INSERT OR IGNORE INTO rt52 VALUES(1, 0, '');
+  VACUUM;
+  INSERT OR IGNORE INTO rt52 VALUES('', '', 0);
+  SELECT *FROM rt0, rt52;
+} {0 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 0 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 1 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 1 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 2 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 2 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 3 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 3 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 4 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 4 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 5 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 5 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 6 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 6 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 7 0.0 0.0 0.0 0.0 0.0 0.0 0 1 0.0 0.0 7 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0.0 0.0 8 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 8 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 9 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 9 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 10 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 10 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0 11 0.0 0.0 0.0 0.0 0.0 0.0 {} 1 0.0 0.0 11 0.0 0.0 0.0 0.0 0.0 0.0 {} 0 0.0 0.0}
+
+# kill mutants ['20550']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-11.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  ALTER TABLE a ADD f;
+  INSERT INTO a VALUES('', 0, '', 06234, 0);
+  SELECT(SELECT(rtreenode(1, e)) FROM a);
+} {{}}
+
+# kill mutants ['20361']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-12.1 {
+  CREATE VIRTUAL TABLE a USING fts5(c);
+    INSERT OR REPLACE INTO a VALUES(0.3721549728369459), ('(G|6Y.4MN'),     ('-1746014913');
+    SELECT SUM(b)     FROM(SELECT 0  b FROM a ORDER BY(0)BETWEEN 0 AND rtreenode(a.c, a.c) );
+} {0}
+
+# kill mutants ['9668']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-13.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c2, c, c4);
+  INSERT INTO rt0 VALUES(0, 'i.BD', 0, '', 0);
+  ANALYZE;
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2);
+  INSERT OR FAIL INTO rt0(c2, c4) VALUES(x'', x'');
+  INSERT OR IGNORE INTO rt1(c2) VALUES(0), (x'');
+  SELECT *FROM rt1, rt0;
+} {1 0 0 0 0.0 0.0 0.0 0.0 1 0 0 1 0.0 0.0 0.0 0.0 2 0 0 0 0.0 0.0 0.0 0.0 2 0 0 1 0.0 0.0 0.0 0.0}
+
+# kill mutants ['20506']
+# FALSE_ADV
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test rtree-dredd-14.1 {
+#   ALTER TABLE a ADD;
+# } {1 {no such table: a}}
+# do_execsql_test rtree-dredd-14.2 {
+#   SELECT rtreenode(1, 0);
+# } {{}}
+
+# kill mutants ['17174', '17206']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test rtree-dredd-15.1 {
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, a, b);
+  INSERT INTO rt1 VALUES('', 0, 0);
+  INSERT OR ROLLBACK INTO rt1(c0) VALUES(x'');
+} {1 {UNIQUE constraint failed: rt1.c0}}
+
+# kill mutants ['18113', '18145']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test rtree-dredd-16.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE VIRTUAL TABLE e USING rtree(f, g, b);
+  INSERT INTO e(b) VALUES(0);
+  REPLACE INTO e(f) VALUES(7);
+  INSERT INTO e VALUES('P纀wy2', 0, 'kP'), (NULL, 0, 0);
+  ANALYZE;
+  CREATE TABLE h(i);
+  ALTER TABLE h RENAME TO j;
+  SELECT *FROM e, a WHERE(load_extension(0));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['20541']
+# FALSE_ADV
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_catchsql_test rtree-dredd-17.1 {
+#   CREATE VIRTUAL TABLE a USING b   ( ;
+# } {1 {incomplete input}}
+# do_execsql_test rtree-dredd-17.2 {
+#       SELECT rtreenode(1,0);
+# } {{}}
+
+# kill mutants ['20542']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-18.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  ALTER TABLE a ADD f;
+  INSERT INTO a VALUES('', 0, '', 130, 0);
+  SELECT *FROM a WHERE(0 <= rtreenode(1, e));
+} {}
+
+# kill mutants ['20510']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test rtree-dredd-19.1 {
+  CREATE TABLE a(d, c, c2);
+  ALTER TABLE a ADD c72 REAL;
+  ALTER TABLE a ADD b;
+  INSERT INTO a VALUES('', 0, '', 0, 0);
+  SELECT *FROM a WHERE(rtreenode(2, c72));
+} {}
+
+finish_test

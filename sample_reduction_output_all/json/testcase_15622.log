@@ -1,0 +1,2 @@
+PRAGMA encoding = 'UTF16le'               ;
+                    SELECT NTILE(json_array_length(x'7c3d')) OVER ()  ;

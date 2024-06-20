@@ -1,6 +1,7 @@
 from runner.dredd_test.worker import MutationTestingWorker
+from runner.dredd_test.extract_test import TestExtractor
 
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 import asyncio
 import pickle
 import argparse
@@ -17,9 +18,12 @@ def main():
     parser.add_argument("sqlite_src_path",
                         help="Directory containing sqlite3 source file and test file.",
                         type=Path)
-    parser.add_argument("test_files_path",
-                        help="Files containing list of test file (eg: test/alter.test\n) to run mutation testing on.",
-                        type=Path)
+    # parser.add_argument("test_files_path",
+    #                     help="Files containing list of test file (eg: test/alter.test\n) to run mutation testing on.",
+    #                     type=Path)
+    parser.add_argument("test_subset",
+                        help="Test subset to run (eg: extraquick, veryquick, quick, full)",
+                        type=str)
     parser.add_argument("mutation_binary_path",
                         help="Directory containing binary of mutated file, binary of mutant coverage, and mutant info file",
                         type=Path)
@@ -67,15 +71,30 @@ def main():
         # if file != 'select':
         #     continue
 
-        with open(args.test_files_path) as test_files:
-            tests = [os.path.join(args.sqlite_src_path, line.rstrip('\n')) for line in test_files]
+        # with open(args.test_files_path) as test_files:
+        #     tests = [os.path.join(args.sqlite_src_path, line.rstrip('\n')) for line in test_files]
 
-            coverage_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_coverage')
-            mutation_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_mutation')
-            mutation_info = os.path.join(args.mutation_binary_path, f'{file}_testfixture_info.json')
-            mutant_info_script = os.path.join(args.dredd_src_path, 'scripts', 'query_mutant_info.py')
+        coverage_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_coverage')
+        mutation_bin = os.path.join(args.mutation_binary_path, f'testfixture_{file}_mutation')
+        mutation_info = os.path.join(args.mutation_binary_path, f'{file}_testfixture_info.json')
+        mutant_info_script = os.path.join(args.dredd_src_path, 'scripts', 'query_mutant_info.py')
+        
+        if not os.path.isdir(os.path.join(args.output_directory, file)):
+            os.mkdir(os.path.join(args.output_directory, file))
+        
+        print()
+        testlist_pickle_path = os.path.join(args.output_directory, file, 'testlist.pkl')
+        if os.path.isfile(testlist_pickle_path):
+            with open(testlist_pickle_path, 'rb') as f:
+                tests = pickle.load(f)
+        else:
+            print("Extracting test")
+            tests = TestExtractor(args.sqlite_src_path, mutation_bin, args.test_subset, cpu_count()).extract()
+            with open(testlist_pickle_path, 'wb+') as f:
+                pickle.dump(tests, f)
+        
 
-            asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.output_directory, max_parallel_tasks=64).async_slice_runner(tests))
+        asyncio.run(MutationTestingWorker(mutant_info_script, file, coverage_bin, mutation_bin, mutation_info, args.sqlite_src_path, args.output_directory, max_parallel_tasks=cpu_count() * 2).async_slice_runner(tests))
 
 if __name__ == '__main__':
     main()

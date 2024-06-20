@@ -1,0 +1,6 @@
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2);
+     PRAGMA cell_size_check = true;
+     UPDATE OR IGNORE rt1 SET (c0)=0;
+     VACUUM;
+     INSERT INTO vt00 VALUES('pgsz', '62562');
+     

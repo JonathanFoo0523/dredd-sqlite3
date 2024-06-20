@@ -1,0 +1,5 @@
+CREATE TABLE a(b);
+PRAGMA secure_delete = true;
+BEGIN;
+DROP TABLE a;
+CREATE VIRTUAL TABLE c USING fts5(1);

@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING fts5(b);
+SELECT 2 FROM a WHERE(load_extension('1853245932'));

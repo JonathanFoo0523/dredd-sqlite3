@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE a USING fts4(b);
+CREATE TABLE c(d, e);
+CREATE TABLE f(d);
+INSERT INTO c(d) VALUES('');
+CREATE TABLE g(d);
+SELECT 0 FROM c JOIN f ON b JOIN g ON json_insert(0, e)
+LEFT JOIN a;

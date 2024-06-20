@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE vt0 USING fts5(0);
+INSERT INTO vt0 VALUES(''), (0);
+INSERT INTO vt0(vt0) VALUES('integrity-check');
+PRAGMA optimize;
+DELETE FROM sqlite_stat1;

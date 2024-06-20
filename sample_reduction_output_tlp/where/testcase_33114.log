@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+CREATE TABLE c(b);
+SELECT 0 FROM c JOIN a ON json_type('');

@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c2, c, c4);
+INSERT INTO rt0 VALUES(0, 'i.BD', 0, '', 0);
+ANALYZE;
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2);
+INSERT OR FAIL INTO rt0(c2, c4) VALUES(x'', x'');
+INSERT OR IGNORE INTO rt1(c2) VALUES(0), (x'');
+SELECT *FROM rt1, rt0;

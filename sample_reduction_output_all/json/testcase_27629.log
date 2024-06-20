@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts4(c0, c1 );
+                 INSERT INTO vt0(c1, c0) VALUES (NULL, ''), (x'1c1a', '1521597092');
+                 SELECT DISTINCT 0, (vt0.c1)AND(json_patch(vt0.c1, vt0.c0))ANDOR0AND0, CASE WHEN 0 THEN CAST('' AS INTEGER) WHEN x'' THEN 0 END FROM vt0;
+                 SELECT  0<0 IS 0>0 NOTNULL;

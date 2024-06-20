@@ -1,0 +1,44 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['12628', '12634', '12636']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-1.1 {
+  CREATE TABLE a(b, c, d, e, f, g, h);
+  INSERT INTO a VALUES('4/', 0, '', '', '', 0, 0);
+  UPDATE a SET g = -h;
+  SELECT *FROM a;
+} {4/ 0 {} {} {} 0 0}
+
+# kill mutants ['12633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-2.1 {
+  CREATE TABLE a(b, c, d, e, f);
+  INSERT INTO a(e, d, c, b, f) VALUES(0, '949854559', '', 0, '');
+  CREATE VIRTUAL TABLE g USING fts4;
+  INSERT INTO g VALUES(0);
+  SELECT 0 FROM g JOIN a ON CASE WHEN - d THEN(1) END;
+} {0}
+
+# kill mutants ['2185', '2217']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-3.1 {
+   PRAGMA encoding = 'UTF16';
+                           CREATE TABLE a (b );
+                           REPLACE INTO a VALUES (x'33b06698')                 ;
+                           CREATE VIRTUAL TABLE c USING fts5(0)                 ;
+                           INSERT INTO c VALUES (0);
+                           SELECT 0 FROM a, c ON b   ;
+} {}
+
+# kill mutants ['12629']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test util-dredd-4.1 {
+  PRAGMA default_cache_size;
+} {-2000}
+
+finish_test

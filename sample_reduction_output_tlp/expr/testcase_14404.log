@@ -1,0 +1,3 @@
+CREATE TABLE a( '' );
+VACUUM;
+UPDATE OR REPLACE t0 SET c1 = '' ;

@@ -1,0 +1,2 @@
+PRAGMA threads = 5;
+PRAGMA threads;

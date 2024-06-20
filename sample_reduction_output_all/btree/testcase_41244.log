@@ -1,0 +1,7 @@
+PRAGMA encoding = 'UTF16be';
+   CREATE TABLE t0(c0 , c1 , c2 INTEGER);
+   PRAGMA secure_delete = true;
+   ANALYZE;
+   CREATE INDEX i12 ON t0((0 ), ((0))COLLATE NOCASE,                        ((0)                             AND((((c2)BETWEEN(c2)                                       AND('764594326')))))COLLATE BINARY );
+   CREATE UNIQUE INDEX i46 ON t0(NULL , (0),    CAST(CASE WHEN NULL THEN c0 WHEN c1 THEN 0.30222109956245546 WHEN c0 THEN c0             END AS REAL));
+   DROP TABLE t0;

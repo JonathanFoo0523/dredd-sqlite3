@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(c0, b, c);
+INSERT INTO a(b, c0, c) VALUES(  '', 0, 0), (0, 1, '');
+CREATE TABLE t0(c0);
+INSERT OR IGNORE INTO t0 VALUES(0), (x'');
+SELECT *FROM t0, a WHERE(c, CAST(0 AS BLOB)) >= (0, t0.c0);

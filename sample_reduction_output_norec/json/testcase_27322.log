@@ -1,0 +1,3 @@
+ CREATE VIRTUAL TABLE a USING fts5(0 , b );
+                         INSERT INTO a VALUES ( 0, x'0941');
+                         SELECT (SELECT 0   FROM a   (json(b)) );

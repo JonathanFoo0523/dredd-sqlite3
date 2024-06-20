@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+SELECT AVG(0) FROM a;

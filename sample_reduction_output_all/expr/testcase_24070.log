@@ -1,0 +1,1 @@
+SELECT 0 WHERE(NULL) AND(highlight()) OR(0 < 0);

@@ -1,0 +1,7 @@
+CREATE TABLE t0(a);
+CREATE VIRTUAL TABLE b USING rtree_i32(c, d, e, f, g);
+INSERT INTO b VALUES(1, 0, 'C', '', 0), (x'', '', '	', '', 0);
+INSERT OR REPLACE INTO t0 VALUES(x'');
+INSERT INTO t0 VALUES(0);
+ANALYZE;
+SELECT *FROM t0, b;

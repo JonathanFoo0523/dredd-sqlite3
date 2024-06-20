@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2);
+         CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2c3 );
+         ANALYZE ;
+         CREATE TABLE t0(INTc1 INTEGER, c2 REAL);
+         ALTER TABLE t0 RENAME TO a;

@@ -1,0 +1,4 @@
+PRAGMA cell_size_check = true;
+ANALYZE;
+BEGIN;
+CREATE VIEW a AS SELECT CAST0;

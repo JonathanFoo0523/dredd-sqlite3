@@ -1,0 +1,8 @@
+CREATE TABLE a(b);
+ALTER TABLE a ADD c;
+REPLACE INTO a(c) VALUES('6508');
+ALTER TABLE a RENAME TO d;
+PRAGMA reverse_unordered_selects = true;
+ALTER TABLE d ADD e;
+INSERT INTO d(e, c) VALUES('1145444091', 8);
+SELECT e FROM d;

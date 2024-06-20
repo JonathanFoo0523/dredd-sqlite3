@@ -1,0 +1,14 @@
+CREATE TABLE t1(c1, c2);
+CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, a, b);
+INSERT INTO t1(c2) VALUES(0), ('');
+ALTER TABLE t1 RENAME TO t2;
+CREATE TABLE t0(c0 REAL);
+ALTER TABLE t2 RENAME c1 TO c98;
+INSERT OR IGNORE INTO rt0(c2) VALUES(0), (0), ('');
+INSERT OR FAIL INTO t0 VALUES('['), (0), ('');
+ALTER TABLE t0 RENAME TO t3;
+INSERT OR IGNORE INTO t2 VALUES('', ''), (x'', ''), ('', '1543240591');
+ALTER TABLE t2 RENAME TO c;
+SELECT 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, c0, 0, 0 FROM rt0 UNION SELECT 1, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0 UNION SELECT b, 0, t3.c0, c1, c.c2, 0, c98, 0, 0,
+    0, rt0.c0, rt0.c2, a FROM rt0, t3, c;

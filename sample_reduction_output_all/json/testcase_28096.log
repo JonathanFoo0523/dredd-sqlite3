@@ -1,0 +1,1 @@
+SELECT NTILE(json_array_length('7c3d')) OVER();

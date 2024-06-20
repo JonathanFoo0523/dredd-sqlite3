@@ -1,0 +1,4 @@
+CREATE  TABLE   c( a d);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO b VALUES('62562');

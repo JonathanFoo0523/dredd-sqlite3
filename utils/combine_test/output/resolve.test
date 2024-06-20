@@ -1,0 +1,135 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['6512', '6528', '6530', '6536', '6539', '6540', '6542', '6560', '6562', '6568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-0.1 {
+  CREATE TABLE t0(c1);
+  CREATE TRIGGER a UPDATE ON t0 WHEN(b)
+  IS t0.c1 BEGIN UPDATE t0 SET c1 ='' WHERE 0;
+  END;
+  UPDATE t0 SET c1 = x'' ;
+} {1 {no such column: b}}
+
+# kill mutants ['6786', '6789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-1.1 {
+  SELECT CASE WHEN a() THEN 0 WHEN 0 THEN b END;
+} {1 {no such function: a}}
+
+# kill mutants ['8262', '8263', '8264']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-2.1 {
+  SELECT COUNT() OVER(), 0 IN() GROUP BY a IN();
+} {1 0}
+
+# kill mutants ['8265']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-3.1 {
+  SELECT 0 ORDER BY 0, 0;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['4330']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-4.1 {
+  SELECT CASE(a)
+  WHEN b THEN 8.23588741E8 END;
+} {1 {no such column: a}}
+
+# kill mutants ['8973']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-5.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING rtree(d, e, f);
+  SELECT NULL FROM a JOIN c ON(0 BETWEEN g AND 0) GROUP BY 0;
+} {1 {no such column: g}}
+
+# kill mutants ['4845']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING rtree(c0, b, c);
+  SELECT ~CAST(c0 AS), LIKE(0, 0 NOT NULL) FROM a;
+} {}
+
+# kill mutants ['4590']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-7.1 {
+  CREATE TABLE a(c1, c2);
+           ALTER TABLE a RENAME TO t1;
+       CREATE  TABLE rt0  (c2  c4);
+       ALTER TABLE t1 ADD c12;
+       CREATE INDEX i84 ON t1(0);
+       INSERT INTO t1 VALUES('', 0, '');
+       SELECT  COUNT() FROM rt0  NATURAL JOIN t1     ;
+} {0}
+
+# kill mutants ['4847']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-8.1 {
+  CREATE VIRTUAL TABLE vt1 USING fts5(c0);
+  SELECT  0  a  
+            WHERE(INSTR((0 NOTNULL), 0)) UNION SELECT 0 FROM    vt1 ((((vt1.c0))) ||
+                                        0) ;
+} {}
+
+# kill mutants ['4848']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING rtree(c0, d, b);
+  SELECT ~CAST(c0 AS), LIKE(0, (c)NOT NULL) FROM a;
+} {1 {no such column: c}}
+
+# kill mutants ['4817']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-10.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+  SELECT((~c0)) % 0, GROUP_CONCAT(0 NOTNULL) FROM vt0;
+} {{} {}}
+
+# kill mutants ['4657', '4658', '4659', '4660']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-11.1 {
+  PRAGMA case_sensitive_like = 0;
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(0) WHERE(0) LIKE(0);
+} {1 {non-deterministic functions prohibited in partial index WHERE clauses}}
+
+# kill mutants ['4632']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-12.1 {
+  SELECT LIKELIHOOD(0, 0.7194864272776776);
+} {0}
+
+# kill mutants ['4849']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test resolve-dredd-13.1 {
+  CREATE  TABLE t0( INTEGER);
+  CREATE VIRTUAL TABLE b USING rtree(a , c4, c5 );
+  SELECT ALL
+      b.c4 FROM b  JOIN t0 ON GLOB(0, (0 NOT NULL)) WHERE(
+             ((c5 COLLATE NOCASE)))    UNION SELECT b
+          .c4 FROM b GROUP BY b.c4;
+} {}
+
+# kill mutants ['8029']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test resolve-dredd-14.1 {
+  SELECT 0 ORDER BY 0;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+finish_test

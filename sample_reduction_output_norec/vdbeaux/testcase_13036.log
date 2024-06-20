@@ -1,0 +1,7 @@
+         PRAGMA encoding = 'UTF16be';
+                        CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, c3, c4);
+                        INSERT INTO rt0(c3, c4) VALUES (0, 0.9375129726531455), ('', 0), (0, 50609);
+                        INSERT OR FAIL INTO rt0(c1, c3, c0, c2) VALUES (0, x'', '-63320600',0);
+                        CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2);
+                        INSERT OR ABORT INTO rt1(c1, c0) VALUES  (0,0), (0,1);
+                        SELECT  * FROM rt1, rt0  ORDER BY 1   NULLS LAST, x'' , HEX(rt0.c0) COLLATE RTRIM ;

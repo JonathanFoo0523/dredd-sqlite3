@@ -1,0 +1,4 @@
+                  CREATE VIRTUAL TABLE vt1 USING fts4(c0 , c1, c2, c3, order=DESC, languageid="lid");
+                         REPLACE INTO vt1(lid) VALUES ('');
+                         INSERT OR IGNORE INTO vt1(c0, c2, c3, c1) VALUES (NULL, '', 0.6370875431928006, x'');
+                         SELECT DISTINCT c3 FROM vt1;

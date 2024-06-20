@@ -1,0 +1,63 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['16', '20']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts4(tokenize porter);
+  INSERT INTO a VALUES(NULL);
+  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['50']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-2.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4( , tokenize=porter=);
+        INSERT INTO vt0 VALUES (NULL);
+        INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+# kill mutants ['60']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING fts4( tokenize=porter, languageid="lid");
+          INSERT INTO a(lid) VALUES  ('pkqw6');
+          INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['55']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING fts4(tokenize porter);
+} {}
+
+# kill mutants ['48']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0 , tokenize=porter );
+      INSERT   INTO a VALUES (NULL);
+      INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['53']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-6.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4(tokenize porter);
+} {}
+
+# kill mutants ['52']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_porter-dredd-7.1 {
+  CREATE VIRTUAL TABLE a USING fts4(tokenize = porter);
+   INSERT INTO a VALUES(NULL);
+   INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+finish_test

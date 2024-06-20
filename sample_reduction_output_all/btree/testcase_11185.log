@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts4;
+ PRAGMA cell_size_check = true;
+ VACUUM;
+ INSERT INTO vt0 VALUES('62562');

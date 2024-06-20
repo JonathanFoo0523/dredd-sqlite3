@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, f, b   );
+            CREATE TABLE d (INT );
+            ALTER TABLE d RENAME TO c;
+            CREATE  TABLE e  (a);
+            ALTER TABLE c RENAME TO d;
+            INSERT OR IGNORE INTO e VALUES (0);
+                       SELECT  * FROM e, rt0, d WHERE b IN (e.a  );

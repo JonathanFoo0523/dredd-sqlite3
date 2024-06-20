@@ -1,0 +1,7 @@
+ CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+                         ANALYZE;
+                         REPLACE INTO a(c, b) VALUES (x'73b8', 0.13176307637727058), (NULL, 7);
+                         CREATE VIRTUAL TABLE e USING rtree(b, c, d);
+                         INSERT INTO e(c, d) VALUES (0.04938558750584521, 0.2872669878491244);
+                         INSERT INTO e VALUES (0.27975285124907834, NULL, '976c');
+                         SELECT LAG(CASE WHEN a.b THEN e.d END) OVER () FROM e, a;

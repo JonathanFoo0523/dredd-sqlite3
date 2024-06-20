@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE vt0 USING fts4;
+INSERT INTO vt0 VALUES('');
+SELECT(SELECT json_array_length(vt0) FROM vt0);

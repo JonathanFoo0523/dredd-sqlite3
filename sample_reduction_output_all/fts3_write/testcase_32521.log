@@ -1,0 +1,4 @@
+ CREATE VIRTUAL TABLE vt0 USING fts4(0, 1 , order=DESC);
+                         INSERT INTO vt0 VALUES ( '', 0.9886172377625934);
+                         INSERT OR REPLACE INTO vt0 VALUES ('', 0.03237322806328613);
+                         INSERT INTO vt0(vt0) VALUES('integrity-check');

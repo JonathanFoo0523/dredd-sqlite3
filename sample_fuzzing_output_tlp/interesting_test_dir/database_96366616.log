@@ -1,0 +1,35 @@
+-- Time: 2024/06/09 21:28:11
+-- Database: database16
+-- Database version: 3.40.0
+-- seed value: 96366616
+PRAGMA cache_size = 50000; -- 10ms;
+PRAGMA temp_store=MEMORY; -- 0ms;
+PRAGMA synchronous=off; -- 0ms;
+PRAGMA case_sensitive_like=ON; -- 0ms;
+CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2); -- 1ms;
+UPDATE OR IGNORE rt0 SET c2=NULL, c1=0X31a33301 WHERE (- (rt0.c0)); -- 1ms;
+ANALYZE; -- 1ms;
+ROLLBACK TRANSACTION; -- 0ms;
+PRAGMA temp.mmap_size; -- 0ms;
+UPDATE OR IGNORE rt0 SET c0=x'8077'; -- 0ms;
+UPDATE rt0 SET c2='832779009' WHERE TRIM(((rt0.c0) BETWEEN (rt0.c0) AND (rt0.c1))); -- 0ms;
+UPDATE OR IGNORE rt0 SET (c1)=('754907130'); -- 2ms;
+UPDATE OR IGNORE rt0 SET (c1)=(NULL); -- 0ms;
+UPDATE OR ROLLBACK rt0 SET c1=NULL, c2='754907130' WHERE (((+ (rt0.c0))) ISNULL); -- 0ms;
+UPDATE rt0 SET c0=0.0385781336986033, c2='-182298660'; -- 0ms;
+END TRANSACTION; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+UPDATE rt0 SET c2=NULL, c2=NULL, c1='1116567231'; -- 0ms;
+UPDATE OR FAIL rt0 SET c1=0.8937987722163526 WHERE ((rt0.c1 COLLATE BINARY)AND(CAST(rt0.c0 AS BLOB))); -- 0ms;
+REINDEX; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+ROLLBACK TRANSACTION; -- 0ms;
+UPDATE OR IGNORE rt0 SET (c2, c1)=(0.20163649413169138, NULL) WHERE ((TRIM(rt0.c2))*(((rt0.c0)<>(rt0.c2)))); -- 0ms;
+CREATE TEMP TABLE IF NOT EXISTS t0 (c0 INTEGER UNIQUE NOT NULL ON CONFLICT FAIL , c1 INT , c2 INT ); -- 2ms;
+UPDATE rt0 SET (c1)=(x'a6b7'); -- 0ms;
+ANALYZE main; -- 3ms;
+UPDATE rt0 SET c0=NULL, c2=0.49593896801192583, c2=NULL; -- 0ms;
+UPDATE rt0 SET c2='Laz/mnC29'; -- 0ms;
+UPDATE OR ABORT rt0 SET (c0)=(NULL) WHERE rt0.c0; -- 0ms;
+ALTER TABLE t0 RENAME TO t1; -- 0ms;
+CREATE VIEW  IF NOT EXISTS v0(c0) AS SELECT DISTINCT (- ((((rt0.c2)) BETWEEN ((t1.c0)) AND ((t1.c2))))) FROM rt0; -- 0ms;

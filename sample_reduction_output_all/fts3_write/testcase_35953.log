@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING fts4(b , languageid="lid");
+                        REPLACE INTO a(lid, b) VALUES ('-771953292', 9);

@@ -1,0 +1,6 @@
+ CREATE VIRTUAL TABLE vt0 USING fts5(a );
+           CREATE VIEW b(a) AS SELECT TYPEOF(a)   FROM vt0 ORDER BY CASE     WHEN(0)ISNULL THEN 0 END  ,     (CAST(vt0.a AS ) );
+          INSERT INTO vt0 VALUES('1953218456');
+          INSERT INTO vt0 VALUES('au)玅oX');
+          INSERT INTO vt0 VALUES(x'');
+          SELECT DISTINCT b.a FROM b;

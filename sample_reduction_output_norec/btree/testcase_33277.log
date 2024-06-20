@@ -1,0 +1,9 @@
+PRAGMA encoding = 'UTF16le';
+         CREATE  TABLE a(c0 BLOB UNIQUE CHECK(HEX(0)) CHECK(CAST(0 AS INTEGER)));
+         ALTER TABLE a ADD c25 TEXT;
+         ALTER TABLE a ADD c24 INTEGER;
+         ALTER TABLE a ADD c13 REAL;
+         PRAGMA secure_delete = 1;
+         ALTER TABLE a RENAME TO t1;
+         CREATE UNIQUE INDEX i55 ON t1(((((0)AND((0 NOT BETWEEN(0)                   AND((c0, c13, c13))))))AND(((c13)IS TRUE)))ASC,    (json_insert('', c25, c13) IN()), (-0)COLLATE RTRIM DESC,    ((c13 COLLATE NOCASE)NOT BETWEEN((((c24)) <= ((c0))))         AND(CASE c24 WHEN c13 THEN c24 END)));
+         DROP INDEX "i55";

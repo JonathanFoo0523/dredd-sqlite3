@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+INSERT INTO a VALUES('995812171'), ('');

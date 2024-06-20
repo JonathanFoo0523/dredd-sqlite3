@@ -1,0 +1,268 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['16086', '16087', '16090', '16111', '16114', '16115', '16118', '16119', '16122']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-1.1 {
+  CREATE TABLE a(b);
+  REPLACE INTO a VALUES(0);
+  UPDATE a SET b = '776 2859829695952516539';
+  SELECT 0 FROM a WHERE(json_array_length(b));
+} {1 {malformed JSON}}
+
+# kill mutants ['24890', '24891', '24892', '24893', '28180', '28185', '28186', '28212', '28216', '28217', '28218', '28219', '28220', '28221', '28222', '28223', '28224', '28256']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-2.1 {
+  SELECT json_array_length(0, 0);
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['16665']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-3.1 {
+          CREATE TABLE    a (b  );
+                             ALTER TABLE a ADD  c ;
+                             INSERT   INTO a(c) VALUES (x'eb2d');
+                             ALTER TABLE a RENAME  c TO d;
+                             SELECT 0 FROM  a        WHERE json_valid(d) ;
+} {}
+
+# kill mutants ['16128']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-4.1 {
+  SELECT json_array_length(0);
+} {0}
+
+# kill mutants ['28762', '28766', '28957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-5.1 {
+  SELECT json_extract(0, 0);
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['27281', '27288', '27313', '27320', '27329', '27334', '27338', '27341', '27342', '27347', '27370']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-6.1 {
+                    SELECT json_type(x'11ec') ;
+} {1 {malformed JSON}}
+
+# kill mutants ['27858', '27890', '27892', '27894', '27895']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-7.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  INSERT INTO a VALUES('', '');
+  SELECT *FROM a WHERE(json_array_length(c));
+} {1 {malformed JSON}}
+
+# kill mutants ['14758', '14760', '14764', '14770', '14771', '14773', '14774', '14775']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-8.1 {
+  SELECT json_patch(0, 0.6089038779502118);
+} {0.608903877950212}
+
+# kill mutants ['4430']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-9.1 {
+   PRAGMA encoding = 'UTF16';
+                             CREATE TABLE    d (e  );
+                             ALTER TABLE d ADD  f ;
+                             INSERT   INTO d(f) VALUES (x'eb2d');
+                             CREATE  TABLE g  (  i);
+                             ALTER TABLE d RENAME  f TO k;
+                             SELECT 0 FROM  d    JOIN g ON    json_valid(k  )    ;
+} {}
+
+# kill mutants ['27120', '27122', '27125', '27126', '27131']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-10.1 {
+  SELECT 0 BETWEEN(json_insert(0, 0, 0)) AND 0;
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['19031', '19034', '19035', '19036', '19039', '19040', '19041', '19042', '19043', '19044', '19045']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-11.1 {
+                  SELECT json_patch(0, x'1b4d') ;
+} {1 {malformed JSON}}
+
+# kill mutants ['14412']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-12.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('+J');
+  SELECT 0 FROM a WHERE(json_patch(b, 0));
+} {1 {malformed JSON}}
+
+# kill mutants ['27129', '27132', '27139', '27140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-13.1 {
+  SELECT json_insert(0, 0, 0);
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['17078']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-14.1 {
+  CREATE TABLE a (b  );
+                     ALTER TABLE a ADD c88 ;
+                     ALTER TABLE a RENAME TO t0;
+                     ALTER TABLE t0 ADD   INT;
+                     INSERT   INTO t0 VALUES (0, x'fb5fb264', 0.14753290244626194);
+                     SELECT c88 FROM t0 WHERE (((json_array(CASE b  WHEN b THEN c88   END)) ));
+} {1 {JSON cannot hold BLOB values}}
+
+# kill mutants ['17457', '17461', '17463', '17464', '17465', '17466', '17467']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-15.1 {
+                    SELECT json_quote(x'cc93' ) ;
+} {1 {JSON cannot hold BLOB values}}
+
+# kill mutants ['16093', '16094', '16095', '16125', '16126', '16127', '16129']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-16.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0);
+  UPDATE a SET b = '776 2859829695952516539';
+  SELECT 0 FROM a WHERE(json_array_length(b));
+} {1 {malformed JSON}}
+
+# kill mutants ['27322', '27325', '27326', '27328', '27350']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-17.1 {
+  ANALYZE;
+                          DELETE FROM sqlite_stat1 WHERE json_insert(x'9804',0,0);
+} {1 {malformed JSON}}
+
+# kill mutants ['4462']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-18.1 {
+   PRAGMA encoding = 'UTF16';
+                                      CREATE TABLE    c (b );
+                                      ALTER TABLE c ADD i ;
+                                      INSERT   INTO c(i) VALUES (x'eb2d');
+                                      CREATE  TABLE a  (bj);
+                                      ALTER TABLE c RENAME  i TO h;
+                                      SELECT 0 FROM  c,  a     ON  json_valid(h   ) ;
+} {}
+
+# kill mutants ['14757', '14759', '14762', '14763', '14765', '14767', '14768', '14777']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-19.1 {
+  SELECT json(SQLITE_VERSION());
+} {1 {malformed JSON}}
+
+# kill mutants ['19457']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-20.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD INT;
+  ALTER TABLE a RENAME b TO c72;
+  INSERT INTO a VALUES(x'', '');
+  SELECT *FROM a WHERE(json_quote(c72));
+} {1 {JSON cannot hold BLOB values}}
+
+# kill mutants ['13610', '13611', '13614', '13615']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-21.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME TO e;
+  INSERT INTO e VALUES('', '', 0);
+  SELECT 0 FROM e WHERE(json_array_length(TYPEOF(c)));
+} {1 {malformed JSON}}
+
+# kill mutants ['13798']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-22.1 {
+  SELECT CAST(json_extract('.', 0) AS);
+} {1 {malformed JSON}}
+
+# kill mutants ['27348']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-23.1 {
+  ANALYZE;
+                          DELETE FROM sqlite_stat1 WHERE json_insert(x'9804');
+} {1 {malformed JSON}}
+
+# kill mutants ['13801']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-24.1 {
+  SELECT CAST(json_extract('.	a', 0) AS);
+} {1 {malformed JSON}}
+
+# kill mutants ['14755', '14756']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-25.1 {
+  SELECT json_array_length('186368002');
+} {0}
+
+# kill mutants ['31909']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-26.1 {
+  SELECT json_remove(0, 0);
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['27889']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-27.1 {
+  SELECT json_patch(0, 0);
+} {0}
+
+# kill mutants ['16662']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-28.1 {
+                   CREATE TABLE    b (a  );
+                                    ALTER TABLE b ADD  f ;
+                                    INSERT   INTO b(f) VALUES (x'eb2d')                             ;
+                                    ALTER TABLE b RENAME  f TO k                               ;
+                                    SELECT 0 FROM  b        WHERE json_valid(k)      ;
+} {}
+
+# kill mutants ['15894']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test json-dredd-29.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('id');
+  SELECT 0 FROM a WHERE(json(b));
+} {1 {malformed JSON}}
+
+# kill mutants ['27142']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test json-dredd-30.1 {
+  CREATE TABLE a(b, c);
+  CREATE TABLE d(e, f);
+  ALTER TABLE a ADD g;
+  ALTER TABLE a RENAME TO h;
+  INSERT INTO h(c, g, b) VALUES('2131393092', '', ''), (x'', 0, '');
+  ALTER TABLE h RENAME TO i;
+  INSERT INTO d VALUES(0, 0);
+  SELECT 0 FROM i JOIN d ON json_valid(c);
+} {0}
+
+finish_test

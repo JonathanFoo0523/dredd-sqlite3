@@ -1,0 +1,47 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['486']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_tokenizer1-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b, 1);
+  INSERT INTO a VALUES('<', '');
+  SELECT TOTAL_CHANGES();
+} {4}
+
+# kill mutants ['485', '487']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_tokenizer1-dredd-2.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+  INSERT INTO vt0 VALUES(''), (0.8488473007737697), (NULL);
+  INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+# kill mutants ['490']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_tokenizer1-dredd-3.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+} {}
+
+# kill mutants ['495']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_tokenizer1-dredd-4.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+  INSERT INTO vt0 VALUES(NULL), ('');
+  INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+# kill mutants ['483']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3_tokenizer1-dredd-5.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+                    INSERT INTO vt0 VALUES (''), (0.8488473007737697), (NULL);
+                    INSERT INTO vt0(vt0) VALUES('integrity-check');
+} {}
+
+finish_test

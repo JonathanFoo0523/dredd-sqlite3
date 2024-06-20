@@ -1,0 +1,10 @@
+CREATE TABLE a(b, c, d);
+ALTER TABLE a ADD e;
+ALTER TABLE a ADD f;
+INSERT INTO a VALUES('9af1', '624856269', 0.8175361225644044, NULL, 3),
+    (0, '', '', '', x'');
+ALTER TABLE a RENAME TO g;
+CREATE UNIQUE INDEX h ON g(0, CASE WHEN(0, 1, 1) NOT BETWEEN(2, 2, 1)
+                                  AND(2, 9, 1) THEN e END);
+ALTER TABLE g RENAME TO a;
+UPDATE a SET e = 0;

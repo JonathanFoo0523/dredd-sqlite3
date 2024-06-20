@@ -1,0 +1,2 @@
+CREATE TABLE t0(a);
+SELECT '', 0, SUM(0) OVER FROM t0 vt5 WHERE(0 = json_remove(9, ''));

@@ -1,0 +1,2 @@
+PRAGMA busy_timeout = 1;
+PRAGMA shrink_memory;

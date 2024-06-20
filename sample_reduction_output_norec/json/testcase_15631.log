@@ -1,0 +1,3 @@
+CREATE  TABLE a  (b);
+           INSERT INTO a VALUES (x'2f9a');
+           SELECT   (SELECT  json_array_length(b  )      FROM a);

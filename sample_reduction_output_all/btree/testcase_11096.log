@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO a VALUES('pgsz');

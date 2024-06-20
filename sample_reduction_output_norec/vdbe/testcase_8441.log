@@ -1,0 +1,4 @@
+PRAGMA encoding = 'UTF16be';
+CREATE TABLE a(b, c, d, e, f);
+INSERT INTO a VALUES(0, 0, 0, 0, 0);
+SELECT *FROM a WHERE CAST(e AS TEXT) IN(0, 0);

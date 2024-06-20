@@ -1,0 +1,14 @@
+                CREATE TABLE a (b   UNIQUE );
+                        INSERT INTO a VALUES ('151944303');
+                        ALTER TABLE a RENAME TO c;
+                        ANALYZE ;
+                        ALTER TABLE c ADD d ;
+                        INSERT INTO c VALUES ('981622186', '83b3bf4a');
+                        CREATE INDEX e ON c(x'f78a' ) ;
+                        ALTER TABLE c RENAME d TO f;
+                        ALTER TABLE c RENAME b TO g;
+                        ALTER TABLE c ADD h;
+                        ALTER TABLE c RENAME TO a;
+                        INSERT INTO a VALUES ( '', '' ,0);
+                        ALTER TABLE a RENAME TO c;
+                        SELECT g FROM c  WHERE f NOTNULL ;

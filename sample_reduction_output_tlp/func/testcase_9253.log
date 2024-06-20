@@ -1,0 +1,4 @@
+CREATE TABLE a(b);
+ INSERT INTO a VALUES('');
+ INSERT INTO a VALUES(0xffffffffe7f7df97);
+ SELECT TOTAL(b) FROM a;

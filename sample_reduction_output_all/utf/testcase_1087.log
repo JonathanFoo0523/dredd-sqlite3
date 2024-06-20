@@ -1,0 +1,2 @@
+PRAGMA encoding = 'UTF16le';
+CREATE VIRTUAL TABLE a USING b;

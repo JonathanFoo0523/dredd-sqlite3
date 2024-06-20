@@ -1,0 +1,6 @@
+      CREATE  TABLE vt0  (c0 );
+                     INSERT INTO vt0 VALUES (1);
+                     INSERT INTO vt0 VALUES ('1202307893');
+                     CREATE VIEW  v0(c0) AS SELECT TYPEOF(c0) FROM vt0 ORDER BY CASE WHEN 0  THEN c0 END  , ((((((vt0.c0 )AND(c0  ))))))   ;
+                     INSERT   INTO vt0 VALUES ('/V\Uo{)')                ;
+                     SELECT DISTINCT c0 FROM v0;

@@ -1,0 +1,87 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['25376']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-1.1 {
+  PRAGMA journal_size_limit = 0;
+} {0}
+
+# kill mutants ['16572']
+# EXCLUDED: INDETERMINISTICS RESULT DUE TO RTREE INDEX
+# reset_db
+# sqlite3_db_config db DEFENSIVE 1
+# do_execsql_test pager-dredd-2.1 {
+#   CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+#   INSERT INTO a VALUES(0, 0, 0);
+#   UPDATE a SET b = 1e500;
+#   INSERT INTO a(c) VALUES( '');
+#   SELECT *FROM a;
+# } {9223372036854775807 0 0 2891290284081666165 0 0}
+
+# kill mutants ['25379']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-3.1 {
+  CREATE TEMP VIEW a AS SELECT 0;
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_execsql_test pager-dredd-3.2 {
+  PRAGMA wal_checkpoint;
+} {0 -1 -1}
+
+# kill mutants ['18778', '18810']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  CREATE VIRTUAL TABLE e USING fts5(0);
+  CREATE VIRTUAL TABLE f USING rtree_i32(b, c, d);
+  PRAGMA mmap_size = 034921;
+} {34921}
+do_catchsql_test pager-dredd-4.2 {
+  CREATE VIRTUAL TABLE g USING h;
+} {1 {no such module: h}}
+
+# kill mutants ['1567', '1599']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-5.1 {
+  PRAGMA locking_mode = EXCLUSIVE;
+} {exclusive}
+do_execsql_test pager-dredd-5.2 {
+  PRAGMA journal_size_limit = 40114539576898;
+} {40114539576898}
+do_execsql_test pager-dredd-5.3 {
+  BEGIN IMMEDIATE;
+  COMMIT;
+} {}
+
+# kill mutants ['22513']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pager-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE TABLE e(f);
+  INSERT INTO a(d) VALUES('H1i_RG(䘃N');
+  UPDATE a SET c = '900899502';
+} {1 {rtree constraint failed: a.(c<=d)}}
+do_execsql_test pager-dredd-6.2 {
+  UPDATE e SET f = '';
+} {}
+
+# kill mutants ['1421', '1453']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pager-dredd-7.1 {
+  PRAGMA synchronous = 0;
+  CREATE TABLE a(b, c);
+  REPLACE INTO a(c) VALUES('');
+  PRAGMA journal_mode = PERSIST;
+} {persist}
+do_execsql_test pager-dredd-7.2 {
+  UPDATE a SET(b) = 0;
+} {}
+
+finish_test

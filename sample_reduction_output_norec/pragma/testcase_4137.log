@@ -1,0 +1,2 @@
+PRAGMA temp.mmap_size = 1;
+PRAGMA mmap_size;

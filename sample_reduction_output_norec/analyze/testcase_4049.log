@@ -1,0 +1,6 @@
+CREATE TABLE a(b);
+ALTER TABLE a RENAME TO c;
+ANALYZE;
+CREATE INDEX d ON c(0);
+INSERT INTO sqlite_stat1 VALUES('', '', '');
+ANALYZE d;

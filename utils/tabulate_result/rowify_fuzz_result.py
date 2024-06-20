@@ -23,13 +23,19 @@ try:
 except EOFError as err:
     pass
 
-# for i in [1, 2, 4 8]:
+for i in [1, 2, 4, 8]:
+    for file in sorted(result):
+        print(file.replace("_", "\_" )  + ' & '
+                # + f'{result[file][1][0]} & {result[file][1][1]}' + ' & '
+                + f'{result[file][2][0]:,} & {result[file][2][1]:,}' + ' & '
+                + f'{result[file][4][0]:,} & {result[file][4][1]:,}' + ' & '
+                + f'{result[file][6][0]:,} & {result[file][6][1]:,}' + ' & '
+                + f'{result[file][8][0]:,} & {result[file][8][1]:,}' + ' \\\\'
+            )
 
-for file in sorted(result):
-    print(file.replace("_", "\_" )  + ' & '
-            + f'{result[file][1][0]} & {result[file][1][1]}' + ' & '
-            + f'{result[file][2][0]} & {result[file][2][1]}' + ' & '
-            + f'{result[file][4][0]} & {result[file][4][1]}' + ' & '
-            + f'{result[file][8][0]} & {result[file][8][1]}' + ' \\\\'
-        )
+# for gen in range(1, 9):
+#     res = 0
+#     for file in result:
+#         res += result[file][gen][1]
+#     print(res)
 

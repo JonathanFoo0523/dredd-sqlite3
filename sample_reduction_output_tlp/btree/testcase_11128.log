@@ -1,0 +1,6 @@
+CREATE VIRTUAL TABLE vt1 USING fts4(a, c1 , order=DESC);
+               INSERT   INTO vt1(a) VALUES (0), ('ced5'), (1);
+               INSERT INTO vt1 VALUES (1, 1.728491789E9), (1, 0.05547871892584355), ('2078803741', '}|%Dw}[IP');
+               UPDATE vt1 SET (a,  c1)=( 0.7910453075245281, '匇NJv');
+               PRAGMA cell_size_check = 1;
+               UPDATE   vt1 SET a='2068664020';

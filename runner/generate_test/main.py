@@ -2,7 +2,7 @@ from runner.common.types import MutantID
 from runner.generate_test.worker import TestGenerationWorker
 
 import time
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 import os
 import pickle
@@ -29,6 +29,7 @@ def get_regression_tested_file(output_dir: str):
 def main():
     parser = argparse.ArgumentParser()
     parser = argparse.ArgumentParser(description='Generate test cases.')
+    parser.add_argument('--oracle', nargs='?', const="FUZZER", type=str)
     parser.add_argument("sqlancer_jar_path",
                         help="Path to SQLancer JAR file.",
                         type=Path)
@@ -42,6 +43,13 @@ def main():
                         help="Directory to store result of result of fuzz testing and interesting test cases",
                         type=Path)
     args = parser.parse_args()
+
+    if args.oracle is None:
+        args.oracle = "FUZZER"
+    if args.oracle in ['NoREC', 'AGGREGATE', 'WHERE', 'DISTINCT', 'GROUP_BY', 'HAVING', 'QUERY_PARTITIONING']:
+        enable_qpg = True
+    else:
+        enable_qpg = False
     
     if not os.path.isdir(args.output_directory):
         os.mkdir(args.output_directory)
@@ -78,14 +86,12 @@ def main():
             print(f"Skip {file} with 0 mutants")
             continue
 
-        if file == 'build':
-            continue
 
         # print(">>>>", file, len(killed))
 
         coverage_bin = os.path.join(args.mutation_binary_path, f'sqlite3_{file}_coverage')
         mutation_bin = os.path.join(args.mutation_binary_path, f'sqlite3_{file}_mutation')
-        async_worker = TestGenerationWorker(args.sqlancer_jar_path, file, killed, coverage_bin ,mutation_bin, args.output_directory, max_parallel_tasks=32, total_gen=8)
+        async_worker = TestGenerationWorker(args.sqlancer_jar_path, file, killed, coverage_bin ,mutation_bin, args.output_directory, max_parallel_tasks=cpu_count(), total_gen=8, oracle=args.oracle, enable_qpg=enable_qpg)
         asyncio.run(async_worker.slice_runner())
 
 

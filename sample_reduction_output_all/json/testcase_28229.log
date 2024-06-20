@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING rtree(,  h, d, i);
+          INSERT   INTO a(i) VALUES  (x'f3bd');
+          CREATE VIRTUAL TABLE e USING rtree_i32(b, c, h, +d );
+          INSERT INTO e(d, c, h) VALUES ('', x'', '');
+          SELECT CAST(0 AS f)g FROM a, e ORDER BY CAST(json_array_length(a.h, a.d) AS );

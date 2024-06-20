@@ -1,0 +1,5 @@
+CREATE  TABLE h(a);
+    ALTER TABLE h ADD b TEXT;
+    CREATE VIRTUAL TABLE c USING rtree(a d, e, f);
+    CREATE INDEX g ON h(0 COLLATE RTRIM,                      ('0eef', 0, 0)BETWEEN(0, 0, 0) AND(a, 0, 0));
+    SELECT 0 FROM c, h GROUP BY c.a UNION SELECT a FROM c GROUP BY 1 HAVING MAX(f) UNION SELECT 0 ;

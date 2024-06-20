@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d, e, f);
+INSERT INTO a(e, b, c, d) VALUES(NULL, 3, 'c54c037b', NULL);
+SELECT json_valid(c || f) FROM a;

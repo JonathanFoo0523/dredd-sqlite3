@@ -1,0 +1,16 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, c3, c4, a, c6, +c7);
+INSERT INTO rt0(c0) VALUES(0);
+REPLACE INTO rt0(c2) VALUES('jx}Q괙查');
+REPLACE INTO rt0(a, c2) VALUES('', 0);
+INSERT OR IGNORE INTO rt0(c7, c6, c0, c3) VALUES('', '', NULL, 0);
+INSERT OR IGNORE INTO rt0(c1) VALUES(''), (0), ('');
+INSERT OR ROLLBACK INTO rt0(c7, c6, c4) VALUES(0, 0, 0), (x'', 0, 0),
+    ('', 0, '');
+INSERT OR IGNORE INTO rt0(c3, c1, c4, c2) VALUES(x'', 0, '', ''),
+    (x'', x'', x'', '');
+CREATE VIRTUAL TABLE rt52 USING rtree(c0, c1, c2);
+ANALYZE;
+INSERT OR IGNORE INTO rt52 VALUES(1, 0, '');
+VACUUM;
+INSERT OR IGNORE INTO rt52 VALUES('', '', 0);
+SELECT *FROM rt0, rt52;

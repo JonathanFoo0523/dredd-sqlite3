@@ -1,0 +1,5 @@
+CREATE TABLE t1(c0);
+INSERT INTO t1 VALUES(x'');
+PRAGMA journal_mode = WAL;
+UPDATE t1 SET(c0, c0, c0) = (0, 0, x'');
+PRAGMA wal_checkpoint;

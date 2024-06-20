@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts5(0,0 UNINDEXED);
+              CREATE VIRTUAL TABLE rt1 USING rtree(a, c1 ,    c4  );
+              CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, c1,  c3  );
+              SELECT  0 FROM rt1  INNER JOIN rt0 ON ROUND((0 ISNULL), 0) WHERE ((((0&(rt0.c1))) IS TRUE)) ;

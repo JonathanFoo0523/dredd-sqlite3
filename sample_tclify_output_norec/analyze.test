@@ -1,0 +1,192 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4049', '4081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-1.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ANALYZE;
+  CREATE INDEX d ON c(0);
+  INSERT INTO sqlite_stat1 VALUES('', '', '');
+  ANALYZE d;
+} {}
+
+# kill mutants ['3106', '3156']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-2.1 {
+  CREATE TEMP TABLE a(b);
+  ANALYZE a;
+} {}
+
+# kill mutants ['1590']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-3.1 {
+  CREATE VIRTUAL TABLE vt70 USING fts5( 1 );
+          ANALYZE;
+} {}
+
+# kill mutants ['4230', '4262']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-4.1 {
+  CREATE TEMP TABLE t1(c0, c1, c2);
+  REPLACE INTO t1(c1) VALUES( '');
+  ALTER TABLE t1 RENAME TO t2;
+  ALTER TABLE t2 ADD c75;
+  ALTER TABLE t2 ADD c27;
+  INSERT OR ROLLBACK INTO t2(c27, c0, c75) VALUES(0, '', 0);
+  CREATE INDEX i72 ON t2(0 COLLATE BINARY COLLATE RTRIM COLLATE NOCASE) WHERE 0;
+  CREATE INDEX i30 ON
+  t2(CASE WHEN '' THEN 0 END COLLATE NOCASE,
+     CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN 0 THEN 0 ELSE 0 END COLLATE NOCASE
+         COLLATE BINARYNULL COLLATE BINARY0 COLLATE RTRIM COLLATE NOCASE BETWEEN
+             c1 AND 0 COLLATE BINARY COLLATE RTRIM COLLATE NOCASE,
+     c2, CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN '' THEN 0 END);
+  ANALYZE i30;
+  SELECT *FROM t2 ORDER BY c2;
+} {{} {} {} 0 0 {} {} {} {} {}}
+
+# kill mutants ['4080']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-5.1 {
+  CREATE TABLE t1(c0, c1, c2);
+  REPLACE INTO t1(c1) VALUES( '');
+  ALTER TABLE t1 RENAME TO t2;
+  ALTER TABLE t2 ADD c75;
+  ALTER TABLE t2 ADD c27;
+  INSERT OR ROLLBACK INTO t2(c27, c0, c75) VALUES(0, '', 0);
+  CREATE INDEX i72 ON t2(0 COLLATE BINARY COLLATE RTRIM COLLATE NOCASE) WHERE 0;
+  CREATE INDEX i30 ON
+  t2(CASE WHEN '' THEN 0 END COLLATE NOCASE,
+     CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN 0 THEN 0 ELSE 0 END COLLATE NOCASE
+         COLLATE BINARYNULL COLLATE BINARY0 COLLATE RTRIM COLLATE NOCASE BETWEEN
+             c1 AND 0 COLLATE BINARY COLLATE RTRIM COLLATE NOCASE,
+     c2, CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN '' THEN 0 END);
+  ANALYZE;
+  SELECT *FROM t2 ORDER BY c2;
+} {{} {} {} 0 0 {} {} {} {} {}}
+
+# kill mutants ['3979']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-6.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a ADD e;
+  INSERT INTO a VALUES('dd2b', 0, '4GR2**', 0);
+  CREATE TABLE t82(f, g, d);
+  INSERT INTO a(b) VALUES('682585516');
+  INSERT INTO a(c) VALUES( '');
+  INSERT OR REPLACE INTO t82 VALUES('', x'', 0), (0, '', 0), ('', 0, 0);
+  ANALYZE;
+  SELECT *FROM t82, a WHERE CASE WHEN e THEN 0 ELSE 1 END;
+} {{} {} 0 dd2b 0 4GR2** 0 0 {} 0 dd2b 0 4GR2** 0 {} 0 0 dd2b 0 4GR2** 0 {} {} 0 682585516 {} {} {} 0 {} 0 682585516 {} {} {} {} 0 0 682585516 {} {} {} {} {} 0 {} {} {} {} 0 {} 0 {} {} {} {} {} 0 0 {} {} {} {}}
+
+# kill mutants ['3100']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-7.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('.[7aR䷤'), ('405687780');
+  CREATE TEMPORARY TABLE d(c);
+  INSERT INTO d VALUES(''), (x'');
+  ANALYZE temp;
+  SELECT *FROM a, d;
+} {.[7aR䷤ {} 405687780 {} .[7aR䷤ {} 405687780 {}}
+
+# kill mutants ['3212', '3244']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-8.1 {
+  CREATE TEMP TABLE t1(a, c1);
+  REPLACE INTO t1(c1, a) VALUES(0, ''), (1, '');
+  ALTER TABLE t1 RENAME TO t2;
+  CREATE INDEX i76 ON
+  t2(CASE WHEN 0 THEN 0 END COLLATE BINARY,
+     CASE WHEN 0 THEN 0 ELSE 0 END COLLATE RTRIM COLLATE BINARY);
+  CREATE INDEX IF NOT EXISTS i92 ON t2(
+      0, NULL COLLATE BINARY, c1 COLLATE NOCASE COLLATE BINARY DESC,
+      0 COLLATE RTRIM COLLATE RTRIM,
+      CASE WHEN 0 THEN CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN 0 THEN 0 ELSE 0 END
+          WHEN 0 THEN 0 WHEN 0 THEN 0 END COLLATE BINARY COLLATE NOCASE);
+  ANALYZE i92;
+  SELECT *FROM t2 ORDER BY NULL NULLS FIRST, UPPER(0) NULLS LAST, '' ;
+} {{} 1 {} 0}
+
+# kill mutants ['4289']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-9.1 {
+  CREATE TABLE t0(a, b, c);
+  CREATE TABLE d(e, f, g);
+  REPLACE INTO d VALUES(0, '804219263', 'd0cb'), (0, '', 0);
+  INSERT OR IGNORE INTO t0 VALUES('', 0, ''), (0, '', 0);
+  CREATE INDEX h ON t0(0) WHERE 0 BETWEEN b AND 0;
+  ANALYZE;
+  UPDATE t0 SET b = HEX(0);
+  ANALYZE;
+  SELECT *FROM t0, d;
+} {{} 30 {} 0 804219263 d0cb 0 30 0 0 804219263 d0cb {} 30 {} 0 {} 0 0 30 0 0 {} 0}
+
+# kill mutants ['208', '240']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-10.1 {
+  ANALYZE temp;
+  ANALYZE temp;
+} {}
+
+# kill mutants ['1598']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-11.1 {
+  CREATE TEMP TABLE a(b, c, d, e, f);
+  ALTER TABLE a RENAME TO g;
+  INSERT INTO g VALUES(0, 0, 0, 0, '1710602170');
+  CREATE INDEX h ON g(0, 0, 0, 0, 0, 0);
+  ANALYZE temp;
+} {}
+
+# kill mutants ['1597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-12.1 {
+  CREATE TEMP TABLE a(b, c, d, e, f);
+  ALTER TABLE a RENAME TO g;
+  INSERT INTO g VALUES(0, 0, 0, 0, '1710602170');
+  CREATE INDEX h ON g(0, 0, 0, 0, 0);
+  ANALYZE temp;
+} {}
+
+# kill mutants ['1294', '1326']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-13.1 {
+  CREATE TEMP TABLE a(b);
+  ANALYZE temp;
+} {}
+
+# kill mutants ['3189']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test analyze-dredd-14.1 {
+  CREATE TEMPORARY TABLE t0(c2, c3);
+  INSERT INTO t0(c3) VALUES( '');
+  ANALYZE t0;
+  CREATE VIRTUAL TABLE vt0 USING fts4(0, c2);
+  INSERT OR IGNORE INTO vt0 VALUES('', 0);
+  ALTER TABLE t0 RENAME TO t1;
+  ALTER TABLE t1 RENAME c3 TO c31;
+  INSERT OR IGNORE INTO sqlite_stat1 VALUES('t1', '', ' ');
+  CREATE TABLE IF NOT EXISTS t0(INTEGER);
+  CREATE INDEX i70 ON t1(CASE WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN 0 THEN 0 END
+                             COLLATE RTRIM0 COLLATE BINARY COLLATE BINARY);
+  ALTER TABLE t0 ADD c11;
+  SELECT 0 FROM vt0 NATURAL JOIN t1 WHERE('', 0, 0) == (json(c31), 0, 0);
+} {1 {malformed JSON}}
+
+finish_test

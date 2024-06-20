@@ -1,3 +1,9 @@
-sample_dredd_output/** filter=lfs diff=lfs merge=lfs -text
 sample_fuzzing_output/** filter=lfs diff=lfs merge=lfs -text
-sample_regression_output/** filter=lfs diff=lfs merge=lfs -text
+*.json filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
+testfixture_*_sqlite3.c filter=lfs diff=lfs merge=lfs -text
+testfixture_*_coverage filter=lfs diff=lfs merge=lfs -text
+testfixture_*_mutation filter=lfs diff=lfs merge=lfs -text
+sqlite3_*_sqlite3.c filter=lfs diff=lfs merge=lfs -text
+sqlite3_*_coverage filter=lfs diff=lfs merge=lfs -text
+sqlite3_*_mutation filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+SELECT 0 FROM a WHERE(load_extension(0));

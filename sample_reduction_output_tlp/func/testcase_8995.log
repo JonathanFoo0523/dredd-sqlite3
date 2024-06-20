@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c1, c2);
+                    INSERT OR ROLLBACK INTO a(b) VALUES (x'');
+                    SELECT 1 FROM  a WHERE ((load_extension(c2, b) ));

@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d, e, f, g, h);
+INSERT INTO a VALUES(NULL, -5.72959194E8, '-45539286', -1.460817453E9,
+                     0.8039495985212288, '', x'');
+SELECT rtreecheck('a');

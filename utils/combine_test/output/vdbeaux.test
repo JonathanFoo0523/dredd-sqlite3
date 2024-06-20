@@ -1,0 +1,62 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['10785', '10788', '10789']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeaux-dredd-0.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, a, c2);
+  REPLACE INTO rt0 VALUES('', 0, '');
+  INSERT OR ABORT INTO rt0(c0, c2) VALUES(1, 0), (x'', '');
+} {1 {UNIQUE constraint failed: rt0.c0}}
+do_execsql_test vdbeaux-dredd-0.2 {
+  UPDATE rt0 SET(c0) = 0;
+} {}
+
+# kill mutants ['10947', '10949']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeaux-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  BEGIN;
+  INSERT OR ROLLBACK INTO a VALUES('1985026503', NULL, 0.6539028924309611),
+      (0.11257892249591062, NULL, '-1093959821');
+} {1 {rtree constraint failed: a.(c<=d)}}
+do_execsql_test vdbeaux-dredd-1.2 {
+  SELECT TOTAL_CHANGES();
+} {3}
+
+# kill mutants ['13036']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeaux-dredd-2.1 {
+           PRAGMA encoding = 'UTF16be';
+                          CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, c3, c4);
+                          INSERT INTO rt0(c3, c4) VALUES (0, 0.9375129726531455), ('', 0), (0, 50609);
+                          INSERT OR FAIL INTO rt0(c1, c3, c0, c2) VALUES (0, x'', '-63320600',0);
+                          CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2);
+                          INSERT OR ABORT INTO rt1(c1, c0) VALUES  (0,0), (0,1);
+                          SELECT  * FROM rt1, rt0  ORDER BY 1   NULLS LAST, x'' , HEX(rt0.c0) COLLATE RTRIM ;
+} {0 0 0 -63320600 0.0 0.0 0.0 0.0 0 0 0 1 0.0 0.0 0.0 0.937512993812561 0 0 0 2 0.0 0.0 0.0 0.0 0 0 0 3 0.0 0.0 0.0 50609.0 1 0 0 -63320600 0.0 0.0 0.0 0.0 1 0 0 1 0.0 0.0 0.0 0.937512993812561 1 0 0 2 0.0 0.0 0.0 0.0 1 0 0 3 0.0 0.0 0.0 50609.0}
+
+# kill mutants ['13372', '13388', '13420']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeaux-dredd-3.1 {
+  SELECT(HEX(0) BETWEEN 0 AND(TRIM(0, 0)));
+} {0}
+
+# kill mutants ['17748', '17750', '17780', '17782']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeaux-dredd-4.1 {
+  CREATE TABLE t0(c0 TEXT);
+  INSERT INTO t0 VALUES(''), (5.5343259E7), (x'');
+  INSERT OR IGNORE INTO t0 VALUES('1092014317');
+  CREATE INDEX i1 ON t0(c0 DESC) WHERE CAST(c0 COLLATE RTRIM AS NUMERIC);
+  INSERT OR IGNORE INTO t0 VALUES('55343259');
+  ALTER TABLE t0 RENAME COLUMN c0 TO c55;
+  UPDATE OR ROLLBACK t0 SET c55 = '';
+} {}
+
+finish_test

@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+INSERT INTO a VALUES('3939', '', '', '', ''), ('', x'', 0, '', 0);
+SELECT *FROM a WHERE CAST(e AS TEXT) IN(0, 0);

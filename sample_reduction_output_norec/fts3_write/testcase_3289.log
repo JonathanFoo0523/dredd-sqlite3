@@ -1,0 +1,4 @@
+ CREATE VIRTUAL TABLE vt0 USING fts4(0,1 , languageid="lid");
+                         INSERT INTO vt0 VALUES ( 0, '');
+                         UPDATE vt0 SET lid=0 WHERE '245866525';
+                         SELECT * FROM vt0 WHERE lid;

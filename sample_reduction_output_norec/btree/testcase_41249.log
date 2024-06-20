@@ -1,0 +1,5 @@
+PRAGMA encoding = 'UTF16le';
+         CREATE VIRTUAL TABLE vt0 USING fts5(     UNINDEXED,     "unicode61 remove_diacritics  tokenchars '' separators ''");
+         ANALYZE;
+         CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+         VACUUM;

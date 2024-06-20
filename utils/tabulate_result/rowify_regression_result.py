@@ -21,10 +21,18 @@ try:
 except EOFError:
     pass
 
+total_covered = 0
+total_killed = 0
+total_mutants = 0
 for file in sorted(result):
+    total_covered += result[file][1]
+    total_killed += result[file][2]
+    total_mutants += result[file][0]
     print(file.replace("_", "\_" ) + ' & '
             + str(result[file][0]) + ' & '
             + str(result[file][1]) + ' & '
             + str(result[file][2]) + ' \\\\'
         )
 
+print()
+print(total_killed, total_covered, total_mutants)

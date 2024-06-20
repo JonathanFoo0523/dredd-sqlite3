@@ -1,0 +1,297 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['13500', '13501', '13507', '13508', '13511', '13512', '13515', '13516', '13521', '13524', '13526', '13534', '13539', '13540', '13545', '13547', '13553', '13554', '13556', '13558', '13562', '13563', '13566', '13567', '13568', '13570', '13573', '13574', '13576', '13577', '13578', '13591', '13592']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-1.1 {
+  PRAGMA threads = 1;
+} {1}
+
+# kill mutants ['4224', '4229', '4232', '4233', '4243', '4244', '4245', '4247', '4251', '4252', '4256']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-2.1 {
+  PRAGMA temp.mmap_size;
+} {}
+
+# kill mutants ['4099', '4100', '4103', '4105', '4118', '4121', '4122', '4125', '4131', '4132', '4135', '4137', '4150', '4153', '4154', '4157']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-3.1 {
+  PRAGMA temp.mmap_size = 1;
+  PRAGMA mmap_size;
+} {0}
+
+# kill mutants ['13518', '13550', '13579', '13580', '13581', '13582', '13583', '13589', '13590', '13593', '13594', '13595', '13596']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-4.1 {
+  PRAGMA threads;
+} {0}
+
+# kill mutants ['3992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-5.1 {
+  PRAGMA mmap_size = -2663227896317353349;
+} {0}
+
+# kill mutants ['13009', '13012', '13015', '13020', '13021', '13041', '13044', '13047', '13052', '13053']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-6.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0);
+  PRAGMA optimize;
+} {}
+
+# kill mutants ['12917']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-7.1 {
+  PRAGMA temp.optimize;
+} {}
+
+# kill mutants ['4098', '4116', '4119', '4130', '4148', '4151']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-8.1 {
+  PRAGMA main.mmap_size = 1;
+} {1}
+
+# kill mutants ['13065', '13067', '13078', '13085', '13097', '13099', '13108', '13110', '13117']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES('optimize');
+  PRAGMA optimize;
+  DELETE FROM sqlite_stat1;
+} {}
+
+# kill mutants ['4254', '4255', '4257', '4258', '4259', '4260']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-10.1 {
+  PRAGMA mmap_size;
+} {0}
+
+# kill mutants ['13537', '13542']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pragma-dredd-11.1 {
+  CREATE INDEX a ON b(0);
+} {1 {no such table: main.b}}
+do_execsql_test pragma-dredd-11.2 {
+  PRAGMA threads;
+} {0}
+
+# kill mutants ['3912', '3915', '3944', '3947']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test pragma-dredd-12.1 {
+  PRAGMA cache_spill = 0;
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['13523', '13532', '13533', '13555', '13561', '13564', '13565', '13571', '13575']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-13.1 {
+  PRAGMA threads = 0;
+} {0}
+
+# kill mutants ['2945', '2977']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-14.1 {
+  PRAGMA journal_mode = TRUNCATE;
+} {truncate}
+
+# kill mutants ['4000']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-15.1 {
+  PRAGMA mmap_size = 1;
+} {1}
+
+# kill mutants ['3985']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-16.1 {
+  PRAGMA mmap_size = 0;
+} {0}
+
+# kill mutants ['10640', '10672']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-17.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(0);
+  ALTER TABLE a ADD c CHECK(0 % 0);
+} {}
+
+# kill mutants ['13109', '13116', '13131']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-18.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a(a) VALUES('optimize');
+  PRAGMA optimize;
+  DELETE FROM sqlite_stat1;
+} {}
+
+# kill mutants ['2212']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-19.1 {
+  PRAGMA secure_delete = 0;
+} {0}
+
+# kill mutants ['3998']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-20.1 {
+   PRAGMA mmap_size = -6669625283290253305;
+} {0}
+
+# kill mutants ['3979', '3981', '4011', '4013', '4021']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-21.1 {
+  PRAGMA mmap_size = -6112227599678547248;
+} {0}
+
+# kill mutants ['13345']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-22.1 {
+  PRAGMA busy_timeout = 1;
+} {1}
+
+# kill mutants ['3914', '3946']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test pragma-dredd-23.1 {
+  PRAGMA cache_spill( '');
+  SELECT load_extension(0);
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['3931', '3966']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-24.1 {
+  PRAGMA cache_spill = 1;
+  PRAGMA short_column_names;
+} {1}
+
+# kill mutants ['10641', '10673']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-25.1 {
+  CREATE TABLE a(b, c CHECK(0 BETWEEN 0 AND(NULLIF(c, c))));
+  INSERT INTO a VALUES('', x'');
+  PRAGMA integrity_check;
+} {ok}
+
+# kill mutants ['13525', '13527', '13557', '13559']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-26.1 {
+  PRAGMA threads = 5;
+} {5}
+
+# kill mutants ['12919']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pragma-dredd-27.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0, 1);
+  INSERT INTO a VALUES(0, 0);
+  INSERT INTO a(a) VALUES('integrity-check');
+  UPDATE b SET c = 0;
+} {1 {no such table: b}}
+do_execsql_test pragma-dredd-27.2 {
+  PRAGMA optimize;
+} {}
+
+# kill mutants ['4674']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-28.1 {
+  PRAGMA short_column_names;
+} {1}
+
+# kill mutants ['13234']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-29.1 {
+  CREATE VIRTUAL TABLE a USING fts5(0, 1);
+  INSERT INTO a VALUES(0, 0);
+  INSERT INTO a(a) VALUES('integrity-check');
+  PRAGMA optimize;
+} {}
+
+# kill mutants ['13120']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-30.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+   INSERT INTO vt0 VALUES('optimize');
+   PRAGMA optimize;
+} {}
+
+# kill mutants ['12886', '12918']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test pragma-dredd-31.1 {
+  CREATE VIRTUAL TABLE a USING fts4(0, 1);
+  INSERT INTO a VALUES('', 0);
+  PRAGMA temp.optimize;
+  INSERT OR IGNORE INTO sqlite_stat1 VALUES('');
+} {1 {no such table: sqlite_stat1}}
+
+# kill mutants ['4672', '4675']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-32.1 {
+  PRAGMA recursive_triggers;
+} {0}
+
+# kill mutants ['13528', '13560']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-33.1 {
+  PRAGMA threads = 61685419485421035;
+} {8}
+
+# kill mutants ['12923']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-34.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts5(a, 0);
+  BEGIN;
+  INSERT INTO vt0 VALUES(0, 0);
+  UPDATE vt0 SET a = 0;
+  INSERT INTO vt0(vt0) VALUES('integrity-check');
+  PRAGMA optimize;
+} {}
+
+# kill mutants ['2117']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-35.1 {
+  PRAGMA default_cache_size = 0;
+  PRAGMA cache_spill;
+} {1}
+
+# kill mutants ['4871']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test pragma-dredd-36.1 {
+  PRAGMA defer_foreign_keys = 0;
+  REINDEX;
+} {}
+
+finish_test

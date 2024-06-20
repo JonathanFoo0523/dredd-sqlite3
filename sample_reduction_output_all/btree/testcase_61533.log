@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING fts4;
+INSERT INTO a VALUES('POFm');
+INSERT INTO a(a) VALUES('integrity-check');

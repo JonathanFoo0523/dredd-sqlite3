@@ -1,0 +1,5 @@
+CREATE TABLE t1(a, b, c2 TEXT);
+REPLACE INTO t1(b, c2, a) VALUES(0, x'', 0), ('', '', 0);
+ALTER TABLE t1 RENAME c2 TO c77;
+SELECT *FROM t1 WHERE(t1.c77 IN('2046407213', x'')) UNION ALL SELECT *FROM t1
+    WHERE(t1.c77 IN('', x''));

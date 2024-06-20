@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4(0 , b , languageid=);
+                        INSERT INTO a VALUES ( 0,0);
+                        UPDATE a SET b=='1433951714';
+                        INSERT INTO a(a) VALUES('integrity-check');

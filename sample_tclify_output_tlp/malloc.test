@@ -1,0 +1,11 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['749']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test malloc-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts5;
+} {1 {vtable constructor failed: a}}
+
+finish_test

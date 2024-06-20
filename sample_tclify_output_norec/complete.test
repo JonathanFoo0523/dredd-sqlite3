@@ -1,0 +1,56 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['410']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-1.1 {
+  PRAGMA synchronous = 0;
+  COMMIT;
+} {1 {cannot commit - no transaction is active}}
+
+# kill mutants ['385', '417']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test complete-dredd-2.1 {
+  VALUES('  unordered');
+} {{  unordered}}
+do_catchsql_test complete-dredd-2.2 {
+  DELETE FROM a;
+} {1 {no such table: a}}
+
+# kill mutants ['651']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-3.1 {
+  CREATE TEMP TABLE a(b);
+  COMMIT;
+} {1 {cannot commit - no transaction is active}}
+
+# kill mutants ['683']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-4.1 {
+  CREATE TEMP TABLE a(b);
+  END;
+} {1 {cannot commit - no transaction is active}}
+
+# kill mutants ['208', '240', '253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-5.1 {
+  ALTER TABLE a RENAME TO b; -- 
+} {1 {no such table: a}}
+do_catchsql_test complete-dredd-5.2 {
+  UPDATE b SET c='' ; 
+} {1 {no such table: b}}
+
+# kill mutants ['221']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test complete-dredd-6.1 {
+  REINDEX ;
+  UPDATE OR IGNORE t2 SET c1=0.3473861595201051 WHERE CASE WHEN CASE WHEN t2c1 THEN c1 END THEN CAST(t2.c0 AS TEXT) WHEN 1878472620 THEN ((t2.c2) BETWEEN 0 AND 0) WHEN 0 THEN t2.c2 ELSE LTRIM END; -- ms;
+} {1 {no such table: t2}}
+
+finish_test

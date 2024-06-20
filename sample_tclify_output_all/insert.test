@@ -1,0 +1,238 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['14575']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-1.1 {
+   CREATE TABLE    a ( b  );
+            ALTER TABLE a RENAME TO c;
+            CREATE INDEX i2 ON c (  TRUE)  ;
+           VACUUM;
+} {}
+
+# kill mutants ['6743']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-2.1 {
+  CREATE TABLE t0(a);
+  CREATE TRIGGER b INSERT ON t0 BEGIN UPDATE t0 SET a =
+      CASE WHEN CASE WHEN 0 THEN '?V/ F<Dꌃ' END THEN 0 END;
+  END;
+  CREATE INDEX c ON t0((SUBSTR(a, a), 0, 0) <= (0, 0, CAST('' AS REAL)));
+  INSERT OR ROLLBACK INTO t0 VALUES(x''), (0.6552420975789282), ('');
+} {}
+
+# kill mutants ['14598']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-3.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  CREATE INDEX d ON a(b);
+  ALTER TABLE a RENAME b TO e;
+  INSERT INTO a VALUES(2, '씣2Q<0])'), (0, NULL);
+  ALTER TABLE a RENAME TO f;
+  VACUUM;
+  SELECT LAG(e) OVER() FROM f;
+} {{} 0}
+
+# kill mutants ['14568']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-4.1 {
+  CREATE TABLE t0 (c0 );
+        CREATE INDEX i83 ON t0(0 IN ()) WHERE CAST0;
+} {1 {no such column: CAST0}}
+do_execsql_test insert-dredd-4.2 {
+        CREATE INDEX a ON t0(0 ) ;
+        VACUUM;
+} {}
+
+# kill mutants ['14549']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-5.1 {
+  CREATE TABLE a (b );
+                   CREATE INDEX c ON a(0 ) ;
+                   VACUUM;
+} {}
+
+# kill mutants ['14569']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-6.1 {
+  CREATE TABLE a(c0 , b , c2 );
+  CREATE INDEX i95 ON a(CAST(0 AS b )  ,
+                                       CASE(c2) WHEN(0)
+                                           THEN c0 END);
+  VACUUM ;
+} {}
+
+# kill mutants ['14577']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-7.1 {
+  CREATE TABLE t0(a);
+  CREATE INDEX i95 ON t0(CAST((a)AS), CASE WHEN 0 THEN(0 IS TRUE) END);
+  VACUUM;
+} {}
+
+# kill mutants ['14578']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-8.1 {
+  CREATE TABLE a(d);
+  ALTER TABLE a RENAME TO b;
+  CREATE INDEX c ON b(0);
+  VACUUM;
+} {}
+
+# kill mutants ['4909']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES('8ff5');
+} {}
+
+# kill mutants ['8401', '8407', '8433']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-10.1 {
+  CREATE TABLE a(b PRIMARY KEY, c, d)
+  WITHOUT ROWID;
+  INSERT INTO a VALUES('', '', NULL);
+  UPDATE a SET(b, b) = (NULL, NULL);
+} {1 {NOT NULL constraint failed: a.b}}
+
+# kill mutants ['14581']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-11.1 {
+                CREATE TABLE t0 (c0 CHECK ( c0 COLLATE RTRIM));
+                ALTER TABLE t0 RENAME TO t1;
+                CREATE UNIQUE INDEX    i2 ON t1(0 );
+               VACUUM;
+} {}
+
+# kill mutants ['14683', '14684']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-12.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  INSERT INTO a VALUES('995812171'), ('');
+} {1 {table a has 3 columns but 1 values were supplied}}
+
+# kill mutants ['14586', '14588']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-13.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  VACUUM;
+} {}
+
+# kill mutants ['14545']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-14.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(CAST(0 AS), CASE WHEN 0 THEN 0 IS TRUE END);
+  VACUUM;
+} {}
+
+# kill mutants ['14573']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-15.1 {
+  CREATE TABLE b(c);
+  CREATE INDEX a ON b(CASE WHEN(0) THEN 0 END);
+  VACUUM;
+} {}
+
+# kill mutants ['14570']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-16.1 {
+  CREATE TABLE a(c);
+  CREATE INDEX b ON a(0, CASE WHEN 0 THEN TRUE END);
+  VACUUM;
+} {}
+
+# kill mutants ['14574']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-17.1 {
+  CREATE TABLE t1(c0 REAL CHECK(((0 IN()))));
+  CREATE INDEX a ON
+  t1(((0 BETWEEN 0 AND(c0))) );
+  VACUUM;
+} {}
+
+# kill mutants ['14585']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-18.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE INDEX d ON c(0);
+  VACUUM;
+} {}
+
+# kill mutants ['14600', '14601', '14633']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-19.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  CREATE INDEX c ON a(CASE WHEN 0 THEN b END);
+  CREATE INDEX d ON a(0.6552420975789282);
+  VACUUM;
+  UPDATE a SET b = NULL;
+} {}
+
+# kill mutants ['14536']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-20.1 {
+  CREATE TABLE t0(a );
+        CREATE UNIQUE INDEX i83 ON t0((((x'')NOT BETWEEN(0.5522837020200795) AND(0))IN     ())) WHERE     CAST(((0)OR(x''))AS );
+        CREATE INDEX b ON t0(0);
+        VACUUM;
+} {}
+
+# kill mutants ['7197']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test insert-dredd-21.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+  INSERT INTO a(e, d, b, c)
+      VALUES('1e500', 0.7819532531565033, 0.6917260418722515, 'rm\}[B3FGu');
+} {1 {rtree constraint failed: a.(e<=f)}}
+
+# kill mutants ['14597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-22.1 {
+  CREATE TABLE t0(a, c1, c2);
+  CREATE INDEX b ON t0(c1);
+  INSERT INTO t0 VALUES(0.9634916679723731, '9b70', '736308489'),
+      (NULL, '', 1.192367387E9), (NULL, NULL, '');
+  VACUUM main;
+  UPDATE OR IGNORE t0 SET c2 = x'', c1 ='';
+} {}
+
+# kill mutants ['4447']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test insert-dredd-23.1 {
+  CREATE TABLE t0(a);
+  CREATE TRIGGER b INSERT ON t0 BEGIN UPDATE t0 SET a =
+      CASE WHEN CASE WHEN 0 THEN '?V/ F<Dꌃ' END THEN 0 END;
+  END;
+  CREATE INDEX c ON t0(0 COLLATE RTRIM)
+          WHERE(a, 0, 0) <= (0, 0, CAST('' AS REAL));
+  INSERT OR ROLLBACK INTO t0 VALUES(x''), (0.6552420975789282), ('');
+} {}
+
+finish_test

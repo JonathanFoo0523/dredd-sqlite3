@@ -1,0 +1,5 @@
+CREATE TABLE a(b, c, d);
+ALTER TABLE a ADD e;
+ALTER TABLE a ADD f;
+INSERT INTO a VALUES('', 0, '', 130, 0);
+SELECT *FROM a WHERE(0 <= rtreenode(1, e));

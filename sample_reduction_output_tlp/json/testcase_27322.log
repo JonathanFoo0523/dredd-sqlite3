@@ -1,0 +1,2 @@
+ANALYZE;
+                        DELETE FROM sqlite_stat1 WHERE json_insert(x'9804',0,0);

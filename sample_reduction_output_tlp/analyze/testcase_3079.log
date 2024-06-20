@@ -1,0 +1,9 @@
+CREATE TEMPORARY TABLE t0(a, b, c);
+    CREATE VIRTUAL TABLE d USING rtree_i32(a, b, f);
+    REPLACE INTO t0(b) VALUES('-');
+    INSERT INTO d(f) VALUES(''), ('');
+    INSERT OR FAIL INTO t0 VALUES(0, 0, '');
+    ANALYZE t0;
+    INSERT OR IGNORE INTO sqlite_stat1 VALUES('t0', '', '-');
+    ALTER TABLE t0 ADD e ;
+    SELECT d.a FROM d, t0;

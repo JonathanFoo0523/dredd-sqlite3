@@ -1,0 +1,9 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE VIRTUAL TABLE e USING rtree(f, g, b);
+INSERT INTO e(b) VALUES(0);
+REPLACE INTO e(f) VALUES(7);
+INSERT INTO e VALUES('P纀wy2', 0, 'kP'), (NULL, 0, 0);
+ANALYZE;
+CREATE TABLE h(i);
+ALTER TABLE h RENAME TO j;
+SELECT *FROM e, a WHERE(load_extension(0));

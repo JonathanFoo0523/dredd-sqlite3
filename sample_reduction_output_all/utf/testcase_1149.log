@@ -1,0 +1,2 @@
+PRAGMA encoding = 'UTF16le'                ;
+                        SELECT x'8ddcd270' ;

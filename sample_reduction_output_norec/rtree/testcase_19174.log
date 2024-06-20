@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, c1, b);
+INSERT INTO rt0 VALUES('^ଲ', '', '');
+PRAGMA journal_mode = WAL;
+UPDATE OR IGNORE rt0 SET c1 ='';
+PRAGMA wal_checkpoint;

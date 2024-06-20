@@ -1,0 +1,5 @@
+ CREATE VIRTUAL TABLE a USING fts4(b, languageid="lid");
+                         BEGIN ;
+                         INSERT INTO a(lid, b) VALUES (1, '1266970764');
+                         INSERT INTO a VALUES ( '8c4e4359');
+                         PRAGMA integrity_check;

@@ -1,0 +1,1 @@
+SELECT SUM0 FROM(     SELECT(((0)AND(vt0.c0))COLLATE RTRIM)IS TRUE         as count FROM vt0 ORDER             BY((((((vt0.c0)OR(0.049702191448739996)))OR(vt0.c0)))ISNULL)                 ASC NULLS LAST);

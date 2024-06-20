@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+ALTER TABLE a RENAME TO c;
+SELECT 0 FROM c WHERE(json_array(CAST('▅ꍾ' AS BLOB)));

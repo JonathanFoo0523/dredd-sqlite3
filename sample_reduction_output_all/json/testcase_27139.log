@@ -1,0 +1,1 @@
+SELECT json_insert(COUNT(), 1, 0);

@@ -1,0 +1,5 @@
+CREATE TABLE a(c0);
+ CREATE TABLE rt0(c2);
+ CREATE TABLE t0(c0 );
+ ALTER TABLE t0 RENAME TO b;
+ SELECT(SELECT(((((((((c2)AND(1)AND b.c0)))OR(a.c0)))COLLATE RTRIM))                   IS 0) FROM rt0,        a, b ORDER BY(0 NOTNULL) NOT NULL);

@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 # Performing Mutation Testing on one source file
 class MutationTestingWorker:
-    def __init__(self, dredd_mutant_info_script_path, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, output_dir: str, max_parallel_tasks: int = 4):
+    def __init__(self, dredd_mutant_info_script_path, source_name: str, tracking_binary: str, mutation_binary: str, mutation_info: str, sqlite_src_path: str, output_dir: str, max_parallel_tasks: int = 4):
         assert(os.path.isfile(dredd_mutant_info_script_path))
         assert(os.path.isfile(tracking_binary))
         assert(os.path.isfile(mutation_binary))
@@ -31,6 +31,7 @@ class MutationTestingWorker:
         self.mutation_info = mutation_info
         self.max_parallel_tasks = max_parallel_tasks
 
+        self.sqlite_src_path = os.path.abspath(sqlite_src_path)
         assert os.path.isdir(output_dir)
         self.output_dir = output_dir
         if not os.path.isdir(os.path.join(output_dir, source_name)):
@@ -77,28 +78,30 @@ class MutationTestingWorker:
             env_copy["DREDD_ENABLED_MUTATION"] = str(mutant)
         
         with tempfile.TemporaryDirectory() as temp_test_dir:
-            stdout, stderr, returncode = await subprocess_run([self.mutation_binary, test_path], timeout=timeout, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, env=env_copy, cwd=temp_test_dir)
+            stdout, stderr, returncode = await subprocess_run([self.mutation_binary, test_path, '--verbose=0'], timeout=timeout, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, env=env_copy, cwd=temp_test_dir)
 
         if returncode == TIMEOUT_RETCODE:
             # Timeout (Might be a problem when child process could have the same return code)
             return (TestStatus.KILLED_TIMEOUT, stderr.decode().rstrip('/n'))
         elif returncode == 1:
             # Fail a test
-            try:
-                output = ''.join(stdout.decode())
-                match = re.search('(\d)+ errors out of (\d)+', output)
-                description = match.group() if match is not None else ""
-                return (TestStatus.KILLED_FAILED, description)
-            except:
-                return (TestStatus.KILLED_FAILED, "FAILED TO READ OUTPUT")
+            description = self.extract_error_count(stdout)
+            return (TestStatus.KILLED_FAILED, description)
         elif returncode == 0:
             # Pass all test
-            output = ''.join(stdout.decode())
-            match = re.search('(\d)+ errors out of (\d)+', output)
-            description = match.group() if match is not None else ""
+            description = self.extract_error_count(stdout)
             return (TestStatus.SURVIVED, description)
         else:
             return (TestStatus.KILLED_CRASHED, f"died with code {returncode}")
+
+    def extract_error_count(self, stdout) -> str:
+        try:
+            output = ''.join(stdout.decode())
+            match = re.search(r'\n(\d+) errors out of (\d+)', output)
+            description = match.group(0)[1:] if match is not None else ""
+            return description
+        except:
+            return "FAILED TO READ OUTPUT"
 
 
     def load_progress(self) -> tuple[asyncio.Queue, set[MutantID], set[MutantID], set[str], int]:
@@ -155,10 +158,11 @@ class MutationTestingWorker:
 
     async def mutant_queue_producer(self, queue: asyncio.Queue, killed: set[MutantID], in_coverage: set[MutantID], tests: list[str], pbar=None):
         for test in tests:
+            test_path = os.path.join(self.sqlite_src_path, test)
             
             start = time.time()
             try:
-                mutants = await self.get_mutations_in_coverage_by_test(test)
+                mutants = await self.get_mutations_in_coverage_by_test(test_path)
             except Exception as err:
                 print(err)
             end = time.time()
@@ -182,10 +186,11 @@ class MutationTestingWorker:
     async def mutant_queue_consumer(self, queue: asyncio.Queue, killed: set[MutantID], pbar=None):
         while True:            
             test, base_time, mutant = await queue.get()
+            test_path = os.path.join(self.sqlite_src_path, test)
 
             if mutant not in killed:
                 timeout = max(base_time * TIMEOUT_MULTIPLIER_FOR_REGRESSION_TEST, MINIMUM_REGRESSION_TEST_TIMEOUT_SECONDS)
-                status, description = await self.run_testfixture(test, mutant=mutant, timeout=timeout)
+                status, description = await self.run_testfixture(test_path, mutant=mutant, timeout=timeout)
                 if status != TestStatus.SURVIVED:
                     with open(self.killedfile, 'a+') as killedfile:
                         killedfile.write(f"{mutant}\n")
@@ -212,7 +217,6 @@ class MutationTestingWorker:
     
     async def async_slice_runner(self, testset: list[str]):
 
-        print()
         print("Running regression test:", self.source_name)
 
         self.total_mutants = await self.get_total_mutants()

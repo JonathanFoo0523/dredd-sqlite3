@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, c1, c2, b, c4);
+INSERT INTO rt0(b) VALUES( '');
+UPDATE OR IGNORE rt0 SET(c4, c2, c1) = ('-', '', x'');
+SELECT rtreecheck('rt0');

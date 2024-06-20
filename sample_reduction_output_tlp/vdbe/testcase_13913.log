@@ -1,0 +1,6 @@
+ CREATE TABLE    t1 (c0  , c1  , c2 REAL )
+ ;
+ 
+ ALTER TABLE t1 RENAME TO t2
+  ;
+ INSERT   INTO t2   VALUES (0, 0xffffffff94a31e54, '-9223372036854775808'   );

@@ -1,0 +1,5 @@
+CREATE TABLE t0(a, c1, c2);
+ INSERT INTO t0(a) VALUES(0);
+ UPDATE t0 SET(c2, a, c1) = ('968949235', '', '');
+ CREATE INDEX IF NOT EXISTS i77 ON t0(IFNULL((0)BETWEEN(0) AND(NULL),                                             INSTR(c1, c2)),                                      CASE WHEN(0) THEN(0, 0, 0) BETWEEN(0, 0, 0)                                          AND(0, 0, 0) WHEN 0 THEN 0 WHEN(0 )                                              THEN(0) ELSE CAST('' AS)                                                  END COLLATE RTRIM );
+ UPDATE OR IGNORE t0 SET(c1) = x'';

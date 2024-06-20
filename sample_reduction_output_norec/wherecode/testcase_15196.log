@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS a(b);
+CREATE VIRTUAL TABLE j USING rtree_i32(i, c2, c);
+CREATE VIRTUAL TABLE d USING rtree_i32(b, i, c2, c3, c);
+CREATE TEMP TABLE IF NOT EXISTS t1(TEXT, i TEXT, c2 k, c3 PRIMARY KEY NULL,
+                                   c INTEGER) WITHOUT ROWID;
+UPDATE d SET c3 = '^h';
+INSERT INTO t1(c3, c2) VALUES('6N', 0);
+ALTER TABLE t1 RENAME c TO e;
+ALTER TABLE t1 RENAME TO f;
+INSERT INTO d(c) VALUES(0);
+INSERT INTO d(c2, c) VALUES('K Y&', 'f5d3');
+CREATE UNIQUE INDEX g ON
+f(NULL COLLATE BINARY, CASE WHEN e THEN 2 END COLLATE BINARY,
+  (CASE 1 WHEN e THEN '0.30703111135433936' END IN(12))COLLATE BINARY,
+  (b IN())COLLATE NOCASE);
+SELECT 0;
+SELECT SUM(count) FROM(SELECT((((0, 0, d.i) = ((d.c, 1, d.c2))AND 1)))
+                           IS TRUE count FROM d FULL JOIN(f h)
+                               FULL JOIN j JOIN a ON('' - 0) ORDER BY 1,
+                       1);

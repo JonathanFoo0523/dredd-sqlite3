@@ -1,0 +1,8 @@
+CREATE TABLE t0 (c0 a );
+                ALTER TABLE t0 ADD c82 ;
+                ALTER TABLE t0 ADD c9 ;
+                INSERT INTO t0(c9, c82, c0) VALUES ('', '', 0.7432292613709419);
+                ALTER TABLE t0 ADD COLUMN c73 REAL COLLATE BINARY;
+                ALTER TABLE t0 RENAME TO t1;
+                UPDATE OR IGNORE t1 SET (c73, c9, c0)=(x'', x'0b5e', x'') ;
+                SELECT 3 FROM t1 GROUP BY c73 ORDER BY 0 BETWEEN 0 AND 0  NULLS FIRST, INSTR(0, c9 ) ;

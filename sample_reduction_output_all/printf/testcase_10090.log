@@ -1,0 +1,2 @@
+ CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2c3 );
+             SELECT (((0))LIKE(x'')) FROM rt0 ORDER BY -273056562  NULLS LAST;

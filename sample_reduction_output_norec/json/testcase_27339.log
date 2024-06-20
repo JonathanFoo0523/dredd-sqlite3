@@ -1,0 +1,6 @@
+ CREATE TABLE t0 ( c4 );
+                       ALTER TABLE t0 ADD c89 ;
+                       VALUES ('');
+                       INSERT OR ABORT INTO t0(c89) VALUES (x'a134');
+                       ALTER TABLE t0 RENAME TO t1;
+                       SELECT (SELECT 0    FROM t1 ORDER BY json_remove(c89 )  );

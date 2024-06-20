@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4;
+CREATE VIRTUAL TABLE b USING rtree_i32(c, d, e);
+PRAGMA cell_size_check = true;
+VACUUM;

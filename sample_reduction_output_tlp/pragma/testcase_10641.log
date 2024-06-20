@@ -1,0 +1,3 @@
+CREATE TABLE a(b, c CHECK(0 BETWEEN 0 AND(NULLIF(c, c))));
+INSERT INTO a VALUES('', x'');
+PRAGMA integrity_check;

@@ -1,0 +1,2 @@
+ALTER TABLE a ADD;
+SELECT rtreenode(1, 0);

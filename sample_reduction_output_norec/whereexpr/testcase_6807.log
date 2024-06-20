@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE TABLE e(b, d);
+INSERT INTO e VALUES( '', '');
+ALTER TABLE e RENAME b TO f;
+SELECT *FROM a, e WHERE(c) BETWEEN 0 AND(json_patch(f, 0));

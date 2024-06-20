@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+SELECT(b IN(COUNT(), b)) FROM a;

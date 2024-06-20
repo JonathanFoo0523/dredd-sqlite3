@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d, e, f);
+INSERT INTO a(e, d, b, c)
+    VALUES('1e500', 0.7819532531565033, 0.6917260418722515, 'rm}[B3FGu');

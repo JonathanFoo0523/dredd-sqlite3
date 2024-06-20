@@ -1,0 +1,4 @@
+CREATE TABLE a(c);
+CREATE TABLE d(e, b, f);
+INSERT INTO d VALUES('', 0, '');
+SELECT 0 FROM d, a GROUP BY e HAVING json_array_length(e);

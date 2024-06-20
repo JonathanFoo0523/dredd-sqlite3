@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+CREATE VIRTUAL TABLE c USING fts4("lid");
+SELECT 0 FROM a, c WHERE b = lid;

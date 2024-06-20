@@ -1,0 +1,8 @@
+ PRAGMA encoding = 'UTF16le';
+                         CREATE TABLE a (c0 REAL );
+                         ANALYZE;
+                         ALTER TABLE a ADD b BLOB CHECK ( CAST(CASE WHEN a.c0 THEN a.c0 ELSE a.c0 END AS NUMERIC));
+                         ALTER TABLE a RENAME b TO c10;
+                         CREATE INDEX i82 ON a(c10,CAST((((c10, c10, c0))==((c0, c0, c0))) AS REAL)) WHERE ((CAST(c0 AS NUMERIC))AND((NULL IN (c0))));
+                         CREATE UNIQUE INDEX i42 ON a(CAST(((('deb8'))=((c10))) AS TEXT),0 COLLATE RTRIM ASC) WHERE 'qA';
+                         ALTER TABLE a RENAME TO t1;

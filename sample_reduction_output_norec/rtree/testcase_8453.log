@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+CREATE TABLE e(b, c);
+INSERT INTO e(c) VALUES(0);
+INSERT INTO a VALUES('', x'', x'');
+SELECT *FROM e JOIN a ON d >= e.b;

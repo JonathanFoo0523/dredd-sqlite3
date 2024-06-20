@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+INSERT INTO a VALUES('id');
+SELECT 0 FROM a WHERE(json(b));

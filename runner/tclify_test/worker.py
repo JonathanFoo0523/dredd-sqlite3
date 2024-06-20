@@ -5,6 +5,7 @@ import subprocess
 import asyncio
 import tempfile
 import json
+from json import JSONDecoder
 
 class TCLifyWorker:
     def __init__(self, mutation_dir, reduction_dir, output_dir):
@@ -38,23 +39,41 @@ class TCLifyWorker:
             res = err_msg
         return res
 
-    def parse_stdout(self, json_str):
-        json_str = json_str.replace('\n', '')
-        json_obj = json.loads(json_str)
-
+    def parse_json_object_pairs(self, pairs):
         res = []
-        for row in json_obj:
-            for col in row:
-                if row[col] is None or row[col] == '':
-                    res.append(str('{}'))
-                elif type(row[col]) is str and ' ' in row[col]:
-                    res.append('{' + str(row[col]) + '}')
-                elif type(row[col]) is float:
-                    res.append('%s' % float('%.15g' % row[col]))
-                else:
-                    res.append(str(row[col]))
+        for key, value in pairs:
+            if value is None or value == '':
+                res.append('{}')
+            elif type(value) is str and ' ' in value:
+                res.append('{' + str(value) + '}')
+            elif type(value) is float:
+                res.append('%s' % float('%.15g' % value))
+            else:
+                res.append(str(value))
 
         return ' '.join(res)
+
+    def parse_stdout(self, json_str):
+        json_str = json_str.replace('\n', '')
+        # json_obj = json.loads(json_str)
+        decoder = JSONDecoder(object_pairs_hook=self.parse_json_object_pairs)
+        obj = decoder.decode(json_str)
+
+        return ' '.join(obj)
+        # res = []
+        # for row in json_obj:
+        #     for col in row:
+        #         if row[col] is None or row[col] == '':
+        #             res.append(str('{}'))
+        #         elif type(row[col]) is str and ' ' in row[col]:
+        #             res.append('{' + str(row[col]) + '}')
+        #         elif type(row[col]) is float:
+        #             res.append('%s' % float('%.15g' % row[col]))
+        #         else:
+        #             res.append(str(row[col]))
+                
+
+        # return ' '.join(res)
 
     async def group_sql(self, file, source):
         with tempfile.NamedTemporaryFile(prefix='dredd-sqlite3-tcl-test', suffix='.db') as tempdbfile:
@@ -65,6 +84,8 @@ class TCLifyWorker:
                 for sql in f2.readlines():
                     if sql[-1] != '\n':
                         sql += '\n'
+                    sql = sql.replace('}', '\}')
+                    sql = sql.replace('{', '\{')
                     proc.stdin.write(sql.encode())
                     await proc.stdin.drain()
 

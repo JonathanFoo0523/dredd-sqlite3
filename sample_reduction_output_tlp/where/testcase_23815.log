@@ -1,0 +1,11 @@
+CREATE TABLE a(c0);
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2, c3, c4, c5, c6, c7, c8,
+                                         +c9);
+INSERT INTO a VALUES('');
+ANALYZE;
+INSERT OR ROLLBACK INTO rt1(c0, c2, c3, c4, c9, c6)
+    VALUES('', '', '', '', '', 0);
+INSERT OR IGNORE INTO rt1(c3, c1, c2, c0, c8, c9, c5, c7, c6, c4)
+    VALUES(0, '', '', 1, 0, x'', '', '', 0, 0);
+INSERT INTO a VALUES(0);
+SELECT DISTINCT a.c0, c9 FROM rt1, a;

@@ -1,0 +1,15 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['16089', '16121']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test wherecode-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d, e, f);
+  INSERT INTO a(e, d, b, f, c)
+      VALUES(0.08878906541681786, '', NULL, 0.45566289394881765, '');
+  CREATE VIRTUAL TABLE g USING fts5(h);
+  SELECT NOT 0 FROM g RIGHT JOIN a;
+} {1}
+
+finish_test

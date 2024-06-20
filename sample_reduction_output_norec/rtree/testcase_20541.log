@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING b   ( ;
+    SELECT rtreenode(1,0);

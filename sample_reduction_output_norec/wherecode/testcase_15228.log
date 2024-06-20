@@ -1,0 +1,14 @@
+ PRAGMA temp_store=MEMORY;
+                    CREATE TABLE    t0 ( a );
+                    CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2, c3, c4);
+                    CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2, c3, c4);
+                    INSERT OR ABORT INTO rt0(c0, c4, c2 ) VALUES ( '', x'', '');
+                    CREATE TEMP TABLE IF NOT EXISTS t1 (c0  , c1 TEXT , c2 BLOB , c3 TEXT PRIMARY KEY ASC ON CONFLICT ROLLBACK NOT NULL UNIQUE , c4 INTEGER ) WITHOUT ROWID;
+                    INSERT OR REPLACE INTO t1(c3, c2) VALUES ('6',0);
+                    ALTER TABLE t1 RENAME  c4 TO c33;
+                    INSERT OR FAIL INTO t1(c1, c0, c3, c33) VALUES (0, '°', 1, '192970736');
+                    ALTER TABLE t1 RENAME TO t2;
+                    SELECT 0 FROM (SELECT 0    FROM  t0 ORDER BY 0 , CAST(CASE WHEN 0 THEN 0 ELSE 0 END AS ));
+                    SELECT  COUNT0 FROM t2, rt1, rt0 WHERE ((0 BETWEEN (( 0, t2.c33, 0, 0, (0 ISNULL), ((0)AND(rt0.c2)))) AND ((rt0.c3, 0, x'', 02851384, (NOT (rt1.c2)), rt0.c4 COLLATE BINARY, ((((((0)AND(rt1.c4)))OR(t2.c33)))AND(rt1.c0)))))) ORDER BY  DESC  NULLS LAST;
+                    SELECT SUM(count) FROM (SELECT ((((t2.c3, '', t2.c2, t2.c2, t2.c3, rt1.c3, t2.c2) BETWEEN ((((rt1.c1) NOT BETWEEN (rt0.c0) AND (t2.c1)), ((t2.c0) IS 0), t2.c33, (rt1.c2 IN (rt1.c2)), ((((((((((((rt0.c0)OR(rt1.c3)))AND(t2.c2)))OR(rt1.c3)))AND(0)))OR(rt1.c4)))AND(t2.c3)), (0 ISNULL), ((((t2.c1)AND(rt0.c1)))AND(rt0.c2)))) AND ((rt0.c3, (0  BETWEEN ((t2.c3)) AND ((rt1.c4))), x'', 02851384, (NOT (rt1.c2)), rt0.c4 COLLATE BINARY, ((((((((t2.c1)OR(rt1.c1)))AND(rt1.c4)))OR(t2.c33)))AND(rt1.c0)))))) IS TRUE)  as count FROM t2, rt1, rt0 ORDER BY ((CASE WHEN rt0.c3 THEN rt0.c3 WHEN rt1.c1 THEN rt1.c2 WHEN rt1.c2 THEN rt1.c2 END) NOT BETWEEN 0 AND (0.15539061724588243)) DESC  NULLS LAST);
+                   SELECT SUM(count) FROM (SELECT (((rt1.c0, rt0.c0, rt0.c1)>=(rt0.c4, t2.c33, rt0.c2))<<0 BETWEEN 0 AND 0) IS 1   count FROM rt0 FULL  JOIN t2 ON CAST(t2.c3 IS TRUE AS NUMERIC) FULL  JOIN rt1 ON 0<>0   JOIN t0 ON CAST(x'' AS ) BETWEEN - 0 AND rt0.c0 COLLATE RTRIM ORDER BY ((t2.c0)LIKE(t2.c0)<UPPER(0))    , 0 IN ());

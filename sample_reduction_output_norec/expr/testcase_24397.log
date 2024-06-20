@@ -1,0 +1,1 @@
+SELECT 0 WHERE''IS(0) OR(NOT(1));

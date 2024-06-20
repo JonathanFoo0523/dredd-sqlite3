@@ -1,0 +1,62 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3023']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-1.1 {
+   PRAGMA temp_store=MEMORY;
+                           CREATE  TABLE vt0  (c0);
+                           REPLACE INTO vt0 VALUES (x''), ('QIU_Tqd'), ('')            ;
+                           SELECT c0 FROM vt0 GROUP BY 1;
+} {{} QIU_Tqd {}}
+
+# kill mutants ['3010']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test main-dredd-2.1 {
+    PRAGMA temp_store=MEMORY;
+                         CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+                         INSERT INTO vt0 VALUES (x''), ('QIU_Tqd'), ('');
+                         VACUUM;
+                         SELECT a.b, a.c0, a.f, a.c, a.g, a.d, a.e FROM a GROUP BY a.b, a.c0, a.f, a.c, a.g, a.d, a.e;
+} {1 {no such table: a}}
+do_execsql_test main-dredd-2.2 {
+                         SELECT c0 FROM vt0 GROUP BY 1;
+} {{} QIU_Tqd {}}
+
+# kill mutants ['8271']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-3.1 {
+  PRAGMA threads = 16;
+} {8}
+
+# kill mutants ['3026']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-4.1 {
+  PRAGMA temp_store=MEMORY;
+                    CREATE  TABLE vt0  (c0);
+                    INSERT INTO vt0 VALUES (x''), ('QIU_Tqd'), ('');
+                    SELECT c0 FROM vt0 GROUP BY    1        ;
+} {{} QIU_Tqd {}}
+
+# kill mutants ['3012']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test main-dredd-5.1 {
+  CREATE TABLE t0(a, b, c);
+  ALTER TABLE t0 RENAME TO t1;
+  ALTER TABLE t1 ADD d;
+  ALTER TABLE t1 ADD e TEXT;
+  ALTER TABLE t1 ADD f;
+  INSERT INTO t1 VALUES('', 0, 0, 0, x'', x''),
+      (x'', x'', x'', 0, 0.17480231349960007, 0);
+  ALTER TABLE t1 RENAME TO t0;
+  ALTER TABLE t0 ADD c51;
+  INSERT OR IGNORE INTO t0 VALUES(0, 0, x'', 0, '0', 0, 0.0025216454467047456);
+  SELECT c51 FROM t0 GROUP BY e;
+} {0.00252164544670475 {} {}}
+
+finish_test

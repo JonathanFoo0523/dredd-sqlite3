@@ -1,0 +1,6 @@
+CREATE VIRTUAL TABLE rt0 USING rtree_i32(a, b, c2);
+CREATE VIRTUAL TABLE c USING rtree_i32(a, b, c2);
+BEGIN;
+UPDATE c SET c2 ='' WHERE 0;
+UPDATE rt0 SET c2 = x'';
+DROP TABLE c;

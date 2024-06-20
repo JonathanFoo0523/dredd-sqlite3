@@ -1,0 +1,51 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['2232']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-1.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  INSERT INTO a VALUES('815121439');
+  INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+# kill mutants ['6826']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-2.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING fts4("lid");
+  SELECT 0 FROM a, c WHERE b = lid;
+} {}
+
+# kill mutants ['6824']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-3.1 {
+  CREATE TABLE a(b);
+  CREATE VIRTUAL TABLE c USING fts4;
+  SELECT 0 FROM a, c WHERE b BETWEEN 0 AND c;
+} {}
+
+# kill mutants ['7041']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING fts4(b , order=DESC);
+                          INSERT INTO a VALUES ('iMpht)'), ('1592917855');
+                          SELECT DISTINCT b FROM a;
+} {1592917855 iMpht)}
+
+# kill mutants ['12293']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test fts3-dredd-5.1 {
+   CREATE VIRTUAL TABLE a USING fts4(b , languageid="lid");
+                           REPLACE INTO a(lid) VALUES (1), (0);
+                           BEGIN  ;
+                          UPDATE a SET b='e1f67ba1';
+                          INSERT INTO a(a) VALUES('integrity-check');
+} {}
+
+finish_test

@@ -1,0 +1,9 @@
+PRAGMA case_sensitive_like=a;
+                                CREATE TEMPORARY TABLE t1 (b UNIQUE , c1 , c );
+                                INSERT INTO d VALUES ('', 0.8309249078183306);
+                                ALTER TABLE t1 RENAME COLUMN c1 TO c99;
+                                INSERT OR IGNORE INTO t1 VALUES (3, x'');
+                                ALTER TABLE t1 RENAME TO t0;
+                                INSERT OR IGNORE INTO t0 VALUES (x'', x'', '');
+                                SELECT CASE WHEN  t0.c2 THEN 0 WHEN (0.2604250360350201)AND(vt0.c0)AND(t0.c99) THEN COUNT0 WHEN json_insert0 THEN 0 ELSE t0.c2-vt0.c0 END FROM vt0, t0 WHERE (0)OR-1.120110354E9>>0|0;
+                                SELECT DISTINCT LAG(UNLIKELY(DISTINCT t0.c99), x'3200'<b IN (b>>c99), CHANGES()) OVER ( ORDER BY 0>0<=2 ) FROM t0;

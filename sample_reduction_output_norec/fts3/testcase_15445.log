@@ -1,0 +1,11 @@
+CREATE VIRTUAL TABLE vt0 USING fts4(c0);
+                 INSERT   INTO vt0 VALUES ('');
+                 INSERT INTO vt0(vt0) VALUES('automerge=3');
+                 BEGIN IMMEDIATE TRANSACTION;
+                 UPDATE OR FAIL vt0 SET (c0)=0;
+                 ANALYZE;
+                 INSERT OR IGNORE INTO vt0 VALUES ('1122735000');
+                 UPDATE OR ABORT vt0 SET (c0)=0;
+                 INSERT OR ABORT INTO vt0 VALUES  (x'11'), (0);
+                 UPDATE OR IGNORE vt0 SET c0=0.166100176738613;
+                 COMMIT;

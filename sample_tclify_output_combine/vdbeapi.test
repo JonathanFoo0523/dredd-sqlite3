@@ -1,0 +1,48 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['987']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeapi-dredd-0.1 {
+  CREATE TABLE t0 (c0 );
+            ALTER TABLE t0 ADD c82 BLOB;
+            ALTER TABLE t0 ADD c9 ;
+            INSERT INTO t0 VALUES ('', '', 0.7432292613709419);
+            ALTER TABLE t0 ADD COLUMN c73 REAL COLLATE BINARY;
+            ALTER TABLE t0 RENAME TO t1;
+            UPDATE OR IGNORE t1 SET (c73, c9, c0)=(x'', x'0b5e', x''<(c9)) ;
+            SELECT c73 FROM t1 GROUP BY c73 ORDER BY INSTR(0, c9 COLLATE BINARY) ;
+} {{}}
+
+# kill mutants ['966']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbeapi-dredd-1.1 {
+  CREATE TABLE t0 (c0 a );
+                  ALTER TABLE t0 ADD c82 ;
+                  ALTER TABLE t0 ADD c9 ;
+                  INSERT INTO t0(c9, c82, c0) VALUES ('', '', 0.7432292613709419);
+                  ALTER TABLE t0 ADD COLUMN c73 REAL COLLATE BINARY;
+                  ALTER TABLE t0 RENAME TO t1;
+                  UPDATE OR IGNORE t1 SET (c73, c9, c0)=(x'', x'0b5e', x'') ;
+                  SELECT 3 FROM t1 GROUP BY c73 ORDER BY 0 BETWEEN 0 AND 0  NULLS FIRST, INSTR(0, c9 ) ;
+} {3}
+
+# kill mutants ['1047']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test vdbeapi-dredd-2.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, c1, c2, c3, b);
+  INSERT OR IGNORE INTO rt0(c3, c1, c2) VALUES ('', 987793142, 1516486420), (NULL, NULL, x''); -- 0ms
+  INSERT OR FAIL INTO rt1 VALUES (x'');  0ms
+  SELECT DISTINCT 0 FROM rt0 rt1 LIMIT 9  0ms;
+} {1 {no such table: rt1}}
+do_execsql_test vdbeapi-dredd-2.2 {
+  SELECT ALL COUNT() OVER (), 0, (0)OR(TRIM('')) FROM rt0 ;
+} {2 0 0 2 0 0}
+do_execsql_test vdbeapi-dredd-2.3 {
+  SELECT LAST_VALUE(0==(0 BETWEEN 0 AND NULL)) OVER ()  ; 
+} {{}}
+
+finish_test

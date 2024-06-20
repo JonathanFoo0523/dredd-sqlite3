@@ -1,0 +1,2 @@
+PRAGMA secure_delete = 1;
+ CREATE VIRTUAL TABLE a USING b;

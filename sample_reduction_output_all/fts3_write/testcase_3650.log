@@ -1,0 +1,3 @@
+CREATE VIRTUAL TABLE a USING fts4(languageid=);
+                    INSERT INTO a VALUES (NULL);
+                    INSERT INTO a(a) VALUES('rebuild');

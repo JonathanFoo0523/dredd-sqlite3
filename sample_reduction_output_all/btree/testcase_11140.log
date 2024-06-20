@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING fts4;
+CREATE VIRTUAL TABLE rt1 USING rtree_i32(b, c, d);
+PRAGMA cell_size_check = true;
+VACUUM;
+INSERT INTO e VALUES('pgsz');

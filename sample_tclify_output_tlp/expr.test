@@ -1,0 +1,438 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['24258', '24260']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-1.1 {
+  SELECT 0 WHERE NOT(0) IS NOT(0 IN());
+} {0}
+
+# kill mutants ['8334']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-2.1 {
+  CREATE TABLE a(c);
+  CREATE TABLE d(e, b, f);
+  INSERT INTO d VALUES('', 0, '');
+  SELECT 0 FROM d, a GROUP BY e HAVING json_array_length(e);
+} {1 {malformed JSON}}
+
+# kill mutants ['8242', '8243', '8244', '8245', '8246', '8247', '8248', '8249', '8250', '8253']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-3.1 {
+  SELECT 0 WHERE NOT((1)AND(FALSE));
+} {0}
+
+# kill mutants ['24440', '24441', '24444']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-4.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  INSERT INTO c VALUES('1954913779');
+  SELECT 0 WHERE NOT(0) IS NOT(CHANGES());
+} {}
+
+# kill mutants ['24705']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-5.1 {
+  CREATE TEMPORARY TABLE t0(a);
+  ALTER TABLE t0 ADD b;
+  ALTER TABLE t0 RENAME b TO c36;
+} {}
+
+# kill mutants ['24256', '24259']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-6.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  ALTER TABLE a RENAME b TO c;
+  SELECT 0 FROM a WHERE NOT(c OR(NULL));
+} {}
+
+# kill mutants ['14402']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-7.1 {
+  CREATE TABLE a(b CHECK(0 BETWEEN(b IN(b)) AND 0));
+  INSERT INTO a VALUES('X');
+} {1 {CHECK constraint failed: 0 BETWEEN(b IN(b)) AND 0}}
+
+# kill mutants ['24410', '24430', '24433', '24434', '24442']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-8.1 {
+  SELECT 0 WHERE NOT(0) IS NOT(0);
+} {0}
+
+# kill mutants ['14278']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-9.1 {
+  CREATE TABLE a(b, c, d);
+  REPLACE INTO a VALUES('Q3FH', '7a0c0ff0', '');
+  ALTER TABLE a RENAME TO e;
+  CREATE TABLE f(g);
+  SELECT *FROM f FULL JOIN e WHERE g IN(d) ISNULL;
+} {{} Q3FH 7a0c0ff0 {}}
+
+# kill mutants ['26007', '26032', '26035', '26036', '26039']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-10.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  CREATE INDEX d ON c(+b);
+  ALTER TABLE c ADD e;
+  INSERT INTO c VALUES( '', '');
+  ALTER TABLE c RENAME TO a;
+  SELECT 0 FROM a GROUP BY 1 HAVING + (NULL)ISNULL;
+} {0}
+
+# kill mutants ['14482']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-11.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  SELECT 0 FROM a WHERE(0 IN(-b));
+} {}
+
+# kill mutants ['25157']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-12.1 {
+  SELECT 0 WHERE(0) IS 0;
+} {0}
+
+# kill mutants ['24706']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-13.1 {
+   CREATE TEMPORARY TABLE t0 (c0 REAL );
+   ALTER TABLE t0 RENAME COLUMN c0 TO c5;
+   UPDATE OR ROLLBACK t0 SET (c60)='x3s6嶬Ii' WHERE (((t0.c5)) NOT BETWEEN (((0))) AND (((((((((c60ANDt0.c5))))OR(t0.c60)))AND(t0.c5)))));
+} {1 {no such column: c60}}
+
+# kill mutants ['24397']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-14.1 {
+  SELECT 0 WHERE(NOT(0) IS 0);
+} {}
+
+# kill mutants ['24070']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-15.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  ALTER TABLE a ADD a;
+  REPLACE INTO a VALUES('', 0);
+  SELECT *FROM a WHERE NOT(c AND(json_insert(c)));
+} {{} 0}
+
+# kill mutants ['27023', '27024', '27027', '27028']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-16.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME TO t1;
+  ALTER TABLE t1 ADD e;
+  CREATE INDEX f ON t1(0) WHERE(b) NOT NULL;
+  INSERT INTO t1 VALUES(NULL, 0, 0,                                   '');
+  SELECT 0 FROM t1 WHERE(NOT(0 IN('', 1)));
+} {0}
+
+# kill mutants ['24140']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-17.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  INSERT INTO c(b) VALUES('1954913779');
+  ALTER TABLE c RENAME d TO e;
+  ALTER TABLE c RENAME b TO f;
+  UPDATE c SET e = 1;
+  SELECT 0 FROM c WHERE((e)OR(NULL)) AND(f) OR(NULL);
+} {0}
+
+# kill mutants ['24703']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-18.1 {
+  CREATE TABLE b (c , d , e , f );
+             ALTER TABLE b ADD c22 ;
+             INSERT OR IGNORE INTO b VALUES (x'113d83f6',0,0, '㦯8j틨E', 0);
+             CREATE VIRTUAL TABLE a USING rtree_i32(g, c, d);
+             CREATE VIEW  IF NOT EXISTS h AS SELECT DISTINCT 0 FROM a;
+             SELECT * FROM h, b WHERE (NOT (c22  IN (TOTAL_CHANGES() ))) ;
+} {}
+
+# kill mutants ['8792', '8794', '8824']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-19.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('1438662357');
+  CREATE VIEW c AS SELECT 0;
+  CREATE TABLE d(e);
+  SELECT *FROM a LEFT JOIN d ON '' LEFT JOIN c;
+} {1438662357 {} 0}
+
+# kill mutants ['20973']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-20.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  INSERT INTO a VALUES(0);
+  SELECT *FROM a(highlight(b));
+} {1 {no such cursor: 0}}
+
+# kill mutants ['24139']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-21.1 {
+  SELECT 0 WHERE(NOT((0)IS(1) AND(0 BETWEEN 0 AND 0)));
+} {0}
+
+# kill mutants ['27068']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-22.1 {
+  CREATE TABLE a(b, c);
+  CREATE INDEX d ON a(0) WHERE(b) NOTNULL;
+  INSERT INTO a(c) VALUES('');
+  SELECT 0 FROM a WHERE(NOT(1) BETWEEN(b) AND 0);
+} {0}
+
+# kill mutants ['9034', '9066']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-23.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c ADD d;
+  SELECT 0 FROM c GROUP BY d HAVING(json_patch(d AND(COUNT()), 0));
+} {}
+
+# kill mutants ['7815']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-24.1 {
+  CREATE TABLE a(b CHECK( ''));
+  INSERT INTO a VALUES(0);
+} {1 {CHECK constraint failed: }}
+
+# kill mutants ['27029']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-25.1 {
+  CREATE TABLE d(c);
+         ALTER TABLE d RENAME c TO a;
+         ALTER TABLE d RENAME TO t1;
+         ALTER TABLE t1 ADD b;
+         CREATE INDEX i76 ON t1(0 ) WHERE a NOT NULL;
+         UPDATE t1 SET b = 0 WHERE 0 BETWEEN 0 AND 0;
+} {}
+
+# kill mutants ['24443']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-26.1 {
+  SELECT 0 WHERE(NOT(0) IS NOT(0));
+} {0}
+
+# kill mutants ['27625', '27627']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-27.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  CREATE VIRTUAL TABLE e USING fts4;
+  CREATE TABLE f(b);
+  ALTER TABLE f RENAME b TO g;
+  SELECT 0 FROM e LEFT JOIN a ON(g)
+  JOIN f ON(0 == c);
+} {1 {ON clause references tables to its right}}
+
+# kill mutants ['1128']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-28.1 {
+  PRAGMA case_sensitive_like=a;
+    CREATE TEMP TABLE t0 (c0  ) ;
+    CREATE  TRIGGER     b INSERT ON t0              BEGIN SELECT c;
+   END;
+      ALTER TABLE t0 ADD  c66 ;
+    CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2 0  );
+    ALTER TABLE t0 ADD  c37 ;
+    ALTER TABLE t0 RENAME  c66 TO d;
+} {1 {error in trigger b: no such column: c}}
+do_catchsql_test expr-dredd-28.2 {
+    ALTER TABLE t0 ADD  e ;
+      CREATE TABLE t37 (c0  )  ;
+    ALTER TABLE t37 ADD  c28 ;
+    ALTER TABLE t37 ADD  c88 ;
+    CREATE VIRTUAL TABLE f USING fts5(0 );
+    SELECT c880  (((0)OR(t0.c0))AND(0)) IS g GROUP BY rt0.c0, rt0.c1, t37.c88, t0.c37 UNION SELECT  rt0.c0, rt0.c1, t37.c88, t0.c37 FROM t37  ((1)AND(0))  JOIN rt0 ON 1 WHERE NOT (0 IS g) GROUP BY rt01, t37.c88,0  ;
+} {1 {'t37' is not a function}}
+do_execsql_test expr-dredd-28.3 {
+    SELECT TOTAL(CASE rt0.c2 NOTNULL  WHEN (t37.c28<<rt0.c1) THEN CASE t37.c28  WHEN t0.c0 THEN t0.e END WHEN (t37.c88 ISNULL) THEN CASE   WHEN f THEN t0.c0 END WHEN t37.c28 IS 0 THEN t0.e COLLATE BINARY END) FROM t0, rt0, f, t37 ORDER BY CASE WHEN ((0)AND(''))OR(t0.c37) THEN 0 WHEN 0 THEN 0 COLLATE RTRIM WHEN t0.c37 COLLATE BINARY THEN 0 WHEN 0 IS FALSE THEN CASE WHEN 0 THEN 0 WHEN rt0.c1 THEN t37.c88 WHEN 1 THEN t0.c37 END WHEN 0 THEN x'' END;
+} {0.0}
+
+# kill mutants ['27208', '27209', '27212', '27213']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-29.1 {
+  CREATE TABLE a(b, c, d);
+  ALTER TABLE a RENAME TO e;
+  INSERT INTO e VALUES(0, 'Z৆bT', 'e856');
+  CREATE INDEX f ON e(b) WHERE((1)AND(1)) NOT NULL;
+  INSERT INTO e(d) VALUES('');
+  ALTER TABLE e RENAME c TO g;
+  SELECT g FROM e WHERE NOT 0;
+} {Z৆bT {}}
+
+# kill mutants ['14483']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-30.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES(1);
+  SELECT 0 FROM a WHERE(0 IN(b));
+} {}
+
+# kill mutants ['27064']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-31.1 {
+  CREATE TABLE a(b, c, d);
+  CREATE INDEX e ON a(0) WHERE(c) NOTNULL;
+  INSERT INTO a(d) VALUES('');
+  CREATE TABLE f(g, c);
+  SELECT 0 FROM a LEFT JOIN f WHERE(NOT(1) BETWEEN(0 BETWEEN 0 AND(f.c)) AND 0);
+} {0}
+
+# kill mutants ['24707', '24709', '24710']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-32.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('');
+  ALTER TABLE a ADD c CHECK(0);
+} {1 {CHECK constraint failed}}
+
+# kill mutants ['24704']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-33.1 {
+  CREATE TABLE a(b);
+  ANALYZE;
+  ALTER TABLE a RENAME TO c;
+} {}
+
+# kill mutants ['27154']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-34.1 {
+  CREATE TABLE a(b, c);
+  CREATE INDEX d ON a(0) WHERE(b) NOTNULL;
+  INSERT INTO a(c) VALUES('');
+  SELECT 0 FROM a WHERE(NOT(b) IS TRUE);
+} {0}
+
+# kill mutants ['27229']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-35.1 {
+  CREATE TABLE a(b, c1, c);
+  CREATE INDEX d ON a(0) WHERE(c1) NOTNULL;
+  INSERT INTO a(c) VALUES('');
+  CREATE VIRTUAL TABLE vt0 USING fts5(0, c1);
+  INSERT OR REPLACE INTO vt0(c1) VALUES('');
+  SELECT *FROM a, vt0 WHERE ~vt0.c1;
+} {{} {} {} {} {}}
+
+# kill mutants ['27008', '27071']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-36.1 {
+  CREATE TABLE a(b, c);
+  ALTER TABLE a RENAME TO d;
+  CREATE INDEX e ON d(0) WHERE(c) NOT NULL;
+  ALTER TABLE d RENAME b TO f;
+  ALTER TABLE d ADD g;
+  ALTER TABLE d RENAME f TO h;
+  INSERT INTO d(g, h) VALUES('', 0Xffffffffd6ff3d98);
+  SELECT 0 FROM d WHERE(NOT(0 BETWEEN 0 AND(h)));
+} {0}
+
+# kill mutants ['25682']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-37.1 {
+  SELECT 0 FROM a;
+} {1 {no such table: a}}
+
+# kill mutants ['24431']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-38.1 {
+  SELECT 0 WHERE(NOT(0 % 0 IS FALSE));
+} {0}
+
+# kill mutants ['27011']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-39.1 {
+  CREATE TABLE b(c0);
+   ALTER TABLE b RENAME c0 TO c;
+   ALTER TABLE b RENAME TO d;
+   ALTER TABLE d ADD a;
+   CREATE INDEX e ON d(0 ) WHERE(c) NOT NULL;
+   UPDATE d SET(a) = (0)WHERE(0 BETWEEN 0 AND 0);
+} {}
+
+# kill mutants ['24711']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-40.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  ANALYZE;
+  ALTER TABLE a RENAME c TO d;
+} {}
+
+# kill mutants ['24708']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-41.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+} {}
+
+# kill mutants ['26525']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test expr-dredd-42.1 {
+  CREATE VIRTUAL TABLE a USING fts4;
+  CREATE VIEW b(c)
+  AS SELECT CASE WHEN 0 THEN 0 END FROM a;
+  SELECT 0 FROM b GROUP BY c HAVING CASE WHEN 0 THEN COUNT() END;
+} {}
+
+# kill mutants ['14404']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test expr-dredd-43.1 {
+  CREATE TABLE a( '' );
+  VACUUM;
+  UPDATE OR REPLACE t0 SET c1 = '' ;
+} {1 {no such table: t0}}
+
+finish_test

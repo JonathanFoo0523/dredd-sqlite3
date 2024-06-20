@@ -1,0 +1,4 @@
+ CREATE VIRTUAL TABLE rt0 USING rtree(c, c1, a);
+      PRAGMA cell_size_check = true;
+      VACUUM;
+      INSERT INTO b VALUES('optimize');

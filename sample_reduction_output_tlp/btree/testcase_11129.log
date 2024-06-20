@@ -1,0 +1,8 @@
+ CREATE VIRTUAL TABLE vt1 USING fts4(c0, a , order=DESC);
+                        INSERT INTO vt1 VALUES (0.26055372645534514, 1.728491789E9), (0, 0.05547871892584355), ('2078803741', '}|%Dw}[IP');
+                        INSERT INTO vt1(c0) VALUES ('2078803741');
+                        INSERT INTO vt1(a) VALUES (1);
+                        UPDATE vt1 SET c0=0 ;
+                        INSERT INTO vt1 VALUES (1078238641, 0.8677888032442315), (0.5776228278010225, 0.3890754826081294), (0.7910453075245281, '#Dn.''');
+                        PRAGMA temp.cell_size_check = 1;
+                        UPDATE OR REPLACE vt1 SET c0='2068664020';

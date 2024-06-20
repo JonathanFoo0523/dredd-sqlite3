@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE vt0 USING fts5(c0);
+INSERT INTO vt0 VALUES('');
+SELECT ALL vt0.c0 FROM vt0 ORDER BY CAST(vt0.c0 AS INTEGER)
+    AND(highlight(vt0.c0, vt0.c0, vt0.c0, vt0.c0)) AND(vt0.c0 IN(vt0.c0)) OR'' ;

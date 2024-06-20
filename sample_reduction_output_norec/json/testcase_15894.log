@@ -1,0 +1,1 @@
+SELECT json_patch('shJ6', 0);

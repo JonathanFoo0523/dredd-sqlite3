@@ -1,0 +1,6 @@
+PRAGMA encoding = 'UTF16le';
+             CREATE VIRTUAL TABLE vt0 USING fts5(c1 , "unicode61 remove_diacritics 2 tokenchars '' separators ''");
+             UPDATE vt0 SET c1=0 WHERE '2f4389ab3d94';
+             PRAGMA secure_delete (11);
+             CREATE VIRTUAL TABLE vt1 USING fts5(UNINDEXED);
+             VACUUM ;

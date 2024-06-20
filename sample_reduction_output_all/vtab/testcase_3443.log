@@ -1,0 +1,6 @@
+CREATE VIRTUAL TABLE a USING fts5(b);
+CREATE VIRTUAL TABLE c USING rtree(b, d, e, f, g, +h, +i);
+BEGIN;
+UPDATE a SET b = 2;
+INSERT INTO c(i, d, e, g, f, h) VALUES('a54f', '', NULL, NULL, x'', 3);
+DROP TABLE a;

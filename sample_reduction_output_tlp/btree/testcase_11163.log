@@ -1,0 +1,7 @@
+CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+INSERT INTO a(d) VALUES(0);
+BEGIN;
+PRAGMA cell_size_check = 1;
+INSERT INTO a(d) VALUES( '');
+ROLLBACK;
+SELECT rtreecheck('a');

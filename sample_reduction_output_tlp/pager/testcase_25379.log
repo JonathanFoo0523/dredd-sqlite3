@@ -1,0 +1,3 @@
+PRAGMA journal_mode = PERSIST;
+PRAGMA temp.a;
+PRAGMA wal_checkpoint;

@@ -1,0 +1,2 @@
+CREATE TABLE a(b);
+SELECT SUM(0) FROM(a);

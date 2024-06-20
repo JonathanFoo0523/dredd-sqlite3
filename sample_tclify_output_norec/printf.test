@@ -1,0 +1,49 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['8916', '8918', '8919', '8920', '8921', '8923', '8924', '8927', '8948', '8950', '8951', '8952', '8953', '8954', '8955', '8956', '8959', '8960', '8961', '8962', '8963', '8964', '8965', '8966']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-1.1 {
+  CREATE TABLE a(b);
+  CREATE INDEX c ON a(d);
+} {1 {no such column: d}}
+
+# MODIFIED: CHANGE inf to Inf
+# kill mutants ['3718', '3722', '3727']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test printf-dredd-2.1 {
+  VALUES(-1e500);
+} {-Inf}
+
+# kill mutants ['8925']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-3.1 {
+  SELECT a();
+} {1 {no such function: a}}
+
+# kill mutants ['10181']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-4.1 {
+  SELECT SUM0 FROM(     SELECT(((0)AND(vt0.c0))COLLATE RTRIM)IS TRUE         as count FROM vt0 ORDER             BY((((((vt0.c0)OR(0.049702191448739996)))OR(vt0.c0)))ISNULL)                 ASC NULLS LAST);
+} {1 {no such table: vt0}}
+
+# kill mutants ['8957']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test printf-dredd-5.1 {
+  SELECT 0 ORDER BY - 0;
+} {1 {1st ORDER BY term out of range - should be between 1 and 1}}
+
+# kill mutants ['10090']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test printf-dredd-6.1 {
+  CREATE VIRTUAL TABLE vt0 USING fts4;
+  
+} {}
+
+finish_test

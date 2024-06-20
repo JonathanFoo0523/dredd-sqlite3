@@ -1,0 +1,3 @@
+      CREATE TABLE b (c0 BLOB );
+            CREATE UNIQUE INDEX a ON b(0 COLLATE BINARY);
+            VACUUM;

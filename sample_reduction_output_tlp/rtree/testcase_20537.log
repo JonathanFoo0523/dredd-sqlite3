@@ -1,0 +1,2 @@
+CREATE TABLE rt0(a);
+ SELECT 0, rtreenode(SQLITE_VERSION(), 0);

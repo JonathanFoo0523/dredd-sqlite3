@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, a, b, c4, c5, c6);
+INSERT INTO rt0(a, c1, c0) VALUES('', x'', x'');
+INSERT OR FAIL INTO rt0(c5, c1, c6, c4, c0) VALUES(x'', '', '', 3, x''),
+    ('', 0.3048529501433582, NULL, 7.14552143E8, NULL);

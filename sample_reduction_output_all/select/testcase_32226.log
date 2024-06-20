@@ -1,0 +1,5 @@
+CREATE TABLE t0(a);
+CREATE VIRTUAL TABLE rt0 USING rtree(b, c, c2);
+INSERT INTO rt0(c, b) VALUES('o0hIe]YPb', '');
+SELECT DISTINCT CAST(LOWER(rt0.c2) AS NUMERIC) FROM rt0, t0 t1
+    WHERE(load_extension('') OR'' ) GROUP BY(0 NOTNULL) HAVING 0;

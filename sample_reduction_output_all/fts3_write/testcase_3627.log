@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE vt1 USING fts4;
+INSERT INTO vt1(vt1) VALUES('rebuild');

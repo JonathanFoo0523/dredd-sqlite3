@@ -1,0 +1,5 @@
+PRAGMA encoding = 'UTF16';
+                          CREATE TABLE a (c  );
+                          ALTER TABLE a RENAME  c                     TO b;
+                          INSERT INTO a VALUES (x'4b36');
+                          SELECT * FROM a WHERE json_patch(b,0)       ;

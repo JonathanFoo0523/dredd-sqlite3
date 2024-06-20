@@ -1,0 +1,6 @@
+CREATE VIRTUAL TABLE vt0 USING fts5(a, 0);
+BEGIN;
+INSERT INTO vt0 VALUES(0, 0);
+UPDATE vt0 SET a = 0;
+INSERT INTO vt0(vt0) VALUES('integrity-check');
+PRAGMA optimize;

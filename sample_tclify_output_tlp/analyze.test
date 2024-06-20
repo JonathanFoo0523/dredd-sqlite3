@@ -1,0 +1,237 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['4049', '4081']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-1.1 {
+  ANALYZE;
+  INSERT INTO sqlite_stat1 VALUES('t0', 'rt0', '  noskipscan');
+  ANALYZE sqlite_master;
+} {}
+
+# kill mutants ['1294', '1325', '1326', '3106', '3211']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-2.1 {
+  CREATE TEMP TABLE a(b);
+  CREATE INDEX c ON a(0);
+  ANALYZE c;
+} {}
+
+# kill mutants ['1932', '1933', '1964', '1965', '2015', '2047']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-3.1 {
+  CREATE TABLE t1(a);
+  CREATE TABLE b(a, c, d);
+  INSERT INTO b VALUES(0, 0, ''), ('', x'', 0);
+  INSERT OR IGNORE INTO t1 VALUES(''), (x''), (0), (x''), ('');
+  CREATE UNIQUE INDEX e ON t1(NULL);
+  ANALYZE;
+  SELECT t1.a FROM b, t1 WHERE(NULL) ISNULL;
+} {{} {} 0 {} {} {} {} 0 {} {}}
+
+# kill mutants ['3189', '4297', '4329']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-4.1 {
+  CREATE TEMPORARY TABLE t0(c0, a, c2);
+  CREATE VIRTUAL TABLE b USING rtree_i32(c0, c, c2);
+  INSERT INTO b(c2) VALUES(0), ('1979534420');
+  INSERT INTO t0 VALUES(0, 0, '');
+  ALTER TABLE t0 RENAME c0 TO c26;
+  ANALYZE t0;
+  ALTER TABLE t0 ADD c9;
+  INSERT OR IGNORE INTO t0(c26, c9, c2) VALUES(0, x'', x'');
+  SELECT c0 FROM b, t0;
+} {1 2 1 2}
+
+# kill mutants ['3111']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-5.1 {
+  CREATE TEMPORARY TABLE    t0 (c , c1 , d  );
+                      CREATE VIRTUAL TABLE rt1 USING rtree_i32(c, c1, d);
+                      ALTER TABLE t0 ADD a ;
+                      ALTER TABLE t0 ADD e ;
+                      INSERT INTO t0(a, c1, c  ) VALUES (  '6f15',0,0);
+                      ALTER TABLE t0 ADD b ;
+                      INSERT INTO rt1(c,  d) VALUES ( '',0);
+                      INSERT OR IGNORE INTO rt1(c1) VALUES (0);
+                      ALTER TABLE t0 ADD   TEXT;
+                      CREATE  INDEX i19 ON t0(0  COLLATE NOCASE,CASE WHEN 0 THEN x'' WHEN 0 THEN 0 COLLATE BINARY END COLLATE NOCASE COLLATE NOCASE  );
+                      INSERT OR IGNORE INTO t0 VALUES ('',0, 0,0, '',0, x'')            ;
+                      ANALYZE i19;
+                      SELECT * FROM t0 INDEXED BY i19, rt1;
+} {0 0 {} 6f15 {} {} {} 0 0 0 0 0 {} 6f15 {} {} {} 1 0 0 {} 0 0 0 {} 0 {} 0 0 0 {} 0 0 0 {} 0 {} 1 0 0}
+
+# kill mutants ['2014', '2046']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-6.1 {
+  CREATE TABLE t1(a);
+           CREATE  TABLE b  (a, c, d);
+           INSERT INTO b VALUES(0, 0, ''), ('', x'', 0);
+           INSERT OR IGNORE INTO t1 VALUES(''), (x''), (0), (x''), ('');
+           CREATE UNIQUE INDEX e ON t1(NULL );
+           ANALYZE;
+           SELECT t1.a FROM b, t1 WHERE(NULL) ISNULL;
+} {{} {} 0 {} {} {} {} 0 {} {}}
+
+# kill mutants ['4230', '4262']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-7.1 {
+  CREATE TABLE a(b UNIQUE);
+  CREATE TABLE c(b);
+  INSERT INTO a VALUES('77d8');
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO d VALUES('1758947846');
+  ALTER TABLE c RENAME b TO e;
+  INSERT INTO c VALUES(''), ('');
+  ALTER TABLE c ADD f;
+  ANALYZE;
+  ALTER TABLE c RENAME f TO g;
+  SELECT b FROM d, c;
+} {77d8 77d8 1758947846 1758947846}
+
+# kill mutants ['4080']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-8.1 {
+  CREATE TABLE a(b);
+  CREATE TABLE c(b);
+  INSERT INTO a VALUES('77d8');
+  ALTER TABLE a RENAME TO d;
+  INSERT INTO d VALUES('1758947846');
+  ALTER TABLE c RENAME b TO e;
+  ALTER TABLE d RENAME b TO f;
+  INSERT INTO c VALUES(''), ('');
+  ANALYZE;
+  SELECT f FROM d, c WHERE NOT e;
+} {77d8 77d8 1758947846 1758947846}
+
+# kill mutants ['3979']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-9.1 {
+  CREATE TABLE t0(a);
+  CREATE VIRTUAL TABLE b USING rtree_i32(c, d, e, f, g);
+  INSERT INTO b VALUES(1, 0, 'C', '', 0), (x'', '', '	', '', 0);
+  INSERT OR REPLACE INTO t0 VALUES(x'');
+  INSERT INTO t0 VALUES(0);
+  ANALYZE;
+  SELECT *FROM t0, b;
+} {{} 1 0 0 0 0 0 1 0 0 0 0 {} 0 0 0 0 0 0 0 0 0 0 0}
+
+# kill mutants ['3100']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-10.1 {
+  CREATE TEMPORARY TABLE a(b, c);
+  INSERT INTO a(c) VALUES(0);
+  INSERT INTO a(b) VALUES(0);
+  CREATE INDEX d ON a(0) WHERE 0;
+  CREATE INDEX e ON a(c);
+  ANALYZE temp;
+  SELECT DISTINCT *FROM a;
+} {0 {} {} 0}
+
+# kill mutants ['3212', '3244']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-11.1 {
+  CREATE TEMPORARY TABLE t0(a, b, c);
+  CREATE VIRTUAL TABLE rt1 USING rtree_i32(d, c1, c);
+  ALTER TABLE t0 ADD e;
+  INSERT INTO t0(c) VALUES(0);
+  ALTER TABLE t0 ADD f;
+  INSERT INTO t0 VALUES(0, 0, '6f15', 0, 0);
+  INSERT INTO rt1 VALUES(0, '', 0);
+  INSERT OR IGNORE INTO rt1(c1) VALUES(0);
+  CREATE INDEX i19 ON t0(0 COLLATE NOCASE, CASE WHEN 0 THEN x'' END);
+  ANALYZE i19;
+  SELECT *FROM t0 INDEXED BY i19, rt1;
+} {{} {} 0 {} {} 0 0 0 {} {} 0 {} {} 1 0 0 0 0 6f15 0 0 0 0 0 0 0 6f15 0 0 1 0 0}
+
+# kill mutants ['4289']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-12.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2);
+  CREATE TABLE t1(c0, c1, c2);
+  INSERT INTO t1 VALUES('', '', '');
+  CREATE VIEW v0 AS SELECT TOTAL(0) OVER() FROM rt0, t1;
+  CREATE TRIGGER IF NOT EXISTS BEFORE UPDATE OF c0 ON t1 BEGIN DELETE FROM t1;
+  END;
+  CREATE INDEX IF NOT EXISTS i26 ON t1(
+      0 COLLATE BINARY, CASE WHEN CASE WHEN 0 THEN 0 ELSE 0 END
+                            THEN 0 WHEN 0 THEN 0 WHEN 0 COLLATE RTRIM THEN 0 END);
+  INSERT OR IGNORE INTO rt0(c1, c0) VALUES(0, x'');
+  ANALYZE;
+  UPDATE t1 SET c0 = 0;
+  ANALYZE;
+  INSERT OR REPLACE INTO t1(c2, c0) VALUES(0, 0), (x'', 0);
+  SELECT *FROM v0, t1;
+} {0.0 0 {} 0 0.0 0 {} {} 0.0 0 {} 0 0.0 0 {} {}}
+
+# kill mutants ['208', '240']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-13.1 {
+  ANALYZE temp;
+  ANALYZE temp;
+} {}
+
+# kill mutants ['3079']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-14.1 {
+  CREATE TEMPORARY TABLE t0(a, b, c);
+      CREATE VIRTUAL TABLE d USING rtree_i32(a, b, f);
+      REPLACE INTO t0(b) VALUES('-');
+      INSERT INTO d(f) VALUES(''), ('');
+      INSERT OR FAIL INTO t0 VALUES(0, 0, '');
+      ANALYZE t0;
+      INSERT OR IGNORE INTO sqlite_stat1 VALUES('t0', '', '-');
+      ALTER TABLE t0 ADD e ;
+      SELECT d.a FROM d, t0;
+} {1 2 1 2}
+
+# kill mutants ['1597']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-15.1 {
+  CREATE TABLE a(b, c);
+  INSERT INTO a VALUES(0, 'e6c7');
+  ALTER TABLE a RENAME TO d;
+  CREATE INDEX e ON d(0, 0, 0, 0, 0);
+  ANALYZE;
+} {}
+
+# kill mutants ['2960', '2992']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test analyze-dredd-16.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, a, c4);
+           CREATE VIRTUAL TABLE vt1 USING fts5( '');
+           CREATE TABLE t0(c0);
+           INSERT OR IGNORE INTO t0 VALUES(x'');
+           CREATE VIRTUAL TABLE rt1 USING rtree_i32(c0, c1, c2, c3, c4  );
+           ALTER TABLE t0 ADD c75;
+           CREATE VIRTUAL TABLE vt0 USING fts5(  UNINDEXED,0 UNINDEXED);
+           ANALYZE vt1;
+           ANALYZE;
+           BEGIN;
+           ALTER TABLE t0 RENAME TO c91;
+           PRAGMA main.mmap_size = 85317;
+} {85317}
+do_execsql_test analyze-dredd-16.2 {
+           ROLLBACK;
+           INSERT OR IGNORE INTO rt0(c0, c4, c2, c1) VALUES(1, x'', x'', ''),     ('', '', x'', 0);
+           INSERT OR REPLACE INTO t0(c75) VALUES(x'' );
+           SELECT *FROM t0, rt0;
+} {{} {} 1 0.0 0.0 0.0 0.0 {} {} 0 0.0 0.0 0.0 0.0 {} {} 1 0.0 0.0 0.0 0.0 {} {} 0 0.0 0.0 0.0 0.0}
+
+finish_test

@@ -1,0 +1,9 @@
+ PRAGMA case_sensitive_like=ON;
+      CREATE VIRTUAL TABLE vt0 USING fts5(c0 , c1  );
+      CREATE VIRTUAL TABLE vt1 USING fts5(c0 );
+      INSERT   INTO vt1 VALUES ('');
+      SELECT SUM(count) FROM (SELECT 1 IS TRUE  as count FROM vt1, vt0 ORDER BY ~ 1 ISNULL , CASE WHEN CASE vt1.c0  WHEN vt1.c0 THEN vt0.c0 ELSE vt0.c0 END THEN  vt0.c1 ELSE (vt0.c0, vt0.c1, vt0.c0>=vt1.c0, 1,0) END  NULLS FIRST);
+      SELECT  * FROM vt1, vt0 WHERE (0)<'' ORDER BY (~ x'' ISNULL) ASC, CASE WHEN CASE vt1.c0  WHEN vt1.c0 THEN vt0.c0 ELSE vt0.c0 END THEN  vt0.c1 ELSE (vt0.c0, vt0.c1, vt0.c0)>=(vt1.c0, vt0.c0, vt1.c0) END  NULLS FIRST;
+      SELECT SUM FROM (SELECT ALL ((CASE 0  WHEN vt1.c0 THEN vt1.c0 ELSE vt1.c0 END)OR(vt1.c0) ISNULL)AND(vt1.c0 IS FALSE)AND(vt1.c0)>=(vt1.c0)AND(x'') IS TRUE  as count FROM vt1 ORDER BY ''<>((vt1.c0, vt1.c0, vt1.c0) BETWEEN (vt1.c0, vt1.c0, vt1.c0) AND (vt1.c0, vt1.c0, vt1.c0)) DESC, CAST(0 COLLATE BINARY AS ));
+      SELECT ALL 0 FROM vt0 WHERE 1 ORDER BY CASE (0, vt0.c0) NOT BETWEEN (vt0.c1, vt0.c1, vt1.c0) AND (vt0.c0, vt1.c0, x'')  WHEN vt0.c1 COLLATE NOCASE THEN vt0.c0 IN (vt0.c1) ELSE 6.208867569534935E18 END  NULLS LAST, 0 NOT BETWEEN vt0.c1 BETWEEN vt1.c0 AND vt0.c0 AND (vt0.c1)OR(vt1.c0);
+      SELECT SUM(count) FROM (SELECT  (0 IS 0)<0 IS 0   count FROM vt0, vt1 ORDER BY CASE (vt1.c0, vt0.c0, vt0.c0) NOT BETWEEN (vt0.c1, vt0.c1, vt1.c0) AND (vt0.c0, vt1.c0, x'')  WHEN vt0.c1 COLLATE a THEN vt0.c0 IN (vt0.c1) END   );

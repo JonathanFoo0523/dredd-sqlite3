@@ -1,0 +1,5 @@
+CREATE TABLE d(c0, a, b);
+ALTER TABLE d RENAME c0 TO c;
+INSERT INTO d(a, b) VALUES('7.eE%Z}', '');
+SELECT 0 FROM d GROUP BY 1 HAVING(MIN(a) BETWEEN(c)
+                                      AND(GROUP_CONCAT(b))) ISNULL;

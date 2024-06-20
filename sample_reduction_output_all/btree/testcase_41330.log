@@ -1,0 +1,6 @@
+PRAGMA encoding = 'UTF16be';
+         CREATE TABLE t0(TEXTc1 INTEGER);
+         CREATE VIRTUAL TABLE rt0 USING rtree(c0, c1, c2, c3, c4);
+         PRAGMA secure_delete = true;
+         CREATE INDEX i12 ON t0(0 , 0 COLLATE NOCASE,                        (0 BETWEEN 0 AND(0))COLLATE BINARY ASC);
+         DROP TABLE t0;

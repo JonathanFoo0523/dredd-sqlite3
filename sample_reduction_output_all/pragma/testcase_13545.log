@@ -1,0 +1,6 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c);
+BEGIN;
+REPLACE INTO rt0(c, a) VALUES('326423322', '');
+INSERT OR IGNORE INTO rt0 VALUES('', '', x'');
+PRAGMA threads;
+BEGIN;

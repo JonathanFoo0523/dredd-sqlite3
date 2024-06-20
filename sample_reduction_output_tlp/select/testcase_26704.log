@@ -1,0 +1,3 @@
+CREATE TABLE a(b);
+CREATE TABLE c(d);
+SELECT 0 FROM c JOIN a ON(e);

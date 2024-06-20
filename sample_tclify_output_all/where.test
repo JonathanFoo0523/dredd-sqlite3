@@ -1,0 +1,304 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['18646', '18649', '18661', '18664', '18665', '18666', '18669', '18675']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-1.1 {
+  CREATE TABLE t1(a, b PRIMARY KEY, c2 BLOB) WITHOUT ROWID;
+  REPLACE INTO t1(c2, b) VALUES('', 0.9729914869382656);
+  CREATE UNIQUE INDEX i97 ON t1(UNLIKELY(DISTINCT CAST(c2 AS REAL)) ASC, 0 DESC,
+                                0 COLLATE NOCASE);
+  INSERT OR FAIL INTO t1 VALUES('', '', NULL);
+  SELECT ALL LAG('', CAST(t1.c2 AS BLOB) OR(0), '&') OVER() FROM t1
+      WHERE('0.9729914869382656' OR(NULL))
+          AND(0 || '2004904833265254831' AND(0.5119305223223568) OR'');
+} {{} &}
+
+# kill mutants ['33124', '33127', '33128']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test where-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING rtree_i32(b, c, d);
+  SELECT 4 FROM a WHERE(json_extract(4, 0));
+} {1 {bad JSON path: '0'}}
+
+# kill mutants ['16019', '16021']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-3.1 {
+  CREATE TABLE t0(c0);
+  INSERT INTO t0 VALUES('');
+  ALTER TABLE t0 ADD COLUMN c44 INTEGER;
+  CREATE UNIQUE INDEX i9 ON t0(NULL, c0 COLLATE NOCASE);
+  ALTER TABLE t0 ADD COLUMN c62 TEXT;
+  INSERT OR ROLLBACK INTO t0 VALUES(7.35053287E8, x'', 9);
+  SELECT NULL, CASE WHEN 0 THEN c62 ELSE c0 END FROM t0;
+} {{} {} {} 735053287.0}
+
+# kill mutants ['18647', '18648', '18650', '18655', '18659', '18679', '18680', '18682']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-4.1 {
+  CREATE TABLE t1(a, b PRIMARY KEY, c2 BLOB) WITHOUT ROWID;
+  REPLACE INTO t1(c2, b) VALUES('', 0.9729914869382656);
+  CREATE UNIQUE INDEX i97 ON t1(UNLIKELY(DISTINCT CAST(c2 AS REAL)) ASC, 0 DESC,
+                                0 COLLATE NOCASE);
+  INSERT OR FAIL INTO t1 VALUES('', '', NULL);
+  SELECT ALL LAG('', CAST(t1.c2 AS BLOB) OR(0), '&') OVER() FROM t1 WHERE
+      '0.97299148693826562004904833' AND((0)OR '265254831');
+} {{} &}
+
+# kill mutants ['33121', '33122', '33131', '33134', '33137']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_execsql_test where-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  SELECT 2 FROM a WHERE(load_extension('1853245932'));
+} {}
+
+# kill mutants ['18064']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-6.1 {
+  CREATE TABLE a(b, c d, e);
+  ALTER TABLE a RENAME e TO f;
+  CREATE INDEX g ON a(COALESCE(c, 0));
+  INSERT INTO a(b, f, c) VALUES('496545348', NULL, 8),
+      (NULL, '쮈 ', '-1088238712');
+  ALTER TABLE a RENAME TO h;
+  SELECT(b) FROM h;
+} {496545348 {}}
+
+# kill mutants ['30778', '30781', '30782']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test where-dredd-7.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME TO c;
+  SELECT 0 FROM c WHERE(json_array(CAST('▅ꍾ' AS BLOB)));
+} {1 {JSON cannot hold BLOB values}}
+
+# kill mutants ['15324', '15325', '15356', '15357']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-8.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  ALTER TABLE a ADD d;
+  CREATE INDEX e ON a((CASE c WHEN c THEN 6 END)DESC);
+  ALTER TABLE a RENAME c TO f;
+  INSERT INTO a(f, d, b) VALUES(NULL, '', NULL), ('', x'', NULL);
+  ANALYZE;
+  ALTER TABLE a RENAME f TO g;
+  SELECT DISTINCT(CAST(g AS)) FROM a;
+} {{} 0}
+
+# kill mutants ['15566', '15598']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-9.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  CREATE TABLE e(b);
+  ALTER TABLE e RENAME TO f;
+  CREATE INDEX g ON f(CAST(CASE WHEN 0 THEN 0 END AS)) WHERE(0 IN());
+  ALTER TABLE f RENAME TO e;
+  SELECT 0 FROM a, e INDEXED BY g WHERE(0 IN());
+} {}
+
+# kill mutants ['23815']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_execsql_test where-dredd-10.1 {
+  CREATE VIEW a AS SELECT COUNT();
+  CREATE VIRTUAL TABLE b USING rtree_i32(c, d, e);
+  SELECT DISTINCT 0.13377669327561492 FROM b,
+      a WHERE(load_extension(0.8419090692824377));
+} {}
+
+# kill mutants ['15448', '15480']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test where-dredd-11.1 {
+  CREATE TABLE t0(c0);
+  ALTER TABLE t0 RENAME c0 TO c89;
+  INSERT INTO t0 VALUES(''), (NULL);
+  CREATE VIRTUAL TABLE rt0 USING rtree_i32(c0, c1, c2, c3, c4);
+  CREATE TABLE IF NOT EXISTS t1(c0 INTEGER);
+  INSERT OR IGNORE INTO t1 VALUES('');
+  CREATE INDEX IF NOT EXISTS i35 ON t0(0) WHERE 0;
+  INSERT OR IGNORE INTO rt0(c1, c4, c0, c2) VALUES(NULL, 1, x'', NULL);
+  BEGIN DEFERRED TRANSACTION;
+  UPDATE OR IGNORE t0 SET(c89, c89, c89) = ('', 0.5891034612782736, NULL);
+  ROLLBACK TRANSACTION;
+  ALTER TABLE t0 RENAME COLUMN c89 TO c81;
+  CREATE UNIQUE INDEX IF NOT EXISTS i75 ON t0(TRIM(1) COLLATE RTRIM) WHERE 0;
+  SELECT DISTINCT 0 COLLATE BINARY FROM t1,
+      t0 rt0 WHERE 0 ORDER BY(0 NOT BETWEEN 0 AND 0) DESC NULLS FIRST;
+  SELECT ALL 0 FROM rt0,
+      t0 t1 WHERE(CASE WHEN STRFTIME() THEN 0 ELSE(0 NOT BETWEEN 0 AND'')
+                      END) ORDER BY(0 NOT BETWEEN 0 AND 0) NULLS FIRST,
+      (rt0.c4)OR(0) AND DESC;
+  SELECT ALL CAST(rt0.c0 AS BLOB), 0, NULL FROM t0, rt0 WHERE 0;
+  SELECT 0 FROM rt0, t0 t1 WHERE 0;
+  SELECT DISTINCT rt0.c0, CAST(0 AS TEXT), TRIM(0) FROM rt0, t1, t0 WHERE 0;
+  SELECT DISTINCT 0, 0, 0, 0,
+      NTH_VALUE(CASE WHEN 0 THEN CASE NULL WHEN rt0.c1 THEN rt0.c2 WHEN
+                    rt0.c4 THEN rt0.c0 WHEN t1.c0 THEN 3 END END,
+                LOWER(DISTINCT 0)) OVER() FROM t0,
+      rt0, t1 LIMIT 5 OFFSET 0;
+} {1 {second argument to nth_value must be a positive integer}}
+do_catchsql_test where-dredd-11.2 {
+  SELECT ALL 0 FROM rt0, t0 WHERE 0;
+  SELECT DISTINCT 0 FROM t0 WHERE 0;
+  SELECT ALL TRIM(highlight(), 0) FROM t0 t1, rt0;
+} {1 {unable to use function highlight in the requested context}}
+do_execsql_test where-dredd-11.3 {
+  SELECT DISTINCT AVG(CASE WHEN t1.c0 THEN t0.c81 ELSE 1.419624276E9 END) FROM t0,
+      t1 ORDER BY(0 IS FALSE);
+} {1419624276.0}
+do_execsql_test where-dredd-11.4 {
+  SELECT DISTINCT CASE WHEN 0 THEN CASE WHEN rt0.c4 THEN t0.c81 END
+      WHEN 1.44916424E9 THEN 0 WHEN 0 THEN 0 END FROM t0,
+      rt0, t1;
+} {0}
+do_execsql_test where-dredd-11.5 {
+  SELECT HEX(DISTINCT NULL) FROM t0 rt0 WHERE 0 GROUP BY
+      SQLITE_COMPILEOPTION_GET(0);
+  SELECT ALL CASE COUNT() WHEN CAST(rt0.c1 AS TEXT) THEN TRIM(t1.c0) ELSE 0 END,
+      UPPER(DISTINCT load_extension(t1.c0, x'')), 0 FROM rt0, t1, t0 WHERE 0;
+} {0 {} 0}
+do_execsql_test where-dredd-11.6 {
+  SELECT DISTINCT '' FROM t0 t1, rt0;
+} {{}}
+do_execsql_test where-dredd-11.7 {
+  SELECT RANK() OVER(), TOTAL(0), 0 COLLATE NOCASE FROM t1, t0 rt0 WHERE 0;
+} {1 0.0 0}
+do_execsql_test where-dredd-11.8 {
+  SELECT DISTINCT 0, UPPER(DISTINCT CASE WHEN rt0.c4 THEN rt0.c1 ELSE t0.c81 END),
+      0 FROM rt0, t1, t0 WHERE 0;
+  SELECT AVG(1.424118986E9) OVER FROM t0 rt0;
+} {1424118986.0}
+do_execsql_test where-dredd-11.9 {
+  SELECT DISTINCT 0 FROM t0 t1, rt0 GROUP BY LIKELY(rt0.c3) LIMIT 0 OFFSET 1;
+  SELECT DISTINCT 0 FROM rt0, t0 WHERE 0;
+  SELECT DISTINCT 0 FROM rt0, t0 WHERE 0;
+  SELECT DISTINCT CAST(0 AS BLOB) FROM t1 rt0, t0 WHERE 0;
+  SELECT ALL 0 FROM t1, t0 WHERE 0;
+  SELECT DISTINCT 0 FROM t1, t0 rt0 WHERE 0 ORDER BY(0 BETWEEN 0 AND 0),
+      0 | 0 NULLS FIRST;
+  SELECT ALL 0 FROM t0 rt0;
+} {0 0}
+do_execsql_test where-dredd-11.10 {
+  SELECT DISTINCT 0 FROM t0 t1, rt0;
+} {0}
+do_execsql_test where-dredd-11.11 {
+  SELECT DISTINCT t0.c81 COLLATE BINARY FROM t0, rt0 WHERE 0;
+  SELECT ALL 0 FROM t0 t1, rt0;
+} {0 0}
+do_execsql_test where-dredd-11.12 {
+  SELECT DISTINCT 0, 0, CAST(0 AS TEXT) FROM rt0 t1, t0 WHERE 0;
+  SELECT DISTINCT 0 FROM rt0 t1, t0;
+} {0}
+do_execsql_test where-dredd-11.13 {
+  SELECT DISTINCT '' COLLATE NOCASE,
+      SUM(CASE rt0.c3 WHEN t1.c0 THEN rt0.c0 ELSE rt0.c4 END) OVER, 0, 0,
+      GROUP_CONCAT(0) FROM t0, t1, rt0 WHERE 0;
+} {{} {} 0 0 {}}
+do_execsql_test where-dredd-11.14 {
+  SELECT ALL 0 FROM t0 t1, rt0 WHERE 0 LIMIT 4 OFFSET 1;
+  SELECT 0,
+      CASE 0 WHEN 0 THEN 0 WHEN 0 THEN 0 WHEN CASE WHEN t1.c0 THEN rt0.c2
+          WHEN rt0.c0 THEN rt0.c4 WHEN rt0.c0 THEN rt0.c3 END THEN
+          COUNT() ELSE LENGTH(rt0.c3) END,
+      0 FROM rt0, t0, t1 WHERE 0;
+} {0 0 0}
+do_execsql_test where-dredd-11.15 {
+  SELECT rt0.c4, 0,
+      CASE rt0.c2 WHEN t0.c81 THEN rt0.c0 ELSE rt0.c1 END COLLATE RTRIM FROM t0,
+      t1, rt0 WHERE 0 GROUP BY(0 NOT NULL);
+  SELECT 0 FROM t0 rt0;
+} {0 0}
+do_execsql_test where-dredd-11.16 {
+  SELECT DISTINCT PERCENT_RANK() OVER() FROM t1, t0 rt0 WHERE 0;
+  SELECT DISTINCT COALESCE(0, 0) FROM t0 rt0, t1 GROUP BY(0 == 0);
+} {0}
+do_execsql_test where-dredd-11.17 {
+  SELECT DISTINCT 0 FROM t1, t0 rt0 WHERE 0;
+  SELECT DISTINCT RANK() OVER() FROM t0 t1, rt0 WHERE 0;
+  SELECT DISTINCT t1.c0 COLLATE BINARY COLLATE BINARY, CAST(0 AS TEXT),
+      CAST(0 AS REAL) FROM t0 rt0, t1;
+} {{} 0 0.0}
+do_execsql_test where-dredd-11.18 {
+  SELECT DISTINCT CAST(INSTR('', rt0.c4) AS BLOB) '', 0,
+      0, rt0.c1 FROM rt0, t0 t1 WHERE 0;
+  SELECT DISTINCT 0 FROM t1 rt0, t0 ORDER BY(0) OR(0) AND(t1.c0);
+} {0}
+do_execsql_test where-dredd-11.19 {
+  SELECT DISTINCT PRINTF() FROM t1 LEFT OUTER JOIN rt0 ON x'' CROSS JOIN t0 ON
+      CAST(0 AS REAL);
+  SELECT ALL CASE WHEN 0 THEN 0 END, CAST(rt0.c0 AS INTEGER),
+      0 FROM t0 t1, rt0 WHERE 0 ORDER BY ~0, 0 BETWEEN 0 AND 0;
+  SELECT CAST(NULL AS NUMERIC) FROM rt0, t0 WHERE 0 ORDER
+      BY(0 NOT BETWEEN 0 AND 0);
+  SELECT DISTINCT COUNT(), 0,
+      SUM(0) OVER FROM t1, t0 rt0 WHERE 0 ORDER BY(0 IS TRUE);
+} {0 0 {}}
+do_execsql_test where-dredd-11.20 {
+  SELECT LAG(0, 0, 0) OVER(), rt0.c1, t1.c0 FROM t1, rt0,
+      t0 WHERE 0 ORDER BY(0 = 0) DESC;
+  SELECT CASE 0 WHEN 0 THEN 0 ELSE 0 END,
+      0 NOT BETWEEN 0 AND CASE rt0.c0 WHEN rt0.c2 THEN t0.c81 WHEN
+          x'' THEN t1.c0 END FROM t0,
+      t1, rt0;
+} {0 0 0 {}}
+
+# kill mutants ['15447', '15479']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test where-dredd-12.1 {
+  CREATE TABLE t0(c0);
+  CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, a);
+  ALTER TABLE t0 RENAME c0 TO c66;
+  CREATE INDEX b ON t0(x'' COLLATE RTRIM) WHERE CASE 0 WHEN 0 THEN 0 WHEN
+      4.96399527E8 THEN 6 WHEN 0 THEN CASE WHEN 6 THEN 6 ELSE 6 END ELSE 0 END;
+  UPDATE t0 SET(c66, c66) = ('', 0.6306533412832728);
+  UPDATE t0 SET(c66, c66, c66) = (0.2560124226798175, x'', NULL)WHERE
+      CAST('' AS NUMERIC);
+  UPDATE OR IGNORE t0 SET c66 = NULL, c66 = 0.6306533412832728 WHERE 1;
+  UPDATE OR ABORT t0 SET c66 = 1 WHERE 0;
+  PRAGMA short_column_names = false;
+  INSERT OR ABORT INTO rt1(c1, c0) VALUES(0.3056766732712136, x'');
+} {1 {rtree constraint failed: rt1.(c1<=a)}}
+
+# kill mutants ['32210']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-13.1 {
+  CREATE TABLE a(b);
+  INSERT INTO a VALUES('1495329139');
+  ALTER TABLE a RENAME TO c;
+  ALTER TABLE c RENAME b TO d;
+  PRAGMA reverse_unordered_selects = true;
+  REPLACE INTO c VALUES(NULL);
+  SELECT(d) FROM c;
+} {{} 1495329139}
+
+# kill mutants ['32211']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test where-dredd-14.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a ADD c;
+  REPLACE INTO a(c) VALUES('6508');
+  ALTER TABLE a RENAME TO d;
+  PRAGMA reverse_unordered_selects = true;
+  ALTER TABLE d ADD e;
+  INSERT INTO d(e, c) VALUES('1145444091', 8);
+  SELECT e FROM d;
+} {1145444091 {}}
+
+finish_test

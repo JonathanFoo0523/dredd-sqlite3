@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE a USING fts5(0);
+PRAGMA optimize;

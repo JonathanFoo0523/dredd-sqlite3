@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c);
+INSERT INTO rt0(b) VALUES('-781790405');
+UPDATE rt0 SET(c) = -366558631;
+SELECT rtreecheck('rt0');

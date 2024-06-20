@@ -1,0 +1,69 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['23', '25', '26', '3', '35', '37', '5', '55', '57', '58', '62', '757', '775', '776', '777', '779', '807', '808', '809', '811']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-1.1 {
+  CREATE TABLE a(b);
+  ALTER TABLE a RENAME b TO c;
+  INSERT INTO a VALUES(0);
+  UPDATE a SET c ='' WHERE CAST(1 AS);
+  CREATE VIRTUAL TABLE vt0 USING fts4(0, 1);
+  INSERT OR IGNORE INTO vt0 VALUES(x'', 0);
+  SELECT 0 FROM a JOIN vt0(load_extension(c));
+} {1 {unable to open shared library []}}
+
+# kill mutants ['21', '38', '53', '6']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-2.1 {
+  VALUES(load_extension(0));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['950', '951', '952']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-3.1 {
+  PRAGMA cache_spill;
+} {1765}
+
+# kill mutants ['933', '936', '937', '938', '941', '946']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_catchsql_test loadext-dredd-4.1 {
+  CREATE VIRTUAL TABLE a USING b;
+} {1 {no such module: b}}
+
+# kill mutants ['66', '98']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-5.1 {
+  CREATE VIRTUAL TABLE a USING fts5(b);
+  INSERT INTO a VALUES(0);
+  SELECT 0 FROM a(load_extension(b));
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+
+# kill mutants ['785']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+sqlite3_enable_load_extension db 1
+do_catchsql_test loadext-dredd-6.1 {
+  VALUES  (load_extension(0) );
+} {1 {0.so: cannot open shared object file: No such file or directory}}
+do_execsql_test loadext-dredd-6.2 {
+  
+} {}
+
+# kill mutants ['953']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test loadext-dredd-7.1 {
+  CREATE TABLE a(b);
+  UPDATE a SET b = 0;
+} {}
+
+finish_test

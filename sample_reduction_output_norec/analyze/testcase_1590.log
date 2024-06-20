@@ -1,0 +1,2 @@
+CREATE VIRTUAL TABLE vt70 USING fts5( 1 );
+        ANALYZE;

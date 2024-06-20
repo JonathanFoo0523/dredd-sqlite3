@@ -1,0 +1,6 @@
+PRAGMA cache_size = 0;
+PRAGMA temp_store = MEMORY;
+CREATE VIRTUAL TABLE a USING fts5(b);
+REPLACE INTO a VALUES(x''), ('QIU_Tqd'), ('');
+VACUUM;
+SELECT b FROM a GROUP BY 1;

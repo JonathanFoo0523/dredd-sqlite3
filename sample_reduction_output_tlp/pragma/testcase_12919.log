@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE a USING fts5(0, 1);
+INSERT INTO a VALUES(0, 0);
+INSERT INTO a(a) VALUES('integrity-check');
+UPDATE b SET c = 0;
+PRAGMA optimize;

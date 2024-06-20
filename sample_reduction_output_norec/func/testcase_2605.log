@@ -1,0 +1,7 @@
+                  CREATE TABLE a (c   , e INT , d INT , c4  , f  , c6    );
+                            ALTER TABLE a RENAME  f TO b;
+                           ALTER TABLE a ADD  g ;
+                           ALTER TABLE a RENAME  c4 TO c31;
+                           ALTER TABLE a RENAME TO h;
+                            INSERT INTO h(b, e, c31, d, g, c, c6) VALUES (0, '1949655825', 0.4437508745199624, '3a75', '2113481774',0, '');
+                            SELECT 0 FROM  h      WHERE UPPER(c31||c31)  ;

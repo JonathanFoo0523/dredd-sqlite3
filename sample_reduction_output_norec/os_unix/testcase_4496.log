@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE rt1 USING rtree(c0, c1, c2);
+         PRAGMA main.cache_size = 0;
+         PRAGMA mmap_size = 6287624166836637926;
+         UPDATE   rt1 SET c1=x'7c50';
+         UPDATE rt0 SET c4='110839614'  ;

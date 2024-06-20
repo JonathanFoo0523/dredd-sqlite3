@@ -1,0 +1,5 @@
+CREATE TABLE a(c0 , b , c2 );
+CREATE INDEX i95 ON a(CAST(0 AS b )  ,
+                                     CASE(c2) WHEN(0)
+                                         THEN c0 END);
+VACUUM ;

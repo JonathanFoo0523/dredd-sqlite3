@@ -1,0 +1,26 @@
+set testdir [file dirname $argv0]
+source $testdir/tester.tcl
+
+# kill mutants ['3391']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbemem-dredd-1.1 {
+  CREATE VIRTUAL TABLE rt0 USING rtree(a, b, c);
+  SELECT rtreecheck('rt0');
+} {ok}
+
+# kill mutants ['3734', '3743']
+reset_db
+sqlite3_db_config db DEFENSIVE 1
+do_execsql_test vdbemem-dredd-2.1 {
+  CREATE VIRTUAL TABLE a USING rtree(b, c, d);
+  CREATE VIEW e(b, c, d)
+  AS SELECT FIRST_VALUE(0) OVER(), c, 0 FROM a;
+  INSERT INTO a(d) VALUES('0a6e');
+  REPLACE INTO a VALUES('避M', 0, 'b7b43134');
+  SELECT 0 FROM e JOIN a ON CASE e.c WHEN UPPER(e.c) THEN
+      1 END WHERE e.c NOT BETWEEN a.d BETWEEN e.b AND 0 AND CASE e.d WHEN 0 THEN
+      0 END;
+} {0 0 0 0}
+
+finish_test

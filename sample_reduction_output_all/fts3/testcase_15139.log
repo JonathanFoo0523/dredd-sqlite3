@@ -1,0 +1,3 @@
+ CREATE VIRTUAL TABLE a USING fts4(b , c, d, e, languageid="lid");
+                         INSERT INTO a(d, lid, b, c, e) VALUES ('1863844182', NULL, '0969', '-1462237948', 2);
+                         UPDATE a SET c='7a9c';

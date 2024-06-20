@@ -1,0 +1,2 @@
+PRAGMA synchronous = 0;
+COMMIT;

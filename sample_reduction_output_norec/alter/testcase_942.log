@@ -1,0 +1,6 @@
+CREATE TABLE b(a, d, c2, e);
+CREATE INDEX c ON b((a, 0, 0)BETWEEN(0, 0, 0) AND(0, c2, 0) DESC);
+ALTER TABLE b RENAME TO t2;
+INSERT INTO t2 VALUES('', 0, 0, x''), (0, '', x'', 0);
+ALTER TABLE t2 ADD REAL;
+UPDATE OR IGNORE t2 SET c2 = x'' ;

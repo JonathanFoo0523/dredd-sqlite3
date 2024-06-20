@@ -1,0 +1,6 @@
+CREATE TABLE a(b PRIMARY KEY);
+ALTER TABLE a RENAME b TO c;
+PRAGMA reverse_unordered_selects = true;
+INSERT INTO a VALUES('ἡN*h2'), (0.63140373861871871930495158);
+UPDATE OR IGNORE a SET(c, c, c) = ('', '', '');
+UPDATE a SET(c) = CAST(c AS);

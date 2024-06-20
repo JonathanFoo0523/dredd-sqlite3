@@ -1,0 +1,2 @@
+PRAGMA defer_foreign_keys = 0;
+REINDEX;

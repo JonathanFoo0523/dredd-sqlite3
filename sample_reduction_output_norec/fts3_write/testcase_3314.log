@@ -1,0 +1,3 @@
+ CREATE VIRTUAL TABLE a USING fts4(, languageid="lid");
+                                 REPLACE INTO a(lid ) VALUES (    1 );
+                                 SELECT 0 FROM a WHERE lid;

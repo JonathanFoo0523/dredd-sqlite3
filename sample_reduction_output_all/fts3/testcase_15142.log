@@ -1,0 +1,5 @@
+CREATE VIRTUAL TABLE vt1 USING fts4(c0, c1, c2, c3, "lid");
+REPLACE INTO vt1(lid) VALUES(''), (0.8377492112151568), (6);
+INSERT OR ROLLBACK INTO vt1(c2, lid, c0, c1, c3) VALUES('', NULL, x'', '', 2);
+UPDATE OR FAIL vt1 SET c1 = x'';
+SELECT c3 FROM vt1;

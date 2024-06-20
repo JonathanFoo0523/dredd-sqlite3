@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE a USING fts4(b, c , languageid=);
+                        INSERT INTO a VALUES ('', '');
+                        UPDATE a SET c=0x7915ff70;
+                        PRAGMA integrity_check;

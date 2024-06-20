@@ -1,0 +1,2 @@
+ CREATE VIRTUAL TABLE a USING fts4( languageid="lid");
+                         REPLACE INTO a( lid) VALUES ( 3637579917);
