@@ -87,7 +87,41 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+### Applying Dredd to Source
+```shell
+python3 -m runner.dredd_source.main ${DREDD_CHECKOUT} ${SQLITE_SRC_CHECKOUT} ${DREDD_OUTPUT_PATH}
+```
+### Mutation Testing
+```shell
+python3 -m runner.dredd_test.main ${DREDD_CHECKOUT} ${SQLITE_SRC_CHECKOUT} ${DREDD_OUTPUT_PATH} ${MUTATION_OUTPUT_PATH}
+```
+### Fuzz Surviving Mutants
+```shell
+python3 -m runner.generate_test.main ${SQLANCER_JAR} ${DREDD_OUTPUT_PATH} ${MUTATION_OUTPUT_PATH} ${FUZZ_OUTPUT_PATH}
+```
+### Reduce Test Case
+```shell
+python3 -m runner.reduce_test.main ${DREDD_OUTPUT_PATH} ${FUZZ_OUTPUT_PATH} ${REDUCTION_OUTPUT_PATH}
+```
+### Package Resuced Test Case
+```shell
+python3 -m runner.reduce_test.main ${DREDD_OUTPUT_PATH} ${REDUCTION_OUTPUT_PATH} ${TCLIFY_OUTPUT_PATH}
+```
+Ensure that `${TCLIFY_OUTPUT_PATH}` contains the `*.tcl` file from `sqlite-src/test/*.tcl` before tunning the `testfixture` on `${TCLIFY_OUTPUT_PATH}`
 
-## Understanding Outputs
 
-## Result
+## Understanding Sample Outputs
+### Extension Above Enabled
+`sample_dredd_output_all`: Contains binary of `testfixture`, `sqlite3` after applying Dredd on slite3 source
+
+`sample_regression_output_all`: Conntains result of mutation testing on extraquick, quick, full subset of TCL test.
+
+`sample_fuzzing_output_*`: Contains result of mutants fuzzing with random, NoRec, TlP oracle of sqlancer.
+
+`sample_reduction_output_*`: Contains result of test case reduction with random, NoRec, TLP oracle of sqlancer. 
+
+`sample_tclify_output_*`: Contains result of packaged TCL test for corresponding oracle.
+
+### No Optional Extension enabled
+Results of running the worflow with no extension enabled can be found in directory `sample_fuzzing_output`, `sample_redction_output`, `sample_tclify_output`.
+
