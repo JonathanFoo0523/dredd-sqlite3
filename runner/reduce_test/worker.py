@@ -40,7 +40,6 @@ class TestReductionWorker:
                         min_timeout = MINIMUM_DIFFERENTIAL_TEST_TIMEOUT_SECONDS
                     ))
 
-                    # shutil.copy(os.path.join(tempdir, 'interesting.py'), os.path.join(self.output_dir, source, f'interesting_{mutant}.py'))
 
                     # Make the interestingness test executable
                     st = os.stat(os.path.join(tempdir, 'interesting.py'))
@@ -50,9 +49,11 @@ class TestReductionWorker:
                     shutil.copy(statements_path, os.path.join(tempdir, f'database_{testcase}.log'))
 
                     # Execute 
-                    proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log'], cwd=tempdir, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
-                    # if proc[2] != 0:
-                    #     raise Exception(f'creduce failed, Source: {source}, Mutant {mutant}, Testcase {testcase}')
+                    proc = await subprocess_run(['creduce', 'interesting.py', f'database_{testcase}.log', '--not-c', '--sllooww'], cwd=tempdir, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+                    if proc[2] != 0:
+                        shutil.copy(os.path.join(tempdir, 'interesting.py'), os.path.join(self.output_dir, source, f'interesting_{mutant}.py'))
+                        shutil.copy(statements_path, os.path.join(self.output_dir, source, f'database_{testcase}.log'))
+                        raise Exception(f'creduce failed, Source: {source}, Mutant {mutant}, Testcase {testcase}')
 
                     if proc[2] == 0:
                         shutil.copy(os.path.join(tempdir, f'database_{testcase}.log'), os.path.join(self.output_dir, source, f'testcase_{mutant}.log'))

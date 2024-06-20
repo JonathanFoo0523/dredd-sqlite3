@@ -86,8 +86,6 @@ def main():
             print(f"Skip {file} with 0 mutants")
             continue
 
-        if file == 'build':
-            continue
 
         # print(">>>>", file, len(killed))
 
